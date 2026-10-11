@@ -31,8 +31,8 @@ The project is developed in phases:
 | 2 | User Management, Authentication (allauth), RBAC | ✅ Done |
 | 3 | Document Model & Secure Upload | ✅ Done |
 | 4 | Celery & Async Processing | ✅ Done |
-| 5 | Parsing, Normalization, Chunking | ⏳ Next |
-| 4 | Celery & Async Processing | ⬜ Planned |
+| 5 | Parsing, Normalization, Chunking | ✅ Done |
+| 4 | Celery & Async Processing | ⏳ Next |
 | 5 | Parsing, Normalization, Chunking | ⬜ Planned |
 | 6 | Embeddings & Semantic Search | ⬜ Planned |
 | 7 | LLM QA & Function Calling | ⬜ Planned |
