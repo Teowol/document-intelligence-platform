@@ -1,9 +1,10 @@
-"""Phase 4 live E2E check: dispatch process_document to the real Celery worker.
+"""Phase 4/5 live E2E check: dispatch process_document to the real Celery worker.
 
 Run with the worker up (celery -A config worker --pool=solo):
     cd src && ../venv/Scripts/python ../scripts/phase4_e2e_check.py
 
-Prints status transitions observed in the DB, then cleans up.
+Prints status transitions observed in the DB, confirms real chunks were
+written by the Phase 5 parser, then cleans up.
 """
 
 import os
@@ -18,11 +19,21 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 django.setup()
 
 from django.core.files.base import ContentFile  # noqa: E402
+from fpdf import FPDF  # noqa: E402
 
 from documents.models import Document  # noqa: E402
 from documents.tasks import process_document  # noqa: E402
 
-MINIMAL_PDF = b"%PDF-1.4\n1 0 obj<</Type/Catalog>>endobj\ntrailer<</Root 1 0 R>>"
+
+def _make_pdf_bytes() -> bytes:
+    pdf = FPDF()
+    pdf.add_page()
+    pdf.set_font("Helvetica", size=12)
+    pdf.multi_cell(0, 10, "Phase 5 end-to-end check: real text for the parser to chunk.")
+    return bytes(pdf.output())
+
+
+MINIMAL_PDF = _make_pdf_bytes()
 
 
 def main():
@@ -53,11 +64,16 @@ def main():
     doc.refresh_from_db()
     print(f"final: status={doc.status} error={doc.error_message!r}")
 
+    chunks = list(doc.chunks.order_by("chunk_index"))
+    print(f"chunks written: {len(chunks)}")
+    if chunks:
+        print(f"  chunk[0].page={chunks[0].page_number} text={chunks[0].text[:80]!r}")
+
     # cleanup
     doc.file.delete(save=False)
     doc.delete()
     print("cleaned up")
-    return 0 if doc.status == Document.Status.READY else 1
+    return 0 if doc.status == Document.Status.READY and chunks else 1
 
 
 if __name__ == "__main__":

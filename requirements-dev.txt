@@ -5,6 +5,7 @@ pytest==8.4.2
 pytest-django==4.11.1
 pytest-cov==7.0.0
 factory-boy==3.3.3
+fpdf2==2.8.9
 
 # Code quality
 ruff==0.14.5

@@ -26,6 +26,25 @@
         {% if document.owner_id == user.pk or user.is_superuser %}
         <a href="{% url 'documents:delete' document.pk %}" class="btn btn-outline-danger mt-2">Delete</a>
         {% endif %}
+
+        {% if document.status == 'ready' %}
+        <hr>
+        <p class="mb-1"><strong>Chunks:</strong> {{ chunk_count }}</p>
+        {% if chunks %}
+        <ul class="list-group">
+          {% for chunk in chunks %}
+          <li class="list-group-item">
+            <small class="text-muted">
+              {{ document.original_filename }}
+              {% if chunk.page_number %} · p.{{ chunk.page_number }}{% endif %}
+              {% if chunk.metadata.section_heading %} · {{ chunk.metadata.section_heading }}{% endif %}
+            </small>
+            <p class="mb-0">{{ chunk.text|truncatechars:200 }}</p>
+          </li>
+          {% endfor %}
+        </ul>
+        {% endif %}
+        {% endif %}
       </div>
     </div>
   </div>

@@ -1,15 +1,25 @@
-"""Phase 4 tests: Celery task drives the document status machine."""
+"""Phase 4/5 tests: Celery task drives parsing + the document status machine."""
 
 import pytest
 from django.core.files.base import ContentFile
+from fpdf import FPDF
 
 from accounts.models import CustomUser
-from documents.models import Document
+from documents.models import Document, DocumentChunk
 from documents.tasks import process_document
 
 pytestmark = pytest.mark.django_db
 
-MINIMAL_PDF = b"%PDF-1.4\n1 0 obj<</Type/Catalog>>endobj\ntrailer<</Root 1 0 R>>"
+
+def _make_pdf_bytes(text: str = "Hello world, this is a test document.") -> bytes:
+    pdf = FPDF()
+    pdf.add_page()
+    pdf.set_font("Helvetica", size=12)
+    pdf.cell(0, 10, text)
+    return bytes(pdf.output())
+
+
+MINIMAL_PDF = _make_pdf_bytes()
 
 
 @pytest.fixture(autouse=True)
@@ -45,6 +55,41 @@ def test_task_moves_uploaded_to_ready(user):
     doc.refresh_from_db()
     assert doc.status == Document.Status.READY
     assert doc.error_message == ""
+
+    chunks = list(doc.chunks.order_by("chunk_index"))
+    assert len(chunks) >= 1
+    assert "Hello world" in chunks[0].text
+    assert chunks[0].page_number == 1
+    assert chunks[0].metadata["token_count"] > 0
+
+
+def test_task_reprocessing_replaces_old_chunks(user):
+    doc = make_doc(user)
+    process_document.delay(doc.pk).get()
+    first_chunk_ids = list(doc.chunks.values_list("id", flat=True))
+
+    doc.status = Document.Status.UPLOADED
+    doc.save(update_fields=["status"])
+    process_document.delay(doc.pk).get()
+
+    second_chunk_ids = list(doc.chunks.values_list("id", flat=True))
+    assert DocumentChunk.objects.filter(document=doc).count() == len(second_chunk_ids)
+    assert set(first_chunk_ids).isdisjoint(second_chunk_ids)
+
+
+def test_task_marks_error_on_unparseable_content(user):
+    doc = Document(
+        owner=user, title="bad", original_filename="bad.pdf", doc_type="pdf"
+    )
+    doc.file.save("bad.pdf", ContentFile(b"not a real pdf"), save=True)
+
+    result = process_document.delay(doc.pk)
+
+    assert result.get() == Document.Status.ERROR
+    doc.refresh_from_db()
+    assert doc.status == Document.Status.ERROR
+    assert doc.error_message
+    assert doc.chunks.count() == 0
 
 
 def test_task_marks_error_when_missing(user, settings, monkeypatch):

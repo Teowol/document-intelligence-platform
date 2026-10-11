@@ -86,6 +86,12 @@ class DocumentDetailView(LoginRequiredMixin, DetailView):
             return doc
         raise PermissionDenied("Bu dokümanı görüntüleme yetkiniz yok.")
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["chunks"] = self.object.chunks.order_by("chunk_index")[:5]
+        context["chunk_count"] = self.object.chunks.count()
+        return context
+
 
 class DocumentDeleteView(LoginRequiredMixin, DeleteView):
     """Only the owner (or an admin) may delete; others get 403."""
