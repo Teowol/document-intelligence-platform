@@ -33,7 +33,7 @@ The project is developed in phases:
 | 4 | Celery & Async Processing | ✅ Done |
 | 5 | Parsing, Normalization, Chunking | ✅ Done |
 | 6 | Embeddings & Semantic Search | ✅ Done |
-| 7 | LLM QA & Function Calling | ⬜ Planned |
+| 7 | LLM QA & Function Calling | ✅ Done |
 | 8 | Frontend (Django Templates) | ⬜ Planned |
 | 9 | Testing, Security, Performance | ⬜ Planned |
 | 10 | Production Deployment | ⬜ Planned |
@@ -94,6 +94,7 @@ The app is then available at http://127.0.0.1:8000/ (redirects to login), with:
 - Sign up / log in / log out: `/accounts/signup/`, `/accounts/login/`
 - Documents: `/documents/` (upload, list, detail, delete with RBAC)
 - Semantic search: `/documents/search/` (meaning-based, permission-scoped)
+- Ask your documents: `/documents/ask/?q=...` (grounded QA with citations)
 
 ### Running Tests
 
@@ -114,4 +115,4 @@ Teoman Ünal
 
 ---
 
-**Note:** This project is under active development. Phases 0–6 are complete (scaffolding; Docker infra with PostgreSQL/pgvector + Redis; email auth with RBAC; secure upload with magic-byte validation; Celery async processing pipeline; PDF/Excel/CSV/TXT/Markdown parsing with normalization and overlapping chunking; OpenAI batch embeddings + pgvector HNSW semantic search with permission-scoping). Next up: Phase 7 — Question Answering & LLM Function Calling.
+**Note:** This project is under active development. Phases 0–7 are complete (scaffolding; Docker infra with PostgreSQL/pgvector + Redis; email auth with RBAC; secure upload with magic-byte validation; Celery async processing pipeline; PDF/Excel/CSV/TXT/Markdown parsing with normalization and overlapping chunking; OpenAI batch embeddings + pgvector HNSW semantic search with permission-scoping; grounded QA with LLM function calling and citations). Next up: Phase 8 — Frontend polish & dashboard.

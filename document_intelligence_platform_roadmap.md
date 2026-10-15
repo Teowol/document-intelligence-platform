@@ -321,7 +321,7 @@ Bu maddeler ilk sürümde **bilerek** yapılmaz; temel akış sağlamlaştıktan
 | 4 | Celery/Redis | 1 hafta | 1–2 gün |
 | 5 | Parsing & chunking | 1–2 hafta | 2–3 gün |
 | 6 | Embeddings & arama | 1–2 hafta | 2–3 gün |
-| 7 | LLM QA & function calling | 2 hafta | 3–4 gün |
+| 7 | LLM QA & function calling | 2 hafta | 3–4 gün | ✅ |
 | 8 | Frontend templates | 1–2 hafta | 2–3 gün |
 | 9 | Test/güvenlik/perf | 1–2 hafta | 2–3 gün |
 | 10 | Production deploy | 1 hafta | 1–2 gün |
