@@ -35,7 +35,7 @@ The project is developed in phases:
 | 6 | Embeddings & Semantic Search | ✅ Done |
 | 7 | LLM QA & Function Calling | ✅ Done |
 | 8 | Frontend (Django Templates) | ✅ Done¹ |
-| 9 | Testing, Security, Performance | ⬜ Next |
+| 9 | Testing, Security, Performance | ✅ Done |
 | 10 | Ready to Deploy (Production) ² | ⬜ Planned |
 
 ¹ Frontend temeli tamamlandı; istenen ek stiller/özellikler bir dizi
@@ -120,4 +120,4 @@ Teoman Ünal
 
 ---
 
-**Note:** This project is under active development. Phases 0–8 are complete: scaffolding; Docker infra (PostgreSQL/pgvector + Redis); email auth with RBAC; secure upload with magic-byte validation; Celery async pipeline; PDF/Excel/CSV/TXT/Markdown parsing + chunking; OpenAI embeddings + pgvector HNSW semantic search (permission-scoped); grounded QA with LLM function calling & citations; and a full polished frontend — parchment (light) / plum-indigo (dark) themes, TR/EN language switch, dashboard, document grid, and custom 403/404/500 pages. Next up: Phase 9 — Testing, Security & Performance.
+**Note:** This project is under active development. Phases 0–9 are complete: scaffolding; Docker infra (PostgreSQL/pgvector + Redis); email auth with RBAC; secure upload with magic-byte validation; Celery async pipeline; PDF/Excel/CSV/TXT/Markdown parsing + chunking; OpenAI embeddings + pgvector HNSW semantic search (permission-scoped); grounded QA with LLM function calling & citations; a full polished frontend — parchment (light) / plum-indigo (dark) themes, TR/EN language switch, dashboard, document grid, and custom 403/404/500 pages; plus hardened tests/security/performance (69 tests, `check --deploy` clean, Redis KPI caching + rate limiting, JSON logging, query-count guards, index migrations, latency baseline). Next up: Phase 10 — Ready to Deploy (Production).

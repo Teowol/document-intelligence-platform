@@ -55,6 +55,9 @@ class Document(models.Model):
         verbose_name = "Document"
         verbose_name_plural = "Documents"
         ordering = ["-created_at"]
+        indexes = [
+            models.Index(fields=["owner", "-created_at"]),
+        ]
 
     def __str__(self):
         return f"{self.title} [{self.status}]"
@@ -78,7 +81,7 @@ class DocumentChunk(models.Model):
         on_delete=models.CASCADE,
         related_name="chunks",
     )
-    page_number = models.PositiveIntegerField(null=True, blank=True)
+    page_number = models.PositiveIntegerField(null=True, blank=True, db_index=True)
     chunk_index = models.PositiveIntegerField(default=0)
     text = models.TextField()
     embedding = VectorField(
