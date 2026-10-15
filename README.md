@@ -32,8 +32,6 @@ The project is developed in phases:
 | 3 | Document Model & Secure Upload | ✅ Done |
 | 4 | Celery & Async Processing | ✅ Done |
 | 5 | Parsing, Normalization, Chunking | ✅ Done |
-| 4 | Celery & Async Processing | ⏳ Next |
-| 5 | Parsing, Normalization, Chunking | ⬜ Planned |
 | 6 | Embeddings & Semantic Search | ⬜ Planned |
 | 7 | LLM QA & Function Calling | ⬜ Planned |
 | 8 | Frontend (Django Templates) | ⬜ Planned |
