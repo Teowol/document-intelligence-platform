@@ -10,7 +10,7 @@ readme = "README.md"
 requires-python = ">=3.12"
 license = {text = "MIT"}
 authors = [
-    {name = "Teoma", email = "teomanunal06@gmail.com"}
+    {name = "Teoman Ünal"}
 ]
 keywords = ["django", "ai", "semantic-search", "rag", "llm"]
 classifiers = [
