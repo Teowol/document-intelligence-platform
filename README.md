@@ -34,9 +34,14 @@ The project is developed in phases:
 | 5 | Parsing, Normalization, Chunking | ✅ Done |
 | 6 | Embeddings & Semantic Search | ✅ Done |
 | 7 | LLM QA & Function Calling | ✅ Done |
-| 8 | Frontend (Django Templates) | ⬜ Planned |
-| 9 | Testing, Security, Performance | ⬜ Planned |
-| 10 | Production Deployment | ⬜ Planned |
+| 8 | Frontend (Django Templates) | ✅ Done¹ |
+| 9 | Testing, Security, Performance | ⬜ Next |
+| 10 | Ready to Deploy (Production) ² | ⬜ Planned |
+
+¹ Frontend temeli tamamlandı; istenen ek stiller/özellikler bir dizi
+  iyileştirme olarak sona ertelendi ("Frontend Sprint").
+² Öğrenim amaçlı proje: gerçek bir sunucuya deploy edilmiyor; Faz 10,
+  projenin üretim ortamına hazır bir kuruluma sahip olmasını kapsar.
 
 For detailed roadmap, see [`document_intelligence_platform_roadmap.md`](./document_intelligence_platform_roadmap.md)
 

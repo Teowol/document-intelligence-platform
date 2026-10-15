@@ -266,18 +266,22 @@ Her fazda **"Tanım: Tamamlandı" (Definition of Done)** listesi, o fazın bağ�
 
 ---
 
-### 🚀 FAZ 10 — Production Dağıtım (≈1 hafta)
+### 🚀 FAZ 10 — Ready to Deploy (Üretime Hazırlık) (≈1 hafta)
 
-**Amaç:** Platform internette, güvenli, yedekli, izlenebilir şekilde yayında.
+**Amaç:** Platform, öğrenim amaçlı geliştirildiğinden gerçek bir sunucuya
+yayınlanmayacak; ancak **istenirse tek komutla üretim ortamına kurulabilecek**
+olgunlukta bir kuruluma sahip olsun.
 
 - `docker-compose.yml` (prod): `nginx` (TLS + statik) · `web` (Gunicorn, 2–4 worker) · `celery-worker` · `celery-beat` · `redis` · `db` (pgvector imajı)
-- Let's Encrypt (certbot) ile SSL; HTTP→HTTPS yönlendirme
-- `.env.prod`: SECRET_KEY, DB, OpenAI, DEBUG=False, ALLOWED_HOSTS
-- Yedekleme: `pg_dump` cron + media yedeği; geri yükleme talimatı dokümanı
-- CI/CD: GitHub Actions (lint + test + build + deploy), sağlık kontrolü sonrası swap
-- İzleme: Flower (kuyruk), log toplama, temel harici uptime kontrolü
+- Let's Encrypt (certbot) ile SSL; HTTP→HTTPS yönlendirme (hazır template/config)
+- `.env.prod` örneği: SECRET_KEY, DB, OpenAI, DEBUG=False, ALLOWED_HOSTS
+- Yedekleme: `pg_dump` + media yedeği betikleri; geri yükleme talimatı
+- CI/CD: GitHub Actions (lint + test + build), sağlık kontrolü
+- İzleme: Flower (kuyruk), temel uptime kontrolü
 
-**DoD:** `docker compose up -d --build` ile temiz bir sunucuda tek komutla ayağa kalkıyor; HTTPS geçerli; yedeği geri yükleme testi yapılmış; CI'da deploy otomatik.
+**DoD:** `docker compose up -d --build` ile temiz bir makinede tek komutla
+ayağa kalkabiliyor; TLS/config dosyaları hazır; yedek/geri yükleme betikleri
+çalışıyor; CI'da otomatik test —gerçek bir sunucuya deploy zorunluluğu yok—.
 
 ---
 
@@ -327,7 +331,7 @@ Bu maddeler ilk sürümde **bilerek** yapılmaz; temel akış sağlamlaştıktan
 | 10 | Production deploy | 1 hafta | 1–2 gün |
 | | **Toplam** | **≈ 11–15 hafta** | **≈ 4–6 hafta** |
 
-**Milestone noktaları (kutlama anları):** Faz 4 sonu = "ilk dosya kuyrukta işlendi" · Faz 6 sonu = "ilk semantik arama çalıştı" · Faz 7 sonu = "ilk kaynak gösteren cevap alındı" · Faz 10 sonu = "canlı yayın".
+**Milestone noktaları (kutlama anları):** Faz 4 sonu = "ilk dosya kuyrukta işlendi" · Faz 6 sonu = "ilk semantik arama çalıştı" · Faz 7 sonu = "ilk kaynak gösteren cevap alındı" · Faz 10 sonu = "üretime hazır kurulum tamam".
 
 ---
 
