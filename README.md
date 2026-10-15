@@ -111,4 +111,4 @@ Teoman Ünal
 
 ---
 
-**Note:** This project is under active development. Phases 0–5 are complete (scaffolding; Docker infra with PostgreSQL/pgvector + Redis; email auth with RBAC; secure upload with magic-byte validation; Celery async processing pipeline; PDF/Excel/CSV/TXT/Markdown parsing with normalization and overlapping chunking). Next up: Phase 6 — Embeddings & pgvector Semantic Search.
+**Note:** This project is under active development. Phases 0–6 are complete (scaffolding; Docker infra with PostgreSQL/pgvector + Redis; email auth with RBAC; secure upload with magic-byte validation; Celery async processing pipeline; PDF/Excel/CSV/TXT/Markdown parsing with normalization and overlapping chunking; OpenAI batch embeddings + pgvector HNSW semantic search with permission-scoping). Next up: Phase 7 — Question Answering & LLM Function Calling.

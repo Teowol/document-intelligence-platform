@@ -23,11 +23,17 @@ MINIMAL_PDF = _make_pdf_bytes()
 
 
 @pytest.fixture(autouse=True)
-def _eager(settings, tmp_path):
+def _eager(settings, tmp_path, monkeypatch):
     """Run tasks synchronously and store results in memory during tests."""
     settings.CELERY_TASK_ALWAYS_EAGER = True
     settings.CELERY_TASK_EAGER_PROPAGATES = True
     settings.MEDIA_ROOT = str(tmp_path)
+    # Phase 6: the parsing task chains an embedding task; tests focus on the
+    # parse/chunk status machine, so keep embeds from hitting the OpenAI API.
+    monkeypatch.setattr(
+        "documents.tasks.embed_document.delay",
+        lambda *a, **kw: None,
+    )
 
 
 @pytest.fixture

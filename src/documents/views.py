@@ -4,11 +4,12 @@ from django.core.exceptions import PermissionDenied, ValidationError
 from django.db.models import Q
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse_lazy
-from django.views.generic import DeleteView, DetailView, ListView
+from django.views.generic import DeleteView, DetailView, ListView, TemplateView
 from django.views.generic.edit import CreateView
 
 from accounts.models import CustomUser
 
+from .ai_engine import search_semantic
 from .forms import DocumentUploadForm
 from .models import Document
 from .tasks import process_document
@@ -106,3 +107,30 @@ class DocumentDeleteView(LoginRequiredMixin, DeleteView):
         if doc.owner_id == user.pk or _is_admin(user):
             return doc
         raise PermissionDenied("Bu dokümanı silme yetkiniz yok.")
+
+
+class DocumentSearchView(LoginRequiredMixin, TemplateView):
+    """
+    Semantic search UI (Phase 6). Runs a cosine top-k query scoped to the
+    requesting user's permissions.
+    """
+
+    template_name = "documents/document_search.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        query = self.request.GET.get("q", "").strip()
+        context["query"] = query
+        context["results"] = []
+        if query:
+            try:
+                context["results"] = search_semantic(
+                    self.request.user, query, top_k=8
+                )
+            except Exception as exc:  # noqa: BLE001 - surface API errors in UI
+                from django.contrib import messages as dj_messages
+
+                dj_messages.error(
+                    self.request, f"Semantic search failed: {exc}"
+                )
+        return context

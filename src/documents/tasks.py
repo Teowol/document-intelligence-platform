@@ -1,7 +1,7 @@
 """Background tasks for document processing.
 
-Phase 5: real parsing + chunking replaces the Phase 4 placeholder.
-The status machine stays production-shaped:
+Pipeline: process_document (parse + chunk, Phase 5) -> embed_document
+(embeddings, Phase 6). The status machine is production-shaped:
 
     uploaded -> processing -> ready
                         \\-----> error (parsing failure or unexpected crash)
@@ -12,6 +12,7 @@ import logging
 from celery import shared_task
 from django.db import transaction
 
+from .ai_engine import embed_chunks_batch
 from .models import Document, DocumentChunk
 from .parsing import ParsingError, parse_and_chunk
 
@@ -76,4 +77,44 @@ def process_document(self, document_id: int) -> str:
         doc.save(update_fields=["status", "error_message", "updated_at"])
 
     logger.info("document %s processed (%d chunks)", document_id, len(chunks))
+    # Phase 6: after parsing succeeds, embed the chunks in a follow-up task.
+    if chunks:
+        embed_document.delay(document_id)
     return doc.status
+
+
+@shared_task(bind=True, max_retries=3, default_retry_delay=10)
+def embed_document(self, document_id: int) -> str:
+    """Embed all chunks of a document with text-embedding-3-small."""
+    try:
+        doc = Document.objects.get(pk=document_id)
+    except Document.DoesNotExist:
+        logger.warning("embed_document: document %s vanished; skipping", document_id)
+        return "missing"
+
+    chunks = list(
+        doc.chunks.filter(embedding__isnull=True).order_by("chunk_index")
+    )
+    if not chunks:
+        return "already-embedded"
+
+    try:
+        vectors = embed_chunks_batch([c.text for c in chunks])
+    except Exception as exc:
+        self.retry(exc=exc, countdown=(2**self.request.retries) * 5)
+
+    if len(vectors) != len(chunks):
+        raise ValueError(
+            f"embedding count mismatch (got {len(vectors)} want {len(chunks)}); "
+            "refusing to write partial vectors"
+        )
+
+    with transaction.atomic():
+        for chunk, vector in zip(chunks, vectors, strict=False):
+            chunk.embedding = vector
+        DocumentChunk.objects.bulk_update(chunks, ["embedding"])
+
+    embedded = doc.chunks.filter(embedding__isnull=False).count()
+    total = doc.chunks.count()
+    logger.info("document %s embedded (%d/%d chunks)", document_id, embedded, total)
+    return "embedded"
