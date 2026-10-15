@@ -31,6 +31,7 @@
         toggleTheme();
         refreshThemeBtn(btn);
       });
+      refreshThemeBtn(btn); // populate label/icon on first paint
     }
   }
 
@@ -38,8 +39,8 @@
     var icon = btn.querySelector("[data-theme-icon]");
     var label = btn.querySelector("[data-theme-label]");
     var dark = currentTheme() === "dark";
-    if (icon) icon.textContent = dark ? "◐" : "◐"; // sun/moon
-    if (label) label.textContent = dark ? "Light" : "Dark";
+    if (icon) icon.textContent = dark ? "☾" : "☀"; // moon for dark, sun for light
+    if (label) label.textContent = dark ? "Dark" : "Light";
   }
 
   // Let base template call this after it swaps in the button too.
