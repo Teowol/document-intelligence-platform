@@ -32,7 +32,7 @@ The project is developed in phases:
 | 3 | Document Model & Secure Upload | ✅ Done |
 | 4 | Celery & Async Processing | ✅ Done |
 | 5 | Parsing, Normalization, Chunking | ✅ Done |
-| 6 | Embeddings & Semantic Search | ⬜ Planned |
+| 6 | Embeddings & Semantic Search | ✅ Done |
 | 7 | LLM QA & Function Calling | ⬜ Planned |
 | 8 | Frontend (Django Templates) | ⬜ Planned |
 | 9 | Testing, Security, Performance | ⬜ Planned |
@@ -53,7 +53,7 @@ For detailed roadmap, see [`document_intelligence_platform_roadmap.md`](./docume
 ```bash
 # Clone the repository
 git clone https://github.com/Teowol/document-intelligence-platform.git
-cd document-intellegence-platform
+cd document-intelligence-platform
 
 # Start infrastructure (PostgreSQL + pgvector, Redis)
 docker compose -f docker-compose.dev.yml up -d
@@ -66,7 +66,7 @@ source venv/bin/activate  # Windows: venv\Scripts\activate
 pip install -r requirements-dev.txt
 
 # Configure environment
-cp .env.example .env  # adjust DATABASE_URL / SECRET_KEY if needed
+cp .env.example .env  # adjust DATABASE_URL / SECRET_KEY / OPENAI_API_KEY if needed
 
 # Run database migrations
 cd src
@@ -86,20 +86,23 @@ cd src
 celery -A config worker --pool=solo --loglevel=info   # Windows: solo pool
 ```
 
-On Linux/macOS omit `--pool=solo`. Pipeline: upload → task `documents.tasks.process_document` → status `processing` → `ready` (visible live on the detail page, which auto-refreshes).
+On Linux/macOS omit `--pool=solo`. Pipeline: upload → task `documents.tasks.process_document` (parse + chunk) → status `processing` → `ready`, then `documents.tasks.embed_document` computes embeddings via OpenAI so documents become semantically searchable. The detail page auto-refreshes and shows the chunk preview live.
 
 The app is then available at http://127.0.0.1:8000/ (redirects to login), with:
 - Admin panel: `/admin/`
 - Health check: `/healthz` (reports database + Redis status)
 - Sign up / log in / log out: `/accounts/signup/`, `/accounts/login/`
 - Documents: `/documents/` (upload, list, detail, delete with RBAC)
+- Semantic search: `/documents/search/` (meaning-based, permission-scoped)
 
 ### Running Tests
 
 ```bash
 cd src
-python -m pytest accounts -q --no-cov
+python -m pytest accounts documents -q --no-cov
 ```
+
+The suite covers ~52 tests: RBAC/upload validation (accounts + documents), parsing/chunking for all 5 file types, Celery status transitions, and permission-scoped semantic search.
 
 ## 📝 License
 
