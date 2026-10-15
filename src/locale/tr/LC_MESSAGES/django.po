@@ -198,3 +198,36 @@ msgstr "Evet, sil"
 
 msgid "You do not have permission to view this page."
 msgstr "Bu sayfayı görüntüleme yetkin yok."
+
+msgid "Toggle theme"
+msgstr "Temayı değiştir"
+
+msgid "Switch to English"
+msgstr "İngilizceye geç"
+
+msgid "Türkçeye geç"
+msgstr "Switch to Turkish"
+
+msgid "total"
+msgstr "toplam"
+
+msgid "total size"
+msgstr "toplam boyut"
+
+msgid "searchable"
+msgstr "aranabilir"
+
+msgid "processed"
+msgstr "işlendi"
+
+msgid "public"
+msgstr "genel"
+
+msgid "result(s)"
+msgstr "sonuç"
+
+msgid "for"
+msgstr "için"
+
+msgid "check."
+msgstr "kontrolünü"

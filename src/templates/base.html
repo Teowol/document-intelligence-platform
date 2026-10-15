@@ -60,14 +60,17 @@
         <button type="button" id="theme-toggle" class="control-icon-btn" title="{% trans 'Toggle theme' %}">
           <span data-theme-icon></span><span data-theme-label></span>
         </button>
-        <!-- Language switch -->
+        <!-- Language toggle button -->
+        {% get_current_language as CURRENT_LANGUAGE %}
         <form action="{% url 'set_language' %}" method="post" class="d-inline">
           {% csrf_token %}
           <input type="hidden" name="next" value="{{ request.get_full_path }}">
-          <select name="language" class="control-icon-btn form-select py-1" onchange="this.form.submit()">
-            <option value="tr" {% if LANGUAGE_CODE == "tr" %}selected{% endif %}>Türkçe</option>
-            <option value="en" {% if LANGUAGE_CODE == "en" %}selected{% endif %}>English</option>
-          </select>
+          <input type="hidden" name="language"
+                 value="{% if CURRENT_LANGUAGE == 'tr' %}en{% else %}tr{% endif %}">
+          <button type="submit" class="control-icon-btn"
+                  title="{% if CURRENT_LANGUAGE == 'tr' %}Switch to English{% else %}Türkçeye geç{% endif %}">
+            <span>{{ CURRENT_LANGUAGE|upper }}</span>
+          </button>
         </form>
       </div>
     </div>
