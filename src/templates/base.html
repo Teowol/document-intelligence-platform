@@ -21,6 +21,7 @@
         <span class="badge badge-role-{{ user.role }}">{{ user.get_role_display }}</span>
         <a class="nav-link text-light" href="{% url 'documents:list' %}">Documents</a>
         <a class="nav-link text-light" href="{% url 'documents:search' %}">Search</a>
+        <a class="nav-link text-light" href="{% url 'documents:ask' %}">Ask</a>
         <a class="nav-link text-light" href="{% url 'accounts:profile' %}">Profile</a>
         <form method="post" action="{% url 'account_logout' %}" class="d-inline">
           {% csrf_token %}

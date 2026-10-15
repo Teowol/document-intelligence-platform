@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block title %}Ask Your Documents{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-md-8">
+    <h1 class="h3 mb-3">Ask Your Documents</h1>
+    <form method="get" action="{% url 'documents:ask' %}" class="d-flex gap-2 mb-4">
+      <input type="text" name="q" value="{{ question }}" class="form-control"
+             placeholder="e.g. 'bütçe projeksiyonlarımız nedir?'">
+      <button type="submit" class="btn btn-primary">Ask</button>
+    </form>
+
+    {% if question %}
+      <div class="card mb-4">
+        <div class="card-body">
+          <h5 class="text-muted fw-normal"><strong>Q:</strong> {{ question }}</h5>
+          {% if result %}
+            <p class="mb-3">{{ result.answer|linebreaksbr }}</p>
+
+            {% if result.sources %}
+            <hr>
+            <h6 class="mb-2">Sources</h6>
+            <ul class="list-group">
+              {% for src in result.sources %}
+              <li class="list-group-item small py-1">
+                {{ src.file }}{% if src.page %} · p.{{ src.page }}{% endif %}
+              </li>
+              {% endfor %}
+            </ul>
+            {% endif %}
+            {% if result.tool_rounds %}
+            <p class="text-muted small mt-2">Function-calling rounds: {{ result.tool_rounds }}</p>
+            {% endif %}
+          {% endif %}
+        </div>
+      </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

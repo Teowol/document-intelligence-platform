@@ -12,6 +12,7 @@ from accounts.models import CustomUser
 from .ai_engine import search_semantic
 from .forms import DocumentUploadForm
 from .models import Document
+from .qa import answer_question
 from .tasks import process_document
 from .validators import sanitize_filename, validate_upload
 
@@ -132,5 +133,32 @@ class DocumentSearchView(LoginRequiredMixin, TemplateView):
 
                 dj_messages.error(
                     self.request, f"Semantic search failed: {exc}"
+                )
+        return context
+
+
+class DocumentQAView(LoginRequiredMixin, TemplateView):
+    """
+    Phase 7: grounded question-answering UI. Runs the RAG + function-calling
+    pipeline with RBAC-scoped tools, then shows the answer with citations.
+    """
+
+    template_name = "documents/qa.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        question = self.request.GET.get("q", "").strip()
+        context["question"] = question
+        context["result"] = None
+        if question:
+            try:
+                context["result"] = answer_question(
+                    self.request.user, question, use_tools=True
+                )
+            except Exception as exc:  # noqa: BLE001 - surface API errors in UI
+                from django.contrib import messages as dj_messages
+
+                dj_messages.error(
+                    self.request, f"Question answering failed: {exc}"
                 )
         return context
