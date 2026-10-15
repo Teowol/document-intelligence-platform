@@ -252,7 +252,7 @@ Her fazda **"Tanım: Tamamlandı" (Definition of Done)** listesi, o fazın bağ�
 
 ---
 
-### 🧪 FAZ 9 — Test, Güvenlik & Performans (≈1–2 hafta)
+### ✅ 🧪 FAZ 9 — Test, Güvenlik & Performans (tamamlandı)
 
 **Amaç:** Deploy edilebilir olgunluk.
 
@@ -266,7 +266,7 @@ Her fazda **"Tanım: Tamamlandı" (Definition of Done)** listesi, o fazın bağ�
 
 ---
 
-### 🚀 FAZ 10 — Ready to Deploy (Üretime Hazırlık) (≈1 hafta)
+### ✅ 🚀 FAZ 10 — Ready to Deploy (Üretime Hazırlık) (tamamlandı)
 
 **Amaç:** Platform, öğrenim amaçlı geliştirildiğinden gerçek bir sunucuya
 yayınlanmayacak; ancak **istenirse tek komutla üretim ortamına kurulabilecek**
