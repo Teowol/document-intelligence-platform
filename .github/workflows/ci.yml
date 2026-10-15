@@ -1,0 +1,78 @@
+# CI (Phase 10): lint + test + build on every push/PR.
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  lint-test:
+    name: Lint & test
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: pgvector/pgvector:pg16
+        env:
+          POSTGRES_DB: document_intelligence
+          POSTGRES_USER: dip_user
+          POSTGRES_PASSWORD: dip_password
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U dip_user -d document_intelligence"
+          --health-interval 10s --health-timeout 5s --health-retries 5
+    env:
+      DATABASE_URL: postgresql://dip_user:dip_password@localhost:5432/document_intelligence
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install deps
+        run: |
+          pip install -r requirements.txt -r requirements-dev.txt
+          sudo apt-get update && sudo apt-get install -y libmagic1
+
+      - name: Ruff lint
+        run: ruff check src/conftest.py src/documents src/accounts src/config
+
+      - name: Django checks
+        working-directory: src
+        run: |
+          python manage.py check
+          python manage.py check --settings=config.settings.production
+
+      - name: Run tests
+        working-directory: src
+        env:
+          DJANGO_SETTINGS_MODULE: config.settings.test
+          REDIS_URL: redis://localhost:6379/0
+        run: python -m pytest accounts documents -q
+
+  build:
+    name: Build images
+    runs-on: ubuntu-latest
+    needs: lint-test
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build web/worker image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: Dockerfile
+          push: false
+          load: true
+          tags: dip:ci
+
+      - name: Smoke-test image boots
+        run: |
+          docker run --rm dip:ci python -c "import config; print('config import OK')"

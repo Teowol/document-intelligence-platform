@@ -79,3 +79,7 @@ dump.rdb
 # Misc
 .cache/
 *.bak
+
+# Phase 10: local backups & TLS secrets (never commit)
+backups/
+deploy/tls-certs/

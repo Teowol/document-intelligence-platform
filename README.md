@@ -36,12 +36,16 @@ The project is developed in phases:
 | 7 | LLM QA & Function Calling | ✅ Done |
 | 8 | Frontend (Django Templates) | ✅ Done¹ |
 | 9 | Testing, Security, Performance | ✅ Done |
-| 10 | Ready to Deploy (Production) ² | ⬜ Planned |
+| 10 | Ready to Deploy (Production) ² | ✅ Done |
 
 ¹ Frontend temeli tamamlandı; istenen ek stiller/özellikler bir dizi
-  iyileştirme olarak sona ertelendi ("Frontend Sprint").
+  iyileştirme olarak sona ertelendi ("Frontend Sprint") — hâlâ sürüyor.
 ² Öğrenim amaçlı proje: gerçek bir sunucuya deploy edilmiyor; Faz 10,
-  projenin üretim ortamına hazır bir kuruluma sahip olmasını kapsar.
+  projenin üretim ortamına hazır bir kuruluma sahip olmasını kapsar — tek
+  komutla ayağa kalkabilir, üretim rehberi `deploy/` klasöründedir.
+
+**Durum:** Tüm 10 faz (0–10) tamamlandı. Frontend geliştirmesi ve istenen
+ek özellikler hâlâ devam eden bir "Frontend Sprint" olarak yürütülüyor.
 
 For detailed roadmap, see [`document_intelligence_platform_roadmap.md`](./document_intelligence_platform_roadmap.md)
 
@@ -120,4 +124,6 @@ Teoman Ünal
 
 ---
 
-**Note:** This project is under active development. Phases 0–9 are complete: scaffolding; Docker infra (PostgreSQL/pgvector + Redis); email auth with RBAC; secure upload with magic-byte validation; Celery async pipeline; PDF/Excel/CSV/TXT/Markdown parsing + chunking; OpenAI embeddings + pgvector HNSW semantic search (permission-scoped); grounded QA with LLM function calling & citations; a full polished frontend — parchment (light) / plum-indigo (dark) themes, TR/EN language switch, dashboard, document grid, and custom 403/404/500 pages; plus hardened tests/security/performance (69 tests, `check --deploy` clean, Redis KPI caching + rate limiting, JSON logging, query-count guards, index migrations, latency baseline). Next up: Phase 10 — Ready to Deploy (Production).
+**Note:** This project is under active development. Phases 0–10 are complete: scaffolding; Docker infra (PostgreSQL/pgvector + Redis); email auth with RBAC; secure upload with magic-byte validation; Celery async pipeline; PDF/Excel/CSV/TXT/Markdown parsing + chunking; OpenAI embeddings + pgvector HNSW semantic search (permission-scoped); grounded QA with LLM function calling & citations; a full polished frontend — parchment (light) / plum-indigo (dark) themes, TR/EN language switch, dashboard, document grid, and custom 403/404/500 pages; plus hardened tests/security/performance (69 tests, `check --deploy` clean, Redis KPI caching + rate limiting, JSON logging, query-count guards, index migrations, latency baseline); and a production-ready stack (`docker compose up -d --build` with nginx + gunicorn + Celery + Flower + backups + CI).
+
+**Frontend devam ediyor:** Tüm planlı fazlar tamamlandı; frontend geliştirmesi ve ek istenen özellikler hâlâ bir "Frontend Sprint" olarak sürüyor.

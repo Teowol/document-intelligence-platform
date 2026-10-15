@@ -1,0 +1,140 @@
+# Production compose stack (Phase 10). Learning project: not deployed to a
+# live host, but structured so `docker compose up -d --build` boots a complete,
+# deployable stack on a clean machine.
+#
+# Usage:
+#   cp .env.prod .env
+#   docker compose up -d --build
+#
+# NOTE: TLS via Let's Encrypt requires real DNS + port 80/443; without it,
+# set NGINX_SSL=false to run plain HTTP for local testing.
+
+x-django-env: &django-env
+  DEBUG: "false"
+  SECRET_KEY: ${SECRET_KEY:?set SECRET_KEY in .env}
+  ALLOWED_HOSTS: ${ALLOWED_HOSTS:-localhost,127.0.0.1}
+  DATABASE_URL: postgresql://${POSTGRES_USER:-dip_user}:${POSTGRES_PASSWORD:-dip_password}@db:5432/${POSTGRES_DB:-document_intelligence}
+  REDIS_URL: redis://redis:6379/0
+  OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+  OPENAI_MODEL: ${OPENAI_MODEL:-gpt-4o-mini}
+  EMBEDDING_MODEL: ${EMBEDDING_MODEL:-text-embedding-3-small}
+  DJANGO_SETTINGS_MODULE: config.settings.production
+
+services:
+  db:
+    image: pgvector/pgvector:pg16
+    container_name: dip-prod-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-document_intelligence}
+      POSTGRES_USER: ${POSTGRES_USER:-dip_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-dip_password}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-dip_user} -d ${POSTGRES_DB:-document_intelligence}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    container_name: dip-prod-redis
+    restart: unless-stopped
+    volumes:
+      - redisdata:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: dip-prod-web
+    restart: unless-stopped
+    command: >
+      sh -c "python manage.py migrate --noinput &&
+             python manage.py collectstatic --noinput &&
+             gunicorn config.wsgi:application --bind 0.0.0.0:8000 --workers 2 --timeout 120"
+    environment: *django-env
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    volumes:
+      - staticfiles:/app/src/staticfiles
+      - mediafiles:/app/src/media
+    expose:
+      - "8000"
+
+  celery-worker:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: dip-prod-worker
+    restart: unless-stopped
+    command: celery -A config worker --loglevel=info
+    environment: *django-env
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    volumes:
+      - mediafiles:/app/src/media
+
+  celery-beat:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: dip-prod-beat
+    restart: unless-stopped
+    command: celery -A config beat --loglevel=info
+    environment: *django-env
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  flower:
+    image: mher/flower:2.0.1
+    container_name: dip-prod-flower
+    restart: unless-stopped
+    command:
+      - --broker=redis://redis:6379/0
+      - --url-prefix=flower
+    environment:
+      FLOWER_BASIC_AUTH: ${FLOWER_USER:-admin}:${FLOWER_PASSWORD:-change-me}
+    ports:
+      - "5555:5555"
+    depends_on:
+      - redis
+
+  # Optional TLS: only enable in production with real DNS + certbot.
+  nginx:
+    image: nginx:1.27-alpine
+    container_name: dip-prod-nginx
+    restart: unless-stopped
+    depends_on:
+      - web
+    volumes:
+      - ./deploy/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./deploy/tls-certs:/etc/letsencrypt:ro
+      - staticfiles:/static:ro
+      - mediafiles:/media:ro
+    ports:
+      - "80:80"
+      - "${HTTPS_PORT:-443}:443"
+    profiles:
+      - with-nginx
+
+volumes:
+  pgdata:
+  redisdata:
+  staticfiles:
+  mediafiles:
