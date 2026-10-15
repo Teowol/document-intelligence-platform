@@ -4,7 +4,7 @@ from django.core.exceptions import PermissionDenied, ValidationError
 from django.db.models import Q
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse_lazy
-from django.views.generic import DeleteView, DetailView, ListView, TemplateView
+from django.views.generic import DeleteView, DetailView, ListView, TemplateView, View
 from django.views.generic.edit import CreateView
 
 from accounts.models import CustomUser
@@ -15,6 +15,48 @@ from .models import Document
 from .qa import answer_question
 from .tasks import process_document
 from .validators import sanitize_filename, validate_upload
+
+
+class DashboardView(LoginRequiredMixin, TemplateView):
+    """Overview page: KPIs, status breakdown, recent documents."""
+
+    template_name = "documents/dashboard.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        user = self.request.user
+
+        if _is_admin(user):
+            docs_qs = Document.objects.all()
+        else:
+            docs_qs = Document.objects.filter(Q(owner=user) | Q(is_public=True))
+
+        total_docs = docs_qs.count()
+        visible_chunks = (
+            sum(d.chunks.count() for d in docs_qs.prefetch_related("chunks"))
+        )
+        total_size = sum(d.size_bytes or 0 for d in docs_qs)
+        processed = docs_qs.filter(status=Document.Status.READY).count()
+        processing = docs_qs.filter(status=Document.Status.PROCESSING).count()
+        uploaded = docs_qs.filter(status=Document.Status.UPLOADED).count()
+        errored = docs_qs.filter(status=Document.Status.ERROR).count()
+
+        context.update(
+            {
+                "total_docs": total_docs,
+                "visible_chunks": visible_chunks,
+                "total_size": total_size,
+                "processed": processed,
+                "processing": processing,
+                "uploaded": uploaded,
+                "errored": errored,
+                "ready_rate": round(processed / total_docs * 100) if total_docs else 0,
+                "recent_documents": docs_qs.select_related(
+                    "owner"
+                ).order_by("-created_at")[:6],
+            }
+        )
+        return context
 
 
 def _is_admin(user) -> bool:
@@ -33,15 +75,41 @@ class DocumentListView(LoginRequiredMixin, ListView):
 
     model = Document
     template_name = "documents/document_list.html"
-    paginate_by = 20
+    paginate_by = 12
 
     def get_queryset(self):
         user = self.request.user
         if _is_admin(user):
-            return Document.objects.select_related("owner")
-        return Document.objects.filter(Q(owner=user) | Q(is_public=True)).select_related(
-            "owner"
-        )
+            queryset = Document.objects.select_related("owner")
+        else:
+            queryset = Document.objects.filter(Q(owner=user) | Q(is_public=True)).select_related("owner")
+        # optional status filter from ?status=
+        status = self.request.GET.get("status")
+        if status in {s for s, _ in Document.Status.choices}:
+            queryset = queryset.filter(status=status)
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["filter_status"] = self.request.GET.get("status", "")
+        return context
+
+
+class DocumentReprocessView(LoginRequiredMixin, View):
+    """Re-run the Celery pipeline for a document (owner/admin only)."""
+
+    def post(self, request, *args, **kwargs):
+        user = request.user
+        doc = get_object_or_404(Document, pk=kwargs["pk"])
+        if not (doc.owner_id == user.pk or _is_admin(user)):
+            raise PermissionDenied("Bu dokümanı yeniden işleme yetkiniz yok.")
+        if doc.status in (Document.Status.PROCESSING, Document.Status.UPLOADED):
+            return redirect("documents:detail", pk=doc.pk)
+        doc.status = Document.Status.UPLOADED
+        doc.save(update_fields=["status", "updated_at"])
+        process_document.delay(doc.pk)
+        messages.success(request, "Document queued for re-processing.")
+        return redirect("documents:detail", pk=doc.pk)
 
 
 class DocumentUploadView(LoginRequiredMixin, CreateView):

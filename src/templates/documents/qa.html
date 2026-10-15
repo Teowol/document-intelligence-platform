@@ -1,39 +1,40 @@
 {% extends "base.html" %}
-{% block title %}Ask Your Documents{% endblock %}
+{% load i18n %}
+{% block title %}{% trans "Ask Your Documents" %} · DIP{% endblock %}
+{% block page_header %}<h1 class="h4 mb-0">💬 {% trans "Ask Your Documents" %}</h1>{% endblock %}
+
 {% block content %}
 <div class="row justify-content-center">
-  <div class="col-md-8">
-    <h1 class="h3 mb-3">Ask Your Documents</h1>
-    <form method="get" action="{% url 'documents:ask' %}" class="d-flex gap-2 mb-4">
+  <div class="col-md-9">
+    <form method="get" action="{% url 'documents:ask' %}" class="d-flex gap-2 mb-3">
       <input type="text" name="q" value="{{ question }}" class="form-control"
-             placeholder="e.g. 'bütçe projeksiyonlarımız nedir?'">
-      <button type="submit" class="btn btn-primary">Ask</button>
+             placeholder="{% trans 'e.g. our budget projections?' %}">
+      <button type="submit" class="btn" style="background: var(--accent); color: var(--accent-ink);">💬 {% trans "Ask" %}</button>
     </form>
 
-    {% if question %}
-      <div class="card mb-4">
-        <div class="card-body">
-          <h5 class="text-muted fw-normal"><strong>Q:</strong> {{ question }}</h5>
-          {% if result %}
-            <p class="mb-3">{{ result.answer|linebreaksbr }}</p>
+    <div class="example-chips mb-4 d-flex flex-wrap gap-2">
+      <span class="chip" data-ask="Q3 gelir ne kadar oldu">{% trans "Q3 revenue?" %}</span>
+      <span class="chip" data-ask="Kilit konular neler?">{% trans "Key topics?" %}</span>
+    </div>
 
-            {% if result.sources %}
-            <hr>
-            <h6 class="mb-2">Sources</h6>
-            <ul class="list-group">
+    {% if question %}
+      <div class="chat-message chat-question"><strong>{% trans "Q" %}:</strong> {{ question }}</div>
+      {% if result %}
+        <div class="chat-message chat-answer">
+          {{ result.answer|linebreaksbr }}
+          {% if result.sources %}
+            <div class="mt-3">
+              <strong class="text-muted small">{% trans "Sources" %}:</strong>
               {% for src in result.sources %}
-              <li class="list-group-item small py-1">
-                {{ src.file }}{% if src.page %} · p.{{ src.page }}{% endif %}
-              </li>
+                <span class="source-chip">📎 {{ src.file }}{% if src.page %} · p.{{ src.page }}{% endif %}</span>
               {% endfor %}
-            </ul>
-            {% endif %}
-            {% if result.tool_rounds %}
-            <p class="text-muted small mt-2">Function-calling rounds: {{ result.tool_rounds }}</p>
-            {% endif %}
+            </div>
           {% endif %}
         </div>
-      </div>
+        {% if result.tool_rounds %}
+          <p class="text-muted small">{% trans "Function-calling rounds" %}: {{ result.tool_rounds }}</p>
+        {% endif %}
+      {% endif %}
     {% endif %}
   </div>
 </div>

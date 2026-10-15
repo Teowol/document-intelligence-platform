@@ -1,0 +1,200 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: DIP\n"
+"Language: tr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid "?"
+msgstr "?"
+
+msgid "Admin area"
+msgstr "Yönetici alanı"
+
+msgid "All"
+msgstr "Tümü"
+
+msgid ""
+"Allowed: PDF, Excel (xlsx), CSV, TXT, Markdown — max 25 MB. File type is "
+"verified by content, not by extension."
+msgstr ""
+"İzin verilenler: PDF, Excel (xlsx), CSV, TXT, Markdown — en fazla 25 MB. "
+"Dosya türü uzantıya değil, içeriğe göre doğrulanır."
+
+msgid "Already have an account?"
+msgstr "Zaten bir hesabın var mı?"
+
+msgid "Are you sure you want to log out?"
+msgstr "Çıkış yapmak istediğine emin misin?"
+
+msgid "Ask Your Documents"
+msgstr "Belgelerine Sor"
+
+msgid "Ask"
+msgstr "Sor"
+
+msgid "Cancel"
+msgstr "İptal"
+
+msgid "Chunks"
+msgstr "Parçalar"
+
+msgid "Create account"
+msgstr "Hesap oluştur"
+
+msgid "DIP"
+msgstr "DIP"
+
+msgid "Dashboard"
+msgstr "Kontrol Paneli"
+
+msgid "Delete document"
+msgstr "Dokümanı sil"
+
+msgid "Delete this document?"
+msgstr "Bu doküman silinsin mi?"
+
+msgid "Delete"
+msgstr "Sil"
+
+msgid "Document Intelligence Platform"
+msgstr "Yapay Zeka Belge İstihbarat Platformu"
+
+msgid "Document Intelligence"
+msgstr "Belge İstihbaratı"
+
+msgid "Documents"
+msgstr "Dokümanlar"
+
+msgid "Email"
+msgstr "E-posta"
+
+msgid "Enter a query to search your documents semantically."
+msgstr "Belgelerinde anlamsal arama yapmak için bir sorgu gir."
+
+msgid "Error"
+msgstr "Hata"
+
+msgid "File"
+msgstr "Dosya"
+
+msgid "Function-calling rounds"
+msgstr "Fonksiyon çağırma turları"
+
+msgid "Go home"
+msgstr "Ana sayfaya dön"
+
+msgid "If you can read this, your role passed the"
+msgstr "Bunu okuyabiliyorsan, rolün"
+
+msgid "Joined"
+msgstr "Katılım"
+
+msgid "Key topics?"
+msgstr "Kilit konular neler?"
+
+msgid "Log in"
+msgstr "Giriş yap"
+
+msgid "Log out"
+msgstr "Çıkış yap"
+
+msgid "No account yet?"
+msgstr "Henüz hesabın yok mu?"
+
+msgid "No documents found."
+msgstr "Doküman bulunamadı."
+
+msgid "No documents yet. Upload your first file to get started."
+msgstr "Henüz doküman yok. Başlamak için ilk dosyanı yükle."
+
+msgid "No semantic matches (make sure a document is embedded first)."
+msgstr ""
+"Anlamsal eşleşme yok (önce bir dokümanın embedding edildiğinden emin ol)."
+
+msgid "Overview"
+msgstr "Genel Bakış"
+
+msgid "Owner"
+msgstr "Sahip"
+
+msgid "Page not found."
+msgstr "Sayfa bulunamadı."
+
+msgid "Processing status"
+msgstr "İşleme durumu"
+
+msgid "Processing"
+msgstr "İşleniyor"
+
+msgid "Profile"
+msgstr "Profil"
+
+msgid "Q"
+msgstr "S"
+
+msgid "Q3 revenue?"
+msgstr "Q3 gelir ne kadar?"
+
+msgid "Re-process"
+msgstr "Yeniden işle"
+
+msgid "Ready rate"
+msgstr "Hazır oranı"
+
+msgid "Ready"
+msgstr "Hazır"
+
+msgid "Recent documents"
+msgstr "Son dokümanlar"
+
+msgid "Role"
+msgstr "Rol"
+
+msgid "Search"
+msgstr "Ara"
+
+msgid "Semantic Search"
+msgstr "Anlamsal Arama"
+
+msgid "Sign up"
+msgstr "Kayıt ol"
+
+msgid "Size"
+msgstr "Boyut"
+
+msgid "Something went wrong on our side. Please try again shortly."
+msgstr "Tarafımızda bir sorun oluştu. Lütfen kısa süre sonra tekrar dene."
+
+msgid "Sources"
+msgstr "Kaynaklar"
+
+msgid "Storage"
+msgstr "Depolama"
+
+msgid "This removes the file and cannot be undone."
+msgstr "Bu, dosyayı kaldırır ve geri alınamaz."
+
+msgid "Upload document"
+msgstr "Doküman yükle"
+
+msgid "Upload"
+msgstr "Yükle"
+
+msgid "Uploaded"
+msgstr "Yüklendi"
+
+msgid "Username"
+msgstr "Kullanıcı adı"
+
+msgid "View all"
+msgstr "Tümünü gör"
+
+msgid "Yes, delete"
+msgstr "Evet, sil"
+
+msgid "You do not have permission to view this page."
+msgstr "Bu sayfayı görüntüleme yetkin yok."

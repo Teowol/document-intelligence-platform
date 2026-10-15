@@ -14,3 +14,4 @@ pre-commit==4.3.0
 # Development tools
 django-extensions==4.1
 django-debug-toolbar==6.0.0
+polib==1.2.0

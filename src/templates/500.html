@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% block title %}500 · DIP{% endblock %}
+{% block content %}
+<div class="empty-state">
+  <div class="big-ico">⚠️</div>
+  <h1 class="h3">500</h1>
+  <p>{% trans "Something went wrong on our side. Please try again shortly." %}</p>
+  <a href="{% url 'home' %}" class="btn" style="background: var(--accent); color: var(--accent-ink);">{% trans "Go home" %}</a>
+</div>
+{% endblock %}

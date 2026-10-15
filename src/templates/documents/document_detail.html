@@ -1,52 +1,62 @@
 {% extends "base.html" %}
-{% block title %}{{ document.title }}{% endblock %}
+{% load i18n %}
+{% block title %}{{ document.title }} · DIP{% endblock %}
+{% block page_header %}<h1 class="h4 mb-0">{{ document.title }}</h1>{% endblock %}
+
 {% block content %}
 {% if document.status == 'uploaded' or document.status == 'processing' %}
 <meta http-equiv="refresh" content="3">
 {% endif %}
-<div class="row justify-content-center">
-  <div class="col-md-8">
-    <div class="card shadow-sm">
-      <div class="card-body">
-        <h1 class="h3">{{ document.title }}</h1>
-        <span class="badge {% if document.status == 'ready' %}bg-success{% elif document.status == 'error' %}bg-danger{% elif document.status == 'processing' %}bg-warning text-dark{% else %}bg-info text-dark{% endif %}">
-          {{ document.get_status_display }}
-          {% if document.status == 'uploaded' or document.status == 'processing' %}
-          <span class="spinner-border spinner-border-sm ms-1" role="status"></span>
-          {% endif %}
-        </span>
-        <span class="badge bg-light text-dark">{{ document.get_doc_type_display }}</span>
-        {% if document.is_public %}<span class="badge bg-secondary">public</span>{% endif %}
-        <hr>
-        <p class="mb-1"><strong>File:</strong> {{ document.original_filename }}</p>
-        <p class="mb-1"><strong>Size:</strong> {{ document.size_bytes|filesizeformat }}</p>
-        <p class="mb-1"><strong>Owner:</strong> {{ document.owner.email }}</p>
-        <p class="mb-1"><strong>Uploaded:</strong> {{ document.created_at|date:"Y-m-d H:i" }}</p>
-        {% if document.error_message %}<p class="text-danger">{{ document.error_message }}</p>{% endif %}
-        {% if document.owner_id == user.pk or user.is_superuser %}
-        <a href="{% url 'documents:delete' document.pk %}" class="btn btn-outline-danger mt-2">Delete</a>
-        {% endif %}
 
-        {% if document.status == 'ready' %}
-        <hr>
-        <p class="mb-1"><strong>Chunks:</strong> {{ chunk_count }}</p>
-        {% if chunks %}
-        <ul class="list-group">
-          {% for chunk in chunks %}
-          <li class="list-group-item">
-            <small class="text-muted">
-              {{ document.original_filename }}
-              {% if chunk.page_number %} · p.{{ chunk.page_number }}{% endif %}
-              {% if chunk.metadata.section_heading %} · {{ chunk.metadata.section_heading }}{% endif %}
-            </small>
-            <p class="mb-0">{{ chunk.text|truncatechars:200 }}</p>
-          </li>
-          {% endfor %}
-        </ul>
-        {% endif %}
-        {% endif %}
-      </div>
+<div class="card mb-4">
+  <div class="card-body">
+    <div class="d-flex align-items-center gap-2 flex-wrap">
+      <span class="control-icon-btn py-1"><span class="status-dot {{ document.status }}"></span>{{ document.get_status_display }}
+        {% if document.status == 'uploaded' or document.status == 'processing' %}<span class="spinner-border spinner-border-sm ms-1"></span>{% endif %}
+      </span>
+      <span class="badge bg-secondary">{{ document.get_doc_type_display }}</span>
+      {% if document.is_public %}<span class="badge" style="background: var(--info);">{% trans "public" %}</span>{% endif %}
     </div>
+    <hr>
+    <p class="mb-1"><strong>{% trans "File" %}:</strong> {{ document.original_filename }}</p>
+    <p class="mb-1"><strong>{% trans "Size" %}:</strong> {{ document.size_bytes|filesizeformat }}</p>
+    <p class="mb-1"><strong>{% trans "Owner" %}:</strong> {{ document.owner.email }}</p>
+    <p class="mb-1"><strong>{% trans "Uploaded" %}:</strong> {{ document.created_at|date:"Y-m-d H:i" }}</p>
+    {% if document.error_message %}<p style="color: var(--danger);">{{ document.error_message }}</p>{% endif %}
+
+    {% if document.owner_id == user.pk or user.is_superuser %}
+    <div class="d-flex gap-2 mt-3">
+      {% if document.status == 'error' %}
+      <form method="post" action="{% url 'documents:reprocess' document.pk %}">
+        {% csrf_token %}
+        <button class="btn btn-sm py-1" style="color: var(--warning); border-color: var(--warning);">🔄 {% trans "Re-process" %}</button>
+      </form>
+      {% endif %}
+      <a href="{% url 'documents:delete' document.pk %}" class="btn btn-sm py-1" style="color: var(--danger); border-color: var(--danger);">🗑️ {% trans "Delete" %}</a>
+    </div>
+    {% endif %}
   </div>
 </div>
+
+{% if document.status == 'ready' %}
+<div class="card">
+  <div class="card-body">
+    <h2 class="h5 mb-3">{% trans "Chunks" %} ({{ chunk_count }})</h2>
+    {% if chunks %}
+    <ul class="list-group list-group-flush">
+      {% for chunk in chunks %}
+      <li class="list-group-item" style="background: var(--surface);">
+        <small class="text-muted">
+          {{ document.original_filename }}
+          {% if chunk.page_number %} · p.{{ chunk.page_number }}{% endif %}
+          {% if chunk.metadata.section_heading %} · {{ chunk.metadata.section_heading }}{% endif %}
+        </small>
+        <p class="mb-0">{{ chunk.text|truncatechars:200 }}</p>
+      </li>
+      {% endfor %}
+    </ul>
+    {% endif %}
+  </div>
+</div>
+{% endif %}
 {% endblock %}

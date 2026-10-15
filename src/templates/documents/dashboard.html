@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% block title %}{% trans "Dashboard" %} · DIP{% endblock %}
+{% block page_header %}<h1 class="h4 mb-0">{% trans "Overview" %}</h1>{% endblock %}
+
+{% block content %}
+<div class="kpi-grid">
+  <div class="kpi-card">
+    <div class="kpi-label">{% trans "Documents" %}</div>
+    <div class="kpi-value">{{ total_docs }}</div>
+    <div class="text-muted">📄 {% trans "total" %}</div>
+  </div>
+  <div class="kpi-card">
+    <div class="kpi-label">{% trans "Chunks" %}</div>
+    <div class="kpi-value">{{ visible_chunks }}</div>
+    <div class="text-muted">🔗 {% trans "searchable" %}</div>
+  </div>
+  <div class="kpi-card">
+    <div class="kpi-label">{% trans "Storage" %}</div>
+    <div class="kpi-value">{{ total_size|filesizeformat }}</div>
+    <div class="text-muted">💾 {% trans "total size" %}</div>
+  </div>
+  <div class="kpi-card">
+    <div class="kpi-label">{% trans "Ready rate" %}</div>
+    <div class="kpi-value">{{ ready_rate }}%</div>
+    <div class="text-muted">✅ {% trans "processed" %}</div>
+  </div>
+</div>
+
+<!-- status breakdown -->
+<div class="card p-3 mb-4">
+  <h2 class="h5 mb-3">{% trans "Processing status" %}</h2>
+  <div class="d-flex flex-wrap gap-3">
+    <span class="control-icon-btn"><span class="status-dot ready"></span>{% trans "Ready" %}: <strong>{{ processed }}</strong></span>
+    <span class="control-icon-btn"><span class="status-dot processing"></span>{% trans "Processing" %}: <strong>{{ processing }}</strong></span>
+    <span class="control-icon-btn"><span class="status-dot uploaded"></span>{% trans "Uploaded" %}: <strong>{{ uploaded }}</strong></span>
+    <span class="control-icon-btn"><span class="status-dot error"></span>{% trans "Error" %}: <strong>{{ errored }}</strong></span>
+  </div>
+</div>
+
+<!-- recent documents -->
+<div class="d-flex justify-content-between align-items-center mb-2">
+  <h2 class="h5 mb-0">{% trans "Recent documents" %}</h2>
+  <a href="{% url 'documents:list' %}" class="control-icon-btn">{% trans "View all" %} →</a>
+</div>
+
+<div class="recent-grid mb-4">
+  {% for doc in recent_documents %}
+  <div class="doc-card">
+    <a class="doc-title" href="{% url 'documents:detail' doc.pk %}">{{ doc.title }}</a>
+    <div class="d-flex flex-wrap gap-1 mt-2">
+      <span class="badge bg-secondary">{{ doc.get_doc_type_display }}</span>
+      <span class="control-icon-btn py-0 px-2"><span class="status-dot {{ doc.status }}"></span>{{ doc.get_status_display }}</span>
+      {% if doc.is_public %}<span class="badge" style="background: var(--info);">{% trans "public" %}</span>{% endif %}
+    </div>
+    <small class="text-muted mt-2">{{ doc.size_bytes|filesizeformat }} · {{ doc.created_at|date:"Y-m-d H:i" }}</small>
+  </div>
+  {% empty %}
+  <div class="empty-state" style="grid-column: 1 / -1;">
+    <div class="big-ico">📂</div>
+    <p>{% trans "No documents yet. Upload your first file to get started." %}</p>
+    <a href="{% url 'documents:upload' %}" class="btn btn-primary" style="background: var(--accent); border-color: var(--accent);">⬆️ {% trans "Upload" %}</a>
+  </div>
+  {% endfor %}
+</div>
+{% endblock %}

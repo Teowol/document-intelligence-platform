@@ -73,7 +73,7 @@ cd src
 python manage.py migrate
 
 # Start development server
-python manage.py runserver
+python manage.py runserver --insecure
 ```
 
 ### Background processing (Celery)
@@ -115,4 +115,4 @@ Teoman Ünal
 
 ---
 
-**Note:** This project is under active development. Phases 0–7 are complete (scaffolding; Docker infra with PostgreSQL/pgvector + Redis; email auth with RBAC; secure upload with magic-byte validation; Celery async processing pipeline; PDF/Excel/CSV/TXT/Markdown parsing with normalization and overlapping chunking; OpenAI batch embeddings + pgvector HNSW semantic search with permission-scoping; grounded QA with LLM function calling and citations). Next up: Phase 8 — Frontend polish & dashboard.
+**Note:** This project is under active development. Phases 0–8 are complete: scaffolding; Docker infra (PostgreSQL/pgvector + Redis); email auth with RBAC; secure upload with magic-byte validation; Celery async pipeline; PDF/Excel/CSV/TXT/Markdown parsing + chunking; OpenAI embeddings + pgvector HNSW semantic search (permission-scoped); grounded QA with LLM function calling & citations; and a full polished frontend — parchment (light) / plum-indigo (dark) themes, TR/EN language switch, dashboard, document grid, and custom 403/404/500 pages. Next up: Phase 9 — Testing, Security & Performance.

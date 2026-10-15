@@ -1,38 +1,64 @@
 {% extends "base.html" %}
-{% block title %}Documents{% endblock %}
+{% load i18n %}
+{% block title %}{% trans "Documents" %} · DIP{% endblock %}
+{% block page_header %}<h1 class="h4 mb-0">{% trans "Documents" %}</h1>{% endblock %}
+
 {% block content %}
 <div class="d-flex justify-content-between align-items-center mb-3">
-  <h1 class="h3 mb-0">Documents</h1>
-  <a href="{% url 'documents:upload' %}" class="btn btn-primary">Upload</a>
+  <div>
+    <a href="{% url 'documents:list' %}" class="control-icon-btn {% if not filter_status %}active-filter{% endif %}">{% trans "All" %}</a>
+    <a href="?status=ready" class="control-icon-btn {% if filter_status == 'ready' %}active-filter{% endif %}">✅ {% trans "Ready" %}</a>
+    <a href="?status=processing" class="control-icon-btn {% if filter_status == 'processing' %}active-filter{% endif %}">🔄 {% trans "Processing" %}</a>
+    <a href="?status=error" class="control-icon-btn {% if filter_status == 'error' %}active-filter{% endif %}">⚠️ {% trans "Error" %}</a>
+  </div>
+  <a href="{% url 'documents:upload' %}" class="btn" style="background: var(--accent); color: var(--accent-ink);">⬆️ {% trans "Upload" %}</a>
 </div>
 
-<table class="table table-hover bg-white shadow-sm">
-  <thead>
-    <tr><th>Title</th><th>Type</th><th>Status</th><th>Size</th><th>Owner</th><th></th></tr>
-  </thead>
-  <tbody>
-    {% for doc in object_list %}
-    <tr>
-      <td><a href="{% url 'documents:detail' doc.pk %}">{{ doc.title }}</a>
-        {% if doc.is_public %}<span class="badge bg-secondary">public</span>{% endif %}
-      </td>
-      <td>{{ doc.get_doc_type_display }}</td>
-      <td>{{ doc.get_status_display }}</td>
-      <td>{{ doc.size_bytes|filesizeformat }}</td>
-      <td>{{ doc.owner.email }}</td>
-      <td>
-        {% if doc.owner_id == user.pk or user.is_superuser %}
-        <form method="post" action="{% url 'documents:delete' doc.pk %}" class="d-inline"
-              onsubmit="return confirm('Delete this document?');">
-          {% csrf_token %}
-          <button class="btn btn-sm btn-outline-danger">Delete</button>
-        </form>
-        {% endif %}
-      </td>
-    </tr>
-    {% empty %}
-    <tr><td colspan="6" class="text-center text-muted py-4">No documents yet.</td></tr>
-    {% endfor %}
-  </tbody>
-</table>
+<div class="recent-grid">
+  {% for doc in object_list %}
+  <div class="doc-card">
+    <a class="doc-title" href="{% url 'documents:detail' doc.pk %}">{{ doc.title }}</a>
+    <div class="d-flex flex-wrap gap-1 mt-2">
+      <span class="badge bg-secondary">{{ doc.get_doc_type_display }}</span>
+      <span class="control-icon-btn py-0 px-2"><span class="status-dot {{ doc.status }}"></span>{{ doc.get_status_display }}</span>
+      {% if doc.is_public %}<span class="badge" style="background: var(--info);">{% trans "public" %}</span>{% endif %}
+    </div>
+    <small class="text-muted mt-2">{{ doc.size_bytes|filesizeformat }} · {{ doc.owner.email }}</small>
+    <small class="text-muted">{{ doc.created_at|date:"Y-m-d H:i" }}</small>
+    {% if doc.owner_id == user.pk or user.is_superuser %}
+    <form method="post" action="{% url 'documents:delete' doc.pk %}" class="mt-2 d-inline"
+          onsubmit="return confirm('{% trans "Delete this document?" %}');">
+      {% csrf_token %}
+      <button class="btn btn-sm py-0" style="color: var(--danger); border-color: var(--danger);">🗑️ {% trans "Delete" %}</button>
+    </form>
+    {% endif %}
+    {% if doc.status == 'error' %}
+    <form method="post" action="{% url 'documents:reprocess' doc.pk %}" class="mt-2 d-inline">
+      {% csrf_token %}
+      <button class="btn btn-sm py-0" style="color: var(--warning); border-color: var(--warning);">🔄 {% trans "Re-process" %}</button>
+    </form>
+    {% endif %}
+  </div>
+  {% empty %}
+  <div class="empty-state" style="grid-column: 1 / -1;">
+    <div class="big-ico">📂</div>
+    <p>{% trans "No documents found." %}</p>
+    <a href="{% url 'documents:upload' %}" class="btn" style="background: var(--accent); color: var(--accent-ink);">⬆️ {% trans "Upload" %}</a>
+  </div>
+  {% endfor %}
+</div>
+
+{% if is_paginated %}
+<nav class="mt-4">
+  <ul class="pagination">
+    {% if page_obj.has_previous %}
+      <li class="page-item"><a class="page-link" style="background: var(--surface); color: var(--text); border-color: var(--border);" href="?page={{ page_obj.previous_page_number }}&status={{ filter_status }}">‹</a></li>
+    {% endif %}
+    <li class="page-item disabled"><span class="page-link" style="background: var(--surface); color: var(--text-muted); border-color: var(--border);">{{ page_obj.number }}/{{ page_obj.paginator.num_pages }}</span></li>
+    {% if page_obj.has_next %}
+      <li class="page-item"><a class="page-link" style="background: var(--surface); color: var(--text); border-color: var(--border);" href="?page={{ page_obj.next_page_number }}&status={{ filter_status }}">›</a></li>
+    {% endif %}
+  </ul>
+</nav>
+{% endif %}
 {% endblock %}

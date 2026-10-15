@@ -1,16 +1,19 @@
 {% extends "base.html" %}
-{% block title %}Delete document{% endblock %}
+{% load i18n %}
+{% block title %}{% trans "Delete document" %} · DIP{% endblock %}
+{% block page_header %}<h1 class="h4 mb-0">🗑️ {% trans "Delete document" %}</h1>{% endblock %}
+
 {% block content %}
 <div class="row justify-content-center">
   <div class="col-md-5">
-    <div class="card shadow-sm">
+    <div class="card">
       <div class="card-body text-center">
-        <h1 class="h4">Delete "{{ document.title }}"?</h1>
-        <p class="text-muted">This removes the file and cannot be undone.</p>
+        <h1 class="h4">{% trans "Delete" %} "{{ document.title }}"{% trans "?" %}</h1>
+        <p class="text-muted">{% trans "This removes the file and cannot be undone." %}</p>
         <form method="post">
           {% csrf_token %}
-          <button type="submit" class="btn btn-danger">Yes, delete</button>
-          <a href="{% url 'documents:detail' document.pk %}" class="btn btn-link">Cancel</a>
+          <button type="submit" class="btn" style="background: var(--danger); color: #fff;">{% trans "Yes, delete" %}</button>
+          <a href="{% url 'documents:detail' document.pk %}" class="btn btn-link" style="color: var(--text-muted);">{% trans "Cancel" %}</a>
         </form>
       </div>
     </div>

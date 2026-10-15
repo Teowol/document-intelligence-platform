@@ -1,40 +1,42 @@
 {% extends "base.html" %}
-{% block title %}Semantic Search{% endblock %}
+{% load i18n %}
+{% block title %}{% trans "Semantic Search" %} · DIP{% endblock %}
+{% block page_header %}<h1 class="h4 mb-0">{% trans "Semantic Search" %}</h1>{% endblock %}
+
 {% block content %}
 <div class="row justify-content-center">
-  <div class="col-md-8">
-    <h1 class="h3 mb-3">Semantic Search</h1>
+  <div class="col-md-9">
     <form method="get" action="{% url 'documents:search' %}" class="d-flex gap-2 mb-4">
       <input type="text" name="q" value="{{ query }}" class="form-control"
-             placeholder="Search documents by meaning (e.g. 'budget projections')">
-      <button type="submit" class="btn btn-primary">Search</button>
+             placeholder="{% trans 'Search documents by meaning (e.g. budget projections)' %}">
+      <button type="submit" class="btn" style="background: var(--accent); color: var(--accent-ink);">🔍 {% trans "Search" %}</button>
     </form>
 
     {% if query %}
-      <h5 class="mb-3">{{ results|length }} result(s) for &ldquo;{{ query }}&rdquo;</h5>
+      <h5 class="mb-3">{{ results|length }} {% trans "result(s)" %} {% trans "for" %} &ldquo;{{ query }}&rdquo;</h5>
       {% if results %}
-        <ul class="list-group">
+        <div class="d-flex flex-column gap-3">
           {% for chunk in results %}
-          <li class="list-group-item">
-            <div class="d-flex justify-content-between">
-              <div>
-                <a href="{% url 'documents:detail' chunk.document.pk %}" class="fw-bold">
+          <div class="card">
+            <div class="card-body py-2">
+              <div class="d-flex align-items-center gap-2 flex-wrap">
+                <a href="{% url 'documents:detail' chunk.document.pk %}" class="fw-bold" style="color: var(--accent-contrast);">
                   {{ chunk.document.original_filename }}
                 </a>
-                <span class="badge bg-light text-dark">{{ chunk.document.get_doc_type_display }}</span>
-                {% if chunk.page_number %}<span class="badge bg-secondary">p.{{ chunk.page_number }}</span>{% endif %}
-                {% if chunk.document.is_public %}<span class="badge bg-info text-dark">public</span>{% endif %}
+                <span class="badge bg-secondary">{{ chunk.document.get_doc_type_display }}</span>
+                {% if chunk.page_number %}<span class="control-icon-btn py-0 px-2">p.{{ chunk.page_number }}</span>{% endif %}
+                {% if chunk.document.is_public %}<span class="badge" style="background: var(--info);">{% trans "public" %}</span>{% endif %}
               </div>
+              <p class="mt-2 mb-0">{{ chunk.text|truncatechars:300 }}</p>
             </div>
-            <p class="mt-2 mb-0">{{ chunk.text|truncatechars:300 }}</p>
-          </li>
+          </div>
           {% endfor %}
-        </ul>
+        </div>
       {% else %}
-        <p class="text-muted">No semantic matches (make sure a document is embedded first).</p>
+        <p class="text-muted">{% trans "No semantic matches (make sure a document is embedded first)." %}</p>
       {% endif %}
     {% else %}
-      <p class="text-muted">Enter a query to search your documents semantically.</p>
+      <p class="text-muted">{% trans "Enter a query to search your documents semantically." %}</p>
     {% endif %}
   </div>
 </div>

@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% block title %}403 · DIP{% endblock %}
+{% block content %}
+<div class="empty-state">
+  <div class="big-ico">🚫</div>
+  <h1 class="h3">403</h1>
+  <p>{% trans "You do not have permission to view this page." %}</p>
+  <a href="{% url 'home' %}" class="btn" style="background: var(--accent); color: var(--accent-ink);">{% trans "Go home" %}</a>
+</div>
+{% endblock %}
