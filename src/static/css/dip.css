@@ -48,6 +48,10 @@ body {
   transition: background-color 0.25s ease, color 0.25s ease;
 }
 
+html {
+  background-color: var(--bg);
+}
+
 /* ---------- sidebar layout ---------- */
 .app-wrapper { display: flex; min-height: 100vh; }
 
@@ -152,6 +156,120 @@ a { color: var(--accent-contrast); }
 hr { border-color: var(--border); }
 .text-muted { color: var(--text-muted) !important; }
 .alert { border-radius: 10px; }
+
+/* ---------- dark theme: override hardcoded Bootstrap colors ----------
+   Bootstrap ships fixed black/white text and surfaces. In the dark theme we
+   remap those so nothing stays unreadable. */
+[data-theme="dark"] body,
+[data-theme="dark"] .app-wrapper {
+  background-color: var(--bg);
+  color: var(--text);
+}
+
+/* Remap Bootstrap's hardcoded dark-gray/black text utilities to theme text. */
+[data-theme="dark"] .text-dark,
+[data-theme="dark"] .text-black,
+[data-theme="dark"] .text-body,
+[data-theme="dark"] .text-secondary,
+[data-theme="dark"] .text-body-secondary,
+[data-theme="dark"] .text-body-emphasis {
+  color: var(--text) !important;
+}
+[data-theme="dark"] .text-white,
+[data-theme="dark"] .text-light {
+  color: var(--text) !important;
+}
+
+/* Tables: force theme text on all rows, strip Bootstrap light/dark variants. */
+[data-theme="dark"] .table {
+  --bs-table-bg: transparent;
+  --bs-table-color: var(--text);
+  color: var(--text) !important;
+}
+[data-theme="dark"] .table > :not(caption) > * > * {
+  color: var(--text) !important;
+}
+[data-theme="dark"] .table-dark,
+[data-theme="dark"] .table-light {
+  --bs-table-bg: var(--surface-2) !important;
+  --bs-table-color: var(--text) !important;
+}
+
+/* Dropdowns, modals & tooltips: dark surface so white boxes don't glare. */
+[data-theme="dark"] .dropdown-menu,
+[data-theme="dark"] .modal-content,
+[data-theme="dark"] .popover,
+[data-theme="dark"] .toast {
+  background-color: var(--surface) !important;
+  color: var(--text) !important;
+  border-color: var(--border) !important;
+}
+[data-theme="dark"] .dropdown-item,
+[data-theme="dark"] .modal-body,
+[data-theme="dark"] .modal-header,
+[data-theme="dark"] .modal-footer,
+[data-theme="dark"] .popover-body,
+[data-theme="dark"] .list-group-item {
+  color: var(--text) !important;
+  background-color: transparent !important;
+}
+[data-theme="dark"] .dropdown-item:hover,
+[data-theme="dark"] .dropdown-item:focus {
+  background-color: var(--surface-2) !important;
+}
+[data-theme="dark"] .modal-header,
+[data-theme="dark"] .modal-footer {
+  border-color: var(--border) !important;
+}
+[data-theme="dark"] .modal-backdrop.show {
+  opacity: 0.5;
+}
+
+/* Buttons (outline / secondary) keep contrast from black text. */
+[data-theme="dark"] .btn-primary,
+[data-theme="dark"] .btn-secondary,
+[data-theme="dark"] .btn-success,
+[data-theme="dark"] .btn-danger,
+[data-theme="dark"] .btn-warning,
+[data-theme="dark"] .btn-info,
+[data-theme="dark"] .btn-dark {
+  color: #fff !important;
+}
+[data-theme="dark"] .btn-outline-secondary {
+  color: var(--text) !important;
+  border-color: var(--border) !important;
+}
+[data-theme="dark"] .btn-outline-dark {
+  color: var(--text) !important;
+  border-color: var(--border) !important;
+}
+[data-theme="dark"] .btn-outline-dark:hover {
+  background-color: var(--surface-2) !important;
+}
+
+/* Form helpers, progress, links inside muted areas. */
+[data-theme="dark"] .form-text,
+[data-theme="dark"] .placeholder,
+[data-theme="dark"] .modal-title {
+  color: var(--text-muted) !important;
+}
+[data-theme="dark"] .card-header,
+[data-theme="dark"] .card-footer {
+  background-color: var(--surface-2) !important;
+  color: var(--text) !important;
+  border-color: var(--border) !important;
+}
+
+/* Badges use Bootstrap named colors; keep their pill but recolor *text* so the
+   white-on-brand chips stay readable and secondary chips don't show black. */
+[data-theme="dark"] .badge.bg-secondary,
+[data-theme="dark"] .badge.bg-light {
+  color: var(--text) !important;
+  background-color: var(--surface-2) !important;
+}
+[data-theme="dark"] .badge.bg-dark {
+  color: var(--accent-ink) !important;
+}
 
 @media (max-width: 768px) {
   .app-wrapper { flex-direction: column; }
