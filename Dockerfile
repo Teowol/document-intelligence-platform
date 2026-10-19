@@ -34,6 +34,11 @@ RUN pip install --no-cache-dir /wheels/*
 
 COPY . .
 
+# Pre-create volume mount points and make runtime dirs writable for the
+# unprivileged appuser (fresh named volumes inherit the owner via copy-up).
+RUN mkdir -p /app/src/staticfiles /app/src/media && \
+    chown -R appuser:appuser /app/src
+
 USER appuser
 
 CMD ["gunicorn", "config.wsgi:application", "--bind", "0.0.0.0:8000"]

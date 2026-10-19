@@ -55,6 +55,7 @@ services:
       dockerfile: Dockerfile
     container_name: dip-prod-web
     restart: unless-stopped
+    working_dir: /app/src
     command: >
       sh -c "python manage.py migrate --noinput &&
              python manage.py collectstatic --noinput &&
@@ -77,6 +78,7 @@ services:
       dockerfile: Dockerfile
     container_name: dip-prod-worker
     restart: unless-stopped
+    working_dir: /app/src
     command: celery -A config worker --loglevel=info
     environment: *django-env
     depends_on:
@@ -93,6 +95,7 @@ services:
       dockerfile: Dockerfile
     container_name: dip-prod-beat
     restart: unless-stopped
+    working_dir: /app/src
     command: celery -A config beat --loglevel=info
     environment: *django-env
     depends_on:
@@ -105,10 +108,9 @@ services:
     image: mher/flower:2.0.1
     container_name: dip-prod-flower
     restart: unless-stopped
-    command:
-      - --broker=redis://redis:6379/0
-      - --url-prefix=flower
+    command: python -m celery flower --url_prefix=flower
     environment:
+      CELERY_BROKER_URL: redis://redis:6379/0
       FLOWER_BASIC_AUTH: ${FLOWER_USER:-admin}:${FLOWER_PASSWORD:-change-me}
     ports:
       - "5555:5555"
