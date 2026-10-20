@@ -322,6 +322,273 @@ msgstr "Belge anlamsal aramaya hazırlanıyor"
 msgid "Your document is ready"
 msgstr "Belgeniz hazır"
 
+msgid "DIP home"
+msgstr "DIP ana sayfa"
+
+msgid "Main navigation"
+msgstr "Ana gezinme"
+
+msgid "Features"
+msgstr "Özellikler"
+
+msgid "How it works"
+msgstr "Nasıl çalışır?"
+
+msgid "FAQ"
+msgstr "Sık sorulanlar"
+
+msgid "From documents to understanding"
+msgstr "Belgelerden bilgiye"
+
+msgid "Search your documents by meaning, get answers with sources, and bring your research together in one workspace."
+msgstr "Belgelerinizde anlama göre arayın, kaynaklı yanıtlar alın ve araştırmanızı tek bir çalışma alanında birleştirin."
+
+msgid "A clearer way to work with knowledge"
+msgstr "Bilgiyle çalışmanın daha anlaşılır yolu"
+
+msgid "Your documents."
+msgstr "Belgeleriniz."
+
+msgid "Clear answers."
+msgstr "Net yanıtlar."
+
+msgid "Turn scattered files into a connected research workspace. Find what matters, ask better questions, and follow every answer back to its source."
+msgstr "Dağınık dosyalarınızı bir araya getirin. Önemli bilgileri bulun, belgelerinize sorular sorun ve her yanıtın kaynağına ulaşın."
+
+msgid "Create your workspace"
+msgstr "Çalışma alanını oluştur"
+
+msgid "See how it works"
+msgstr "Nasıl çalıştığını keşfet"
+
+msgid "Bring your files"
+msgstr "Dosyalarınızı getirin"
+
+msgid "Interactive product illustration"
+msgstr "Etkileşimli ürün tanıtımı"
+
+msgid "Your research, connected"
+msgstr "Araştırmanız bir arada"
+
+msgid "Workspace"
+msgstr "Çalışma alanı"
+
+msgid "Your library"
+msgstr "Belge kitaplığınız"
+
+msgid "Project notes"
+msgstr "Proje notları"
+
+msgid "Ready to explore"
+msgstr "İncelemeye hazır"
+
+msgid "Research data"
+msgstr "Araştırma verileri"
+
+msgid "Explore the features"
+msgstr "Özellikleri keşfedin"
+
+msgid "What are the next steps for the project?"
+msgstr "Projenin sonraki adımları neler?"
+
+msgid "Here is what your document says"
+msgstr "Belgenizdeki bilgilere göre"
+
+msgid "Validate the prototype, collect feedback, and finalize the launch checklist."
+msgstr "Prototipi doğrulayın, geri bildirimleri toplayın ve yayına alma kontrol listesini tamamlayın."
+
+msgid "The essentials, at a glance"
+msgstr "Önemli noktalar, tek bakışta"
+
+msgid "A practical roadmap from research to launch."
+msgstr "Araştırmadan yayına uzanan uygulanabilir bir yol haritası."
+
+msgid "Validate the prototype"
+msgstr "Prototipi doğrulayın"
+
+msgid "Collect user feedback"
+msgstr "Kullanıcı geri bildirimlerini toplayın"
+
+msgid "Prepare the launch"
+msgstr "Yayına hazırlanın"
+
+msgid "launch plan"
+msgstr "yayına alma planı"
+
+msgid "Semantic search"
+msgstr "Anlamsal arama"
+
+msgid "From prototype to launch"
+msgstr "Prototipten yayına"
+
+msgid "The next phase focuses on user feedback and the final launch checklist."
+msgstr "Sonraki aşama, kullanıcı geri bildirimlerine ve yayına alma kontrol listesine odaklanır."
+
+msgid "Grounded in your sources"
+msgstr "Kaynaklarınıza dayalı"
+
+msgid "Illustrative example"
+msgstr "Tanıtım amaçlı örnek"
+
+msgid "Less searching through files. More moving ideas forward."
+msgstr "Dosyaları aramaya daha az, fikirleri geliştirmeye daha çok zaman."
+
+msgid "Platform highlights"
+msgstr "Platformun öne çıkanları"
+
+msgid "Five file formats. One workspace."
+msgstr "Beş dosya biçimi. Tek çalışma alanı."
+
+msgid "Answers you can trace."
+msgstr "Kaynağına ulaşabildiğiniz yanıtlar."
+
+msgid "Built for Turkish and English."
+msgstr "Türkçe ve İngilizce bir arada."
+
+msgid "Made for the way you think"
+msgstr "Düşünme biçiminize uyum sağlar"
+
+msgid "Make your documents"
+msgstr "Belgeleriniz"
+
+msgid "work together."
+msgstr "birlikte çalışsın."
+
+msgid "From the first upload to the final insight, keep your files, questions, and sources in the same place."
+msgstr "İlk yüklemeden sonuca kadar dosyalarınız, sorularınız ve kaynaklarınız aynı yerde kalsın."
+
+msgid "Find meaning, not just keywords"
+msgstr "Kelimelerin ötesinde, anlamı bulun"
+
+msgid "Search with your own words. Semantic search finds relevant passages even when the wording is different."
+msgstr "Kendi kelimelerinizle arayın. Anlamsal arama, farklı ifadeler kullanılsa bile ilgili metinleri bulur."
+
+msgid "Get answers with a paper trail"
+msgstr "Yanıtların kaynağına ulaşın"
+
+msgid "Ask questions about your documents and see the files and pages behind the answer."
+msgstr "Belgelerinize sorular sorun; yanıtın dayandığı dosyaları ve sayfaları görün."
+
+msgid "Source-based answers"
+msgstr "Kaynaklara dayalı yanıtlar"
+
+msgid "See the bigger picture, faster"
+msgstr "Büyük resmi daha hızlı görün"
+
+msgid "Create and save a summary in Turkish or English, then return to the original whenever you need more detail."
+msgstr "Türkçe veya İngilizce bir özet oluşturup saklayın. Ayrıntı gerektiğinde orijinal belgeye dönün."
+
+msgid "Bilingual summaries"
+msgstr "İki dilde özetler"
+
+msgid "Keep the original in view"
+msgstr "Orijinal belge hep elinizin altında"
+
+msgid "Read PDFs, preview text and spreadsheets, and download the original file from its document page."
+msgstr "PDF'leri okuyun, metin ve tabloları önizleyin; belge sayfasından orijinal dosyayı indirin."
+
+msgid "File previews"
+msgstr "Dosya önizlemeleri"
+
+msgid "Pick up where you left off"
+msgstr "Kaldığınız yerden devam edin"
+
+msgid "Revisit saved questions and answers. When a source document is deleted, its linked chats go with it."
+msgstr "Kaydedilen soru ve yanıtlara geri dönün. Kaynak belge silindiğinde ona bağlı sohbetler de kaldırılır."
+
+msgid "Document-linked history"
+msgstr "Belgelere bağlı sohbet geçmişi"
+
+msgid "Know what is happening"
+msgstr "Her adımda durumdan haberdar olun"
+
+msgid "Follow upload and processing progress. Document permissions control access to originals, previews, and answers."
+msgstr "Yükleme ve işleme sürecini takip edin. Belge izinleri, dosyalara, önizlemelere ve yanıtlara erişimi belirler."
+
+msgid "Progress and access control"
+msgstr "İlerleme ve erişim kontrolü"
+
+msgid "A simple path to insight"
+msgstr "Bilgiye ulaşmanın sade yolu"
+
+msgid "Upload. Explore."
+msgstr "Yükleyin. Keşfedin."
+
+msgid "Understand."
+msgstr "Anlamlandırın."
+
+msgid "Start with the files you already have. Build understanding one question at a time."
+msgstr "Elinizdeki dosyalarla başlayın. Her soruyla bilgilerinizi biraz daha derinleştirin."
+
+msgid "Bring your documents"
+msgstr "Belgelerinizi yükleyin"
+
+msgid "Upload a PDF, spreadsheet, CSV, text, or Markdown file and follow its processing progress."
+msgstr "PDF, Excel, CSV, metin veya Markdown dosyası yükleyin ve işlenme sürecini takip edin."
+
+msgid "Find your starting point"
+msgstr "Başlangıç noktanızı bulun"
+
+msgid "Preview the original, read a summary, or search for the ideas that matter to you."
+msgstr "Orijinal belgeyi önizleyin, özetini okuyun veya sizin için önemli fikirleri arayın."
+
+msgid "Ask and keep exploring"
+msgstr "Sorun ve keşfetmeye devam edin"
+
+msgid "Get answers grounded in your documents. Follow the sources and return to your saved questions."
+msgstr "Belgelerinize dayanan yanıtlar alın. Kaynakları inceleyin ve kaydettiğiniz sorulara geri dönün."
+
+msgid "Before you get started"
+msgstr "Başlamadan önce"
+
+msgid "A few good"
+msgstr "Aklınızdaki"
+
+msgid "questions."
+msgstr "sorular."
+
+msgid "Which files can I upload?"
+msgstr "Hangi dosyaları yükleyebilirim?"
+
+msgid "PDF, Excel (.xlsx), CSV, TXT, and Markdown files, up to 25 MB each. Scanned PDFs need a text layer for search and answers."
+msgstr "Her biri en fazla 25 MB olan PDF, Excel (.xlsx), CSV, TXT ve Markdown dosyalarını yükleyebilirsiniz. Taranmış PDF'lerde arama ve soru-cevap için metin katmanı gerekir."
+
+msgid "Where do the answers come from?"
+msgstr "Yanıtlar nereden geliyor?"
+
+msgid "The platform retrieves relevant text from documents you can access and uses it to answer your question. Source references help you check the answer against the original."
+msgstr "Platform, erişebildiğiniz belgelerdeki ilgili metinleri bulup sorunuzu yanıtlamak için kullanır. Kaynak referanslarıyla yanıtı orijinal belge üzerinden kontrol edebilirsiniz."
+
+msgid "What happens when I delete a document?"
+msgstr "Bir belgeyi sildiğimde ne olur?"
+
+msgid "Its original file, text chunks, and linked chat history are removed. Your other documents and their conversations remain available."
+msgstr "Belgenin orijinal dosyası, metin parçaları ve ona bağlı sohbet geçmişi kaldırılır. Diğer belgeleriniz ve bu belgelere ait sohbetleriniz kullanılabilir durumda kalır."
+
+msgid "Can I use it in Turkish?"
+msgstr "Türkçe kullanabilir miyim?"
+
+msgid "Yes. Switch between Turkish and English in the header, and generate document summaries in your selected language."
+msgstr "Evet. Üst menüden Türkçe ve İngilizce arasında geçiş yapabilir, belge özetlerini seçtiğiniz dilde oluşturabilirsiniz."
+
+msgid "Your next insight is already in your files"
+msgstr "Aradığınız bilgi zaten dosyalarınızda"
+
+msgid "Give your knowledge"
+msgstr "Bilgilerinize"
+
+msgid "a place to connect."
+msgstr "ortak bir alan açın."
+
+msgid "Get started"
+msgstr "Hemen başla"
+
+msgid "Less searching. More understanding."
+msgstr "Daha az arama. Daha çok keşif."
+
+msgid "Back to top"
+msgstr "Başa dön"
+
 msgid "Processing failed. You can retry from file information."
 msgstr "İşlem başarısız oldu. Dosya bilgileri bölümünden yeniden deneyebilirsiniz."
 

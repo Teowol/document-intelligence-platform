@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+{% load i18n static %}
+{% block title %}DIP · {% trans "From documents to understanding" %}{% endblock %}
+{% block extra_head %}
+<meta name="description" content="{% trans 'Search your documents by meaning, get answers with sources, and bring your research together in one workspace.' %}">
+<link href="{% static 'css/landing.css' %}" rel="stylesheet">
+{% endblock %}
+{% block content %}
+<main id="main-content">
+  <section class="landing-hero" aria-labelledby="hero-title">
+    <div class="hero-copy">
+      <p class="landing-eyebrow"><span aria-hidden="true"></span>{% trans "A clearer way to work with knowledge" %}</p>
+      <h1 id="hero-title">{% trans "Your documents." %}<br><em>{% trans "Clear answers." %}</em></h1>
+      <p class="hero-description">{% trans "Turn scattered files into a connected research workspace. Find what matters, ask better questions, and follow every answer back to its source." %}</p>
+      <div class="landing-actions">
+        <a class="landing-primary" href="{% url 'account_signup' %}">{% trans "Create your workspace" %}<span aria-hidden="true">↗</span></a>
+        <a class="landing-secondary" href="#how-it-works">{% trans "See how it works" %}<span aria-hidden="true">↓</span></a>
+      </div>
+      <div class="hero-formats"><span>{% trans "Bring your files" %}</span><span>PDF</span><span>Excel</span><span>CSV</span><span>TXT</span><span>Markdown</span></div>
+    </div>
+
+    <div class="hero-product">
+      <div class="product-preview" aria-label="{% trans 'Interactive product illustration' %}">
+        <div class="preview-toolbar"><span class="preview-dots" aria-hidden="true">● ● ●</span><span>{% trans "Your research, connected" %}</span><span class="preview-live"><span aria-hidden="true"></span>{% trans "Workspace" %}</span></div>
+        <div class="preview-workspace">
+          <div class="preview-files">
+            <span class="preview-section-label">{% trans "Your library" %}</span>
+            <div class="preview-file selected"><span class="file-type-icon">PDF</span><span>{% trans "Project notes" %}<small>{% trans "Ready to explore" %}</small></span><span class="file-ready" aria-hidden="true">✓</span></div>
+            <div class="preview-file"><span class="file-type-icon excel">XLS</span><span>{% trans "Research data" %}<small>{% trans "Ready to explore" %}</small></span><span class="file-ready" aria-hidden="true">✓</span></div>
+          </div>
+          <div class="preview-answer-area">
+            <div class="preview-tabs" role="tablist" aria-label="{% trans 'Explore the features' %}">
+              <button role="tab" id="demo-ask-tab" aria-selected="true" aria-controls="demo-ask" tabindex="0" data-demo-tab="demo-ask">{% trans "Ask" %}</button>
+              <button role="tab" id="demo-summary-tab" aria-selected="false" aria-controls="demo-summary" tabindex="-1" data-demo-tab="demo-summary">{% trans "Summary" %}</button>
+              <button role="tab" id="demo-search-tab" aria-selected="false" aria-controls="demo-search" tabindex="-1" data-demo-tab="demo-search">{% trans "Search" %}</button>
+            </div>
+            <div id="demo-ask" class="demo-panel" role="tabpanel" aria-labelledby="demo-ask-tab" tabindex="0">
+              <p class="demo-question">{% trans "What are the next steps for the project?" %}</p>
+              <div class="demo-answer"><span class="demo-spark" aria-hidden="true">✦</span><div><strong>{% trans "Here is what your document says" %}</strong><p>{% trans "Validate the prototype, collect feedback, and finalize the launch checklist." %}</p><span class="demo-citation">↗ {% trans "Project notes" %}.pdf · {% trans "Page" %} 3</span></div></div>
+            </div>
+            <div id="demo-summary" class="demo-panel" role="tabpanel" aria-labelledby="demo-summary-tab" tabindex="0" hidden>
+              <div class="demo-answer"><span class="demo-spark" aria-hidden="true">✦</span><div><strong>{% trans "The essentials, at a glance" %}</strong><p>{% trans "A practical roadmap from research to launch." %}</p><ul><li>{% trans "Validate the prototype" %}</li><li>{% trans "Collect user feedback" %}</li><li>{% trans "Prepare the launch" %}</li></ul></div></div>
+            </div>
+            <div id="demo-search" class="demo-panel" role="tabpanel" aria-labelledby="demo-search-tab" tabindex="0" hidden>
+              <div class="demo-search-query">⌕ <span>{% trans "launch plan" %}</span><span class="demo-search-tag">{% trans "Semantic search" %}</span></div>
+              <div class="demo-search-result"><strong>{% trans "From prototype to launch" %}</strong><p>{% trans "The next phase focuses on user feedback and the final launch checklist." %}</p><span class="demo-citation">{% trans "Project notes" %}.pdf · {% trans "Page" %} 3</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="preview-footer"><span><span class="file-ready" aria-hidden="true">✓</span> {% trans "Grounded in your sources" %}</span><span>{% trans "Illustrative example" %}</span></div>
+      </div>
+      <div class="product-footnote"><span aria-hidden="true">↳</span>{% trans "Less searching through files. More moving ideas forward." %}</div>
+    </div>
+  </section>
+
+  <div class="landing-value-strip" aria-label="{% trans 'Platform highlights' %}"><span>01 <strong>{% trans "Five file formats. One workspace." %}</strong></span><span>02 <strong>{% trans "Answers you can trace." %}</strong></span><span>03 <strong>{% trans "Built for Turkish and English." %}</strong></span></div>
+
+  <section id="features" class="landing-section" aria-labelledby="features-title">
+    <div class="section-intro"><div><p class="landing-eyebrow">{% trans "Made for the way you think" %}</p><h2 id="features-title">{% trans "Make your documents" %}<br><em>{% trans "work together." %}</em></h2></div><p>{% trans "From the first upload to the final insight, keep your files, questions, and sources in the same place." %}</p></div>
+    <div class="landing-features">
+      <article><span class="feature-symbol" aria-hidden="true">⌕</span><h3>{% trans "Find meaning, not just keywords" %}</h3><p>{% trans "Search with your own words. Semantic search finds relevant passages even when the wording is different." %}</p><span class="feature-label">{% trans "Semantic search" %}</span></article>
+      <article><span class="feature-symbol" aria-hidden="true">↗</span><h3>{% trans "Get answers with a paper trail" %}</h3><p>{% trans "Ask questions about your documents and see the files and pages behind the answer." %}</p><span class="feature-label">{% trans "Source-based answers" %}</span></article>
+      <article><span class="feature-symbol" aria-hidden="true">✦</span><h3>{% trans "See the bigger picture, faster" %}</h3><p>{% trans "Create and save a summary in Turkish or English, then return to the original whenever you need more detail." %}</p><span class="feature-label">{% trans "Bilingual summaries" %}</span></article>
+      <article><span class="feature-symbol" aria-hidden="true">▤</span><h3>{% trans "Keep the original in view" %}</h3><p>{% trans "Read PDFs, preview text and spreadsheets, and download the original file from its document page." %}</p><span class="feature-label">{% trans "File previews" %}</span></article>
+      <article><span class="feature-symbol" aria-hidden="true">↶</span><h3>{% trans "Pick up where you left off" %}</h3><p>{% trans "Revisit saved questions and answers. When a source document is deleted, its linked chats go with it." %}</p><span class="feature-label">{% trans "Document-linked history" %}</span></article>
+      <article><span class="feature-symbol" aria-hidden="true">◈</span><h3>{% trans "Know what is happening" %}</h3><p>{% trans "Follow upload and processing progress. Document permissions control access to originals, previews, and answers." %}</p><span class="feature-label">{% trans "Progress and access control" %}</span></article>
+    </div>
+  </section>
+
+  <section id="how-it-works" class="landing-section workflow-section" aria-labelledby="workflow-title">
+    <div class="section-intro"><div><p class="landing-eyebrow">{% trans "A simple path to insight" %}</p><h2 id="workflow-title">{% trans "Upload. Explore." %}<br><em>{% trans "Understand." %}</em></h2></div><p>{% trans "Start with the files you already have. Build understanding one question at a time." %}</p></div>
+    <ol class="landing-workflow">
+      <li><span class="workflow-number">01</span><h3>{% trans "Bring your documents" %}</h3><p>{% trans "Upload a PDF, spreadsheet, CSV, text, or Markdown file and follow its processing progress." %}</p></li>
+      <li><span class="workflow-number">02</span><h3>{% trans "Find your starting point" %}</h3><p>{% trans "Preview the original, read a summary, or search for the ideas that matter to you." %}</p></li>
+      <li><span class="workflow-number">03</span><h3>{% trans "Ask and keep exploring" %}</h3><p>{% trans "Get answers grounded in your documents. Follow the sources and return to your saved questions." %}</p></li>
+    </ol>
+  </section>
+
+  <section id="faq" class="landing-section landing-faq" aria-labelledby="faq-title">
+    <div><p class="landing-eyebrow">{% trans "Before you get started" %}</p><h2 id="faq-title">{% trans "A few good" %}<br><em>{% trans "questions." %}</em></h2></div>
+    <div class="faq-questions">
+      <details><summary>{% trans "Which files can I upload?" %}</summary><p>{% trans "PDF, Excel (.xlsx), CSV, TXT, and Markdown files, up to 25 MB each. Scanned PDFs need a text layer for search and answers." %}</p></details>
+      <details><summary>{% trans "Where do the answers come from?" %}</summary><p>{% trans "The platform retrieves relevant text from documents you can access and uses it to answer your question. Source references help you check the answer against the original." %}</p></details>
+      <details><summary>{% trans "What happens when I delete a document?" %}</summary><p>{% trans "Its original file, text chunks, and linked chat history are removed. Your other documents and their conversations remain available." %}</p></details>
+      <details><summary>{% trans "Can I use it in Turkish?" %}</summary><p>{% trans "Yes. Switch between Turkish and English in the header, and generate document summaries in your selected language." %}</p></details>
+    </div>
+  </section>
+
+  <section class="landing-cta" aria-labelledby="cta-title"><div><p class="landing-eyebrow">{% trans "Your next insight is already in your files" %}</p><h2 id="cta-title">{% trans "Give your knowledge" %}<br><em>{% trans "a place to connect." %}</em></h2></div><div><a class="landing-primary" href="{% url 'account_signup' %}">{% trans "Get started" %}<span aria-hidden="true">↗</span></a><p>{% trans "Already have an account?" %} <a href="{% url 'account_login' %}">{% trans "Log in" %}</a></p></div></section>
+</main>
+<footer class="landing-footer"><a class="landing-footer-brand" href="{% url 'home' %}">DIP <span>{% trans "Document Intelligence" %}</span></a><span>{% trans "Less searching. More understanding." %}</span><a href="#main-content">{% trans "Back to top" %} ↑</a></footer>
+<script src="{% static 'js/landing.js' %}"></script>
+{% endblock %}

@@ -1,5 +1,5 @@
 from django.contrib import admin
-from django.shortcuts import redirect
+from django.shortcuts import redirect, render
 from django.urls import include, path
 from django.views.i18n import set_language
 
@@ -7,10 +7,10 @@ from config.health import healthz
 
 
 def home(request):
-    """Root: authenticated users go to their dashboard, others to login."""
+    """Introduce the platform to visitors; return members to their workspace."""
     if request.user.is_authenticated:
         return redirect("documents:dashboard")
-    return redirect("account_login")
+    return render(request, "home.html", {"is_landing": True})
 
 
 urlpatterns = [
