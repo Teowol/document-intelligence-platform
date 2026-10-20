@@ -241,6 +241,42 @@ msgstr "İşlem arka planda devam ediyor. Orijinal dosyayı şimdiden görüntü
 msgid "Refresh status"
 msgstr "Durumu yenile"
 
+msgid "Chat history"
+msgstr "Sohbet geçmişi"
+
+msgid "New chat"
+msgstr "Yeni sohbet"
+
+msgid "Your questions will appear here."
+msgstr "Sorularınız burada görünecek."
+
+msgid "Chats linked to a deleted document are removed automatically."
+msgstr "Silinen bir belgeye bağlı sohbetler otomatik olarak kaldırılır."
+
+msgid "Start with a question"
+msgstr "Bir soruyla başlayın"
+
+msgid "Ask about your documents. Your answers and sources are saved here."
+msgstr "Belgeleriniz hakkında soru sorun. Yanıtlarınız ve kaynaklarınız burada saklanır."
+
+msgid "Your question"
+msgstr "Sorunuz"
+
+msgid "Ask a question about your documents…"
+msgstr "Belgeleriniz hakkında bir soru sorun…"
+
+msgid "Thinking…"
+msgstr "Yanıt hazırlanıyor…"
+
+msgid "Each question is saved as a separate chat."
+msgstr "Her soru ayrı bir sohbet olarak kaydedilir."
+
+msgid "Too many questions. Please try again shortly."
+msgstr "Soru sınırına ulaşıldı. Kısa bir süre sonra tekrar deneyin."
+
+msgid "Could not answer the question. Please try again."
+msgstr "Soru yanıtlanamadı. Lütfen tekrar deneyin."
+
 msgid "Open original"
 msgstr "Orijinali aç"
 

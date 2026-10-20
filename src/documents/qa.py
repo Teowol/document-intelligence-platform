@@ -120,12 +120,14 @@ def _client() -> OpenAI:
     return OpenAI()
 
 
-def _tool_dispatch(user, tool_name: str, tool_args: dict):
+def _tool_dispatch(user, tool_name: str, tool_args: dict, *, document_ids=None):
     """Run an RBAC-scoped tool and return a plain text result for the LLM."""
     try:
         if tool_name == "search_documents":
             top_k = min(int(tool_args.get("top_k", 4)), 8)
             chunks = search_semantic(user, tool_args["query"], top_k=top_k)
+            if document_ids is not None:
+                document_ids.update(c.document_id for c in chunks)
             return "\n\n".join(
                 f"[{c.chunk_index}] {c.document.original_filename}"
                 f"(s.{c.page_number}) {c.text}"
@@ -138,24 +140,30 @@ def _tool_dispatch(user, tool_name: str, tool_args: dict):
             page = tool_args.get("page")
             if page is not None:
                 chunks = [c for c in chunks if c.page_number == int(page)]
+            if document_ids is not None:
+                document_ids.update(c.document_id for c in chunks)
             return "\n\n".join(
                 f"[{c.chunk_index}] (s.{c.page_number}) {c.text}" for c in chunks
             )
         if tool_name == "list_documents":
             docs = list_documents(user)
+            if document_ids is not None:
+                document_ids.update(d.pk for d in docs)
             return "\n".join(
                 f"#{d.pk} {d.title} ({d.get_doc_type_display()})" for d in docs
             )
         if tool_name == "get_document_metadata":
             meta = get_document_metadata(user, int(tool_args["document_id"]))
-            return json.dumps(meta, ensure_ascii=False) if meta else "Not found"
+            if meta and document_ids is not None:
+                document_ids.add(meta["id"])
+            return json.dumps(meta, ensure_ascii=False, default=str) if meta else "Not found"
     except Exception as exc:  # noqa: BLE001 - tool errors go back to the model
         logger.warning("tool %s failed: %s", tool_name, exc)
         return f"Tool error: {exc}"
     return "Unknown tool"
 
 
-def assemble_context(user, query: str, *, top_k: int = 6) -> str:
+def assemble_context(user, query: str, *, top_k: int = 6, document_ids=None) -> str:
     """Retrieve top-k chunks and render them within the token budget."""
     sections: list[str] = []
     tokens = 0
@@ -168,6 +176,8 @@ def assemble_context(user, query: str, *, top_k: int = 6) -> str:
         if tokens + piece_tokens > CONTEXT_TOKEN_BUDGET:
             break
         sections.append(piece)
+        if document_ids is not None:
+            document_ids.add(chunk.document_id)
         tokens += piece_tokens
     return "\n\n".join(sections)
 
@@ -188,7 +198,8 @@ def answer_question(user, question: str, *, use_tools: bool = True) -> dict:
     ]
 
     # Stage 1: retrieval grounding (always used)
-    context = assemble_context(user, question)
+    document_ids = set()
+    context = assemble_context(user, question, document_ids=document_ids)
     if context:
         messages.append(
             {"role": "user", "content": "DOCUMENTS:\n" + context}
@@ -223,7 +234,10 @@ def answer_question(user, question: str, *, use_tools: bool = True) -> dict:
             tool_rounds += 1
             messages.append(msg.model_dump())
             for call in msg.tool_calls:
-                result = _tool_dispatch(user, call.function.name, json.loads(call.function.arguments or "{}"))
+                result = _tool_dispatch(
+                    user, call.function.name, json.loads(call.function.arguments or "{}"),
+                    document_ids=document_ids,
+                )
                 messages.append(
                     {
                         "role": "tool",
@@ -253,4 +267,5 @@ def answer_question(user, question: str, *, use_tools: bool = True) -> dict:
         "answer": answer,
         "sources": sources,
         "tool_rounds": tool_rounds,
+        "document_ids": sorted(document_ids),
     }

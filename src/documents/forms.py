@@ -3,6 +3,10 @@ from django import forms
 from .models import Document
 
 
+class QAQuestionForm(forms.Form):
+    q = forms.CharField(max_length=4000)
+
+
 class DocumentUploadForm(forms.ModelForm):
     class Meta:
         model = Document

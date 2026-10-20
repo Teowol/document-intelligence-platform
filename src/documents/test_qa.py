@@ -125,6 +125,30 @@ def test_answer_question_empty_query(user, monkeypatch):
     assert comp.seen_kwargs == []  # the client was never invoked
 
 
+def test_answer_tracks_real_document_ids_even_without_citations(user, monkeypatch):
+    from conftest import make_chunks, make_document
+
+    document = make_document(user)
+    chunks = make_chunks(document, count=1)
+    monkeypatch.setattr("documents.qa.search_semantic", lambda *args, **kwargs: chunks)
+    _patch_client(monkeypatch, final_content="Answer without a filename")
+    result = answer_question(user, "React?")
+    assert result["document_ids"] == [document.pk]
+    assert result["sources"] == []
+
+
+def test_tool_only_document_is_tracked(user, monkeypatch):
+    from conftest import make_chunks, make_document
+
+    document = make_document(user)
+    make_chunks(document, count=1)
+    monkeypatch.setattr("documents.qa.search_semantic", lambda *args, **kwargs: [])
+    _patch_client(monkeypatch, tool_calls=[
+        _FakeToolCall("get_document_chunks", '{"document_id": %s}' % document.pk),
+    ])
+    assert answer_question(user, "React?")["document_ids"] == [document.pk]
+
+
 def test_answer_question_one_tool_round_and_citations(user, monkeypatch):
     comp = _patch_client(
         monkeypatch,

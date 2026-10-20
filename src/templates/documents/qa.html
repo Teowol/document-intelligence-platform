@@ -1,21 +1,33 @@
 {% extends "base.html" %}
-{% load i18n %}
+{% load i18n static %}
 {% block title %}{% trans "Ask Your Documents" %} · DIP{% endblock %}
 {% block page_header %}<h1 class="h4 mb-0">💬 {% trans "Ask Your Documents" %}</h1>{% endblock %}
 
 {% block content %}
-<div class="row justify-content-center">
-  <div class="col-md-9">
-    <form method="get" action="{% url 'documents:ask' %}" class="d-flex gap-2 mb-3">
-      <input type="text" name="q" value="{{ question }}" class="form-control"
-             placeholder="{% trans 'e.g. our budget projections?' %}">
-      <button type="submit" class="btn" style="background: var(--accent); color: var(--accent-ink);">💬 {% trans "Ask" %}</button>
-    </form>
-
-    <div class="example-chips mb-4 d-flex flex-wrap gap-2">
-      <span class="chip" data-ask="Q3 gelir ne kadar oldu">{% trans "Q3 revenue?" %}</span>
-      <span class="chip" data-ask="Kilit konular neler?">{% trans "Key topics?" %}</span>
+<div class="qa-layout" data-qa-history data-history-url="{% url 'documents:ask' %}?history=1{% if selected_chat %}&amp;chat={{ selected_chat }}{% endif %}"
+     data-new-url="{% url 'documents:ask' %}" data-selected-chat="{{ selected_chat|default:'' }}">
+  <details class="qa-history card" open>
+    <summary class="h6 mb-0">{% trans "Chat history" %}</summary>
+    <div class="qa-history-content">
+      <a class="control-icon-btn w-100 justify-content-center mb-3" href="{% url 'documents:ask' %}">＋ {% trans "New chat" %}</a>
+      <nav class="qa-history-list" aria-label="{% trans 'Chat history' %}" data-history-list>
+        {% for entry in history %}
+        <a class="qa-history-entry {% if entry.pk == selected_chat %}active{% endif %}" href="{% url 'documents:ask' %}?chat={{ entry.pk }}"
+           {% if entry.pk == selected_chat %}aria-current="page"{% endif %} title="{{ entry.question }}">{{ entry.question }}</a>
+        {% endfor %}
+      </nav>
+      <p class="text-muted small" data-history-empty {% if history %}hidden{% endif %}>{% trans "Your questions will appear here." %}</p>
+      <p class="text-muted small mt-3 mb-0">{% trans "Chats linked to a deleted document are removed automatically." %}</p>
     </div>
+  </details>
+  <section class="qa-main" aria-label="{% trans 'Ask Your Documents' %}">
+    {% if not question %}
+    <div class="empty-state">
+      <div class="big-ico" aria-hidden="true">💬</div>
+      <h2 class="h5">{% trans "Start with a question" %}</h2>
+      <p>{% trans "Ask about your documents. Your answers and sources are saved here." %}</p>
+    </div>
+    {% endif %}
 
     {% if question %}
       <div class="chat-message chat-question"><strong>{% trans "Q" %}:</strong> {{ question }}</div>
@@ -36,6 +48,18 @@
         {% endif %}
       {% endif %}
     {% endif %}
-  </div>
+    <form method="post" action="{% url 'documents:ask' %}" class="qa-question-form d-flex gap-2 mt-3" data-question-form>
+      {% csrf_token %}
+      <div class="flex-grow-1">
+        <label class="visually-hidden" for="qa-question">{% trans "Your question" %}</label>
+        <input type="text" id="qa-question" name="q" value="{{ form.q.value|default:'' }}" class="form-control" required maxlength="4000"
+               placeholder="{% trans 'Ask a question about your documents…' %}">
+        {% if form %}{{ form.q.errors }}{% endif %}
+      </div>
+      <button type="submit" class="btn btn-primary align-self-start" data-submit-label="{% trans 'Thinking…' %}">{% trans "Ask" %} →</button>
+    </form>
+    <p class="text-muted small mt-2 mb-0">{% trans "Each question is saved as a separate chat." %}</p>
+  </section>
 </div>
+<script src="{% static 'js/qa.js' %}"></script>
 {% endblock %}

@@ -68,6 +68,20 @@ class Document(models.Model):
         super().delete(*args, **kwargs)
 
 
+class QAHistory(models.Model):
+    owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    question = models.TextField()
+    answer = models.TextField()
+    sources = models.JSONField(default=list, blank=True)
+    tool_rounds = models.PositiveSmallIntegerField(default=0)
+    documents = models.ManyToManyField(Document, related_name="qa_history", blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["-created_at", "-pk"]
+        indexes = [models.Index(fields=["owner", "-created_at"])]
+
+
 class DocumentChunk(models.Model):
     """
     One searchable chunk of a document.

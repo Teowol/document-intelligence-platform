@@ -46,19 +46,6 @@
   // Let base template call this after it swaps in the button too.
   window.DIPTheme = { refresh: refreshThemeBtn };
 
-  // Example question chips on the QA page fill + submit the query.
-  var chips = document.querySelectorAll(".example-chips .chip");
-  if (chips.length) {
-    for (var i = 0; i < chips.length; i++) {
-      chips[i].addEventListener("click", function () {
-        var q = this.getAttribute("data-ask");
-        if (!q) return;
-        var input = document.querySelector('form[action*="ask"] input[name=q]');
-        if (input) { input.value = q; input.form.submit(); }
-      });
-    }
-  }
-
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", init);
   } else {

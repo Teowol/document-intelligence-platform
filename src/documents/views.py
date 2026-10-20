@@ -4,18 +4,20 @@ from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.cache import cache
 from django.core.exceptions import PermissionDenied, ValidationError
+from django.db import transaction
 from django.db.models import Q, Sum
-from django.http import FileResponse, Http404
+from django.http import FileResponse, Http404, JsonResponse
 from django.shortcuts import get_object_or_404, redirect
-from django.urls import reverse_lazy
+from django.urls import reverse, reverse_lazy
+from django.utils.translation import gettext as _
 from django.views.generic import DeleteView, DetailView, ListView, TemplateView, View
 from django.views.generic.edit import CreateView
 
 from accounts.models import CustomUser
 
 from .ai_engine import search_semantic
-from .forms import DocumentUploadForm
-from .models import Document, DocumentChunk
+from .forms import DocumentUploadForm, QAQuestionForm
+from .models import Document, DocumentChunk, QAHistory
 from .preview import build_preview
 from .qa import answer_question
 from .ratelimit import require_rate_limit
@@ -297,39 +299,77 @@ class DocumentSearchView(LoginRequiredMixin, TemplateView):
 
 
 class DocumentQAView(LoginRequiredMixin, TemplateView):
-    """
-    Phase 7: grounded question-answering UI. Runs the RAG + function-calling
-    pipeline with RBAC-scoped tools, then shows the answer with citations.
-    """
-
     template_name = "documents/qa.html"
+
+    def dispatch(self, request, *args, **kwargs):
+        response = super().dispatch(request, *args, **kwargs)
+        response["Cache-Control"] = "private, no-store"
+        return response
+
+    def history_queryset(self):
+        user = self.request.user
+        history = QAHistory.objects.filter(owner=user)
+        if not _is_admin(user):
+            inaccessible = Document.objects.exclude(Q(owner=user) | Q(is_public=True))
+            history = history.exclude(documents__in=inaccessible)
+        return history
+
+    def get(self, request, *args, **kwargs):
+        if request.GET.get("history") == "1":
+            history = self.history_queryset()
+            selected = request.GET.get("chat")
+            return JsonResponse({
+                "entries": [
+                    {"id": entry.pk, "question": entry.question,
+                     "url": f"{reverse('documents:ask')}?chat={entry.pk}"}
+                    for entry in history[:50]
+                ],
+                "selected_exists": not selected or (
+                    selected.isdigit() and history.filter(pk=selected).exists()
+                ),
+            })
+        return super().get(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        question = self.request.GET.get("q", "").strip()
-        context["question"] = question
+        context["history"] = self.history_queryset()[:50]
+        context["question"] = ""
         context["result"] = None
-        if question:
-            try:
-                require_rate_limit(
-                    self.request.user, key="qa", limit=10, window=60
-                )
-                context["result"] = answer_question(
-                    self.request.user, question, use_tools=True
-                )
-            except PermissionDenied:
-                from django.contrib import messages as dj_messages
-                from django.http import HttpResponse
-
-                dj_messages.error(
-                    self.request,
-                    "Soru limitine ulaşıldı. Kısa bir süre sonra tekrar deneyin.",
-                )
-                return HttpResponse("Rate-limited", status=429)
-            except Exception as exc:  # noqa: BLE001 - surface API errors in UI
-                from django.contrib import messages as dj_messages
-
-                dj_messages.error(
-                    self.request, f"Question answering failed: {exc}"
-                )
+        selected = self.request.GET.get("chat")
+        if selected:
+            if not selected.isdigit():
+                raise Http404
+            entry = get_object_or_404(self.history_queryset(), pk=selected)
+            context.update(question=entry.question, result=entry, selected_chat=entry.pk)
         return context
+
+    def post(self, request, *args, **kwargs):
+        form = QAQuestionForm(request.POST)
+        if not form.is_valid():
+            return self.render_to_response(self.get_context_data(form=form), status=400)
+        question = form.cleaned_data["q"]
+        try:
+            require_rate_limit(request.user, key="qa", limit=10, window=60)
+        except PermissionDenied:
+            messages.error(request, _("Too many questions. Please try again shortly."))
+            return self.render_to_response(self.get_context_data(form=form), status=429)
+        try:
+            result = answer_question(request.user, question, use_tools=True)
+            source_ids = set(result.get("document_ids", []))
+            with transaction.atomic():
+                documents = Document.objects.select_for_update().filter(pk__in=source_ids)
+                if not _is_admin(request.user):
+                    documents = documents.filter(Q(owner=request.user) | Q(is_public=True))
+                documents = list(documents)
+                if len(documents) != len(source_ids):
+                    raise ValueError("Source documents were removed or access changed.")
+                entry = QAHistory.objects.create(
+                    owner=request.user, question=question, answer=result["answer"],
+                    sources=result.get("sources", []), tool_rounds=result.get("tool_rounds", 0),
+                )
+                entry.documents.set(documents)
+        except Exception:
+            logger.exception("Question answering failed for user %s", request.user.pk)
+            messages.error(request, _("Could not answer the question. Please try again."))
+            return self.render_to_response(self.get_context_data(form=form), status=502)
+        return redirect(f"{reverse('documents:ask')}?chat={entry.pk}")
