@@ -102,6 +102,18 @@
 <section class="card mb-4" id="file-info-section">
   <div class="card-body">
     <h2 class="h5 mb-3">{% trans "File information" %}</h2>
+    <div class="document-processing mb-3" data-document-processing data-status-url="{% url 'documents:status' document.pk %}"
+         data-initial-status="{{ document.status }}" data-missing-label="{% trans 'This document is no longer available.' %}">
+      <p class="small mb-2" data-processing-label role="status">{% trans "Checking processing status…" %}</p>
+      <progress class="dip-progress" data-processing-progress max="4" value="1" aria-label="{% trans 'Document processing' %}"></progress>
+      <ol class="processing-stages mt-2 mb-0">
+        <li data-processing-step="1">{% trans "Uploaded" %}</li>
+        <li data-processing-step="2">{% trans "Text extraction" %}</li>
+        <li data-processing-step="3">{% trans "Search preparation" %}</li>
+        <li data-processing-step="4">{% trans "Ready" %}</li>
+      </ol>
+      <a class="control-icon-btn mt-3" data-processing-refresh href="{% url 'documents:detail' document.pk %}" hidden>{% trans "Processing finished. Refresh to see the summary and chunks." %} ↻</a>
+    </div>
     <div class="d-flex align-items-center gap-2 flex-wrap">
       <span class="control-icon-btn py-1"><span class="status-dot {{ document.status }}"></span>{{ document.get_status_display }}
         {% if document.status == 'uploaded' or document.status == 'processing' %}<span class="spinner-border spinner-border-sm ms-1"></span>{% endif %}
@@ -131,5 +143,5 @@
 </section>
 
 {% load static %}
-<script src="{% static 'js/document.js' %}"></script>
+<script src="{% static 'js/document.js' %}?v=2"></script>
 {% endblock %}

@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load i18n %}
+{% load i18n static %}
 {% block title %}{% trans "Upload document" %} · DIP{% endblock %}
 {% block page_header %}<h1 class="h4 mb-0">⬆️ {% trans "Upload document" %}</h1>{% endblock %}
 
@@ -9,9 +9,18 @@
     <div class="card">
       <div class="card-body">
         <p class="text-muted small">{% trans "Allowed: PDF, Excel (xlsx), CSV, TXT, Markdown — max 25 MB. File type is verified by content, not by extension." %}</p>
-        <form method="post" enctype="multipart/form-data">
+        <form method="post" enctype="multipart/form-data" data-upload-form
+              data-uploading="{% trans 'Uploading file' %}" data-validating="{% trans 'Upload complete. Checking the file…' %}"
+              data-failure="{% trans 'Could not confirm the upload. Check your documents before trying again.' %}">
           {% csrf_token %}
           {{ form.as_p }}
+          <div class="upload-feedback mb-3" data-upload-feedback hidden>
+            <div class="d-flex justify-content-between gap-2 mb-2" aria-live="polite">
+              <span data-upload-label>{% trans "Uploading file" %}</span><span data-upload-percent>0%</span>
+            </div>
+            <progress class="dip-progress" data-upload-progress max="100" value="0" aria-label="{% trans 'File upload progress' %}"></progress>
+          </div>
+          <div class="upload-errors mb-3" data-upload-errors role="alert" hidden></div>
           <button type="submit" class="btn w-100" style="background: var(--accent); color: var(--accent-ink);">{% trans "Upload" %}</button>
           <a href="{% url 'documents:list' %}" class="btn btn-link w-100 mt-1" style="color: var(--text-muted);">{% trans "Cancel" %}</a>
         </form>
@@ -19,4 +28,5 @@
     </div>
   </div>
 </div>
+<script src="{% static 'js/upload.js' %}"></script>
 {% endblock %}

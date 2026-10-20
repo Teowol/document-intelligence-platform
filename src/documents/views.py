@@ -5,7 +5,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.cache import cache
 from django.core.exceptions import PermissionDenied, ValidationError
 from django.db import transaction
-from django.db.models import Q, Sum
+from django.db.models import Count, Q, Sum
 from django.http import FileResponse, Http404, JsonResponse
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse, reverse_lazy
@@ -170,6 +170,18 @@ class DocumentUploadView(LoginRequiredMixin, CreateView):
     template_name = "documents/document_form.html"
     success_url = reverse_lazy("documents:list")
 
+    def wants_json(self):
+        return self.request.headers.get("Accept") == "application/json"
+
+    def form_invalid(self, form):
+        if self.wants_json():
+            return JsonResponse({"errors": [
+                {"field": name, "label": str(form.fields[name].label or name) if name in form.fields else str(_("Upload")),
+                 "messages": [str(error) for error in errors]}
+                for name, errors in form.errors.items()
+            ]}, status=400)
+        return super().form_invalid(form)
+
     def form_valid(self, form):
         file = form.cleaned_data["file"]
         try:
@@ -190,6 +202,8 @@ class DocumentUploadView(LoginRequiredMixin, CreateView):
         process_document.delay(doc.pk)
         _bust_dashboard_cache(doc.owner_id)
         messages.success(self.request, _("Document uploaded; processing started."))
+        if self.wants_json():
+            return JsonResponse({"url": reverse("documents:detail", args=[doc.pk])}, status=201)
         return redirect("documents:detail", pk=doc.pk)
 
 
@@ -241,6 +255,29 @@ class DocumentSummaryView(LoginRequiredMixin, View):
             logger.exception("Summary failed for document %s", pk)
             messages.error(request, _("Could not create the summary. Please try again."))
         return redirect(url)
+
+
+class DocumentStatusView(LoginRequiredMixin, View):
+    def get(self, request, pk):
+        document = _visible_document(request.user, pk)
+        state = document.status
+        if state == Document.Status.READY:
+            counts = document.chunks.aggregate(
+                total=Count("pk"), embedded=Count("pk", filter=Q(embedding__isnull=False)),
+            )
+            state = "ready" if counts["total"] and counts["total"] == counts["embedded"] else "embedding"
+        stages = {"uploaded": 1, "processing": 2, "embedding": 3, "ready": 4, "error": 0}
+        labels = {
+            "uploaded": _("Waiting for processing"), "processing": _("Extracting document text"),
+            "embedding": _("Preparing semantic search"), "ready": _("Your document is ready"),
+            "error": _("Processing failed. You can retry from file information."),
+        }
+        response = JsonResponse({
+            "state": state, "stage": stages[state], "label": labels[state],
+            "finished": state in {"ready", "error"}, "text_ready": document.status == Document.Status.READY,
+        })
+        response["Cache-Control"] = "private, no-store"
+        return response
 
 
 class DocumentFileView(LoginRequiredMixin, View):

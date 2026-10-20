@@ -99,6 +99,9 @@ msgstr "Kilit konular neler?"
 msgid "Log in"
 msgstr "Giriş yap"
 
+msgid "Show my password"
+msgstr "Şifremi göster"
+
 msgid "Log out"
 msgstr "Çıkış yap"
 
@@ -270,6 +273,57 @@ msgstr "Özet isteği sınırına ulaşıldı. Kısa bir süre sonra tekrar dene
 
 msgid "Could not create the summary. Please try again."
 msgstr "Özet oluşturulamadı. Lütfen tekrar deneyin."
+
+msgid "Notifications"
+msgstr "Bildirimler"
+
+msgid "Dismiss notification"
+msgstr "Bildirimi kapat"
+
+msgid "Uploading file"
+msgstr "Dosya yükleniyor"
+
+msgid "Upload complete. Checking the file…"
+msgstr "Yükleme tamamlandı. Dosya kontrol ediliyor…"
+
+msgid "Could not confirm the upload. Check your documents before trying again."
+msgstr "Yükleme doğrulanamadı. Tekrar denemeden önce belgelerinizi kontrol edin."
+
+msgid "File upload progress"
+msgstr "Dosya yükleme ilerlemesi"
+
+msgid "This document is no longer available."
+msgstr "Bu belge artık kullanılamıyor."
+
+msgid "Checking processing status…"
+msgstr "İşlem durumu kontrol ediliyor…"
+
+msgid "Document processing"
+msgstr "Belge işleme durumu"
+
+msgid "Text extraction"
+msgstr "Metin çıkarma"
+
+msgid "Search preparation"
+msgstr "Aramaya hazırlama"
+
+msgid "Processing finished. Refresh to see the summary and chunks."
+msgstr "İşlem tamamlandı. Özet ve parçaları görmek için yenileyin."
+
+msgid "Waiting for processing"
+msgstr "İşleme sırası bekleniyor"
+
+msgid "Extracting document text"
+msgstr "Belgenin metni çıkarılıyor"
+
+msgid "Preparing semantic search"
+msgstr "Belge anlamsal aramaya hazırlanıyor"
+
+msgid "Your document is ready"
+msgstr "Belgeniz hazır"
+
+msgid "Processing failed. You can retry from file information."
+msgstr "İşlem başarısız oldu. Dosya bilgileri bölümünden yeniden deneyebilirsiniz."
 
 msgid "Switch to English"
 msgstr "İngilizceye geç"
