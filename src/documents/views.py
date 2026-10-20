@@ -9,7 +9,7 @@ from django.db.models import Q, Sum
 from django.http import FileResponse, Http404, JsonResponse
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse, reverse_lazy
-from django.utils.translation import gettext as _
+from django.utils.translation import get_language, gettext as _
 from django.views.generic import DeleteView, DetailView, ListView, TemplateView, View
 from django.views.generic.edit import CreateView
 
@@ -22,6 +22,7 @@ from .preview import build_preview
 from .qa import answer_question
 from .ratelimit import require_rate_limit
 from .tasks import process_document
+from .summary import generate_summary
 from .validators import sanitize_filename, validate_upload
 
 logger = logging.getLogger(__name__)
@@ -154,7 +155,7 @@ class DocumentReprocessView(LoginRequiredMixin, View):
         doc.status = Document.Status.UPLOADED
         doc.save(update_fields=["status", "updated_at"])
         process_document.delay(doc.pk)
-        messages.success(request, "Document queued for re-processing.")
+        messages.success(request, _("Document queued for re-processing."))
         return redirect("documents:detail", pk=doc.pk)
 
 
@@ -188,7 +189,7 @@ class DocumentUploadView(LoginRequiredMixin, CreateView):
         # Phase 4: hand off to the background worker; the request returns fast.
         process_document.delay(doc.pk)
         _bust_dashboard_cache(doc.owner_id)
-        messages.success(self.request, "Document uploaded; processing started.")
+        messages.success(self.request, _("Document uploaded; processing started."))
         return redirect("documents:detail", pk=doc.pk)
 
 
@@ -203,12 +204,43 @@ class DocumentDetailView(LoginRequiredMixin, DetailView):
         context = super().get_context_data(**kwargs)
         context["chunks"] = self.object.chunks.order_by("chunk_index")[:5]
         context["chunk_count"] = self.object.chunks.count()
+        language = "tr" if get_language().startswith("tr") else "en"
+        context["summary"] = self.object.summaries.get(language)
         try:
             context["preview"] = build_preview(self.object, self.request.GET.get("sheet"))
         except Exception:
             logger.exception("Preview failed for document %s", self.object.pk)
             context["preview"] = {"kind": "unavailable"}
         return context
+
+
+class DocumentSummaryView(LoginRequiredMixin, View):
+    def post(self, request, pk):
+        document = _visible_document(request.user, pk)
+        language = "tr" if get_language().startswith("tr") else "en"
+        url = f"{reverse('documents:detail', args=[pk])}?summary=1#summary-section"
+        if document.status != Document.Status.READY:
+            messages.info(request, _("The summary will be available after processing finishes."))
+            return redirect(url)
+        if language in document.summaries:
+            return redirect(url)
+        try:
+            require_rate_limit(request.user, key="summary", limit=5, window=60)
+        except PermissionDenied:
+            messages.error(request, _("Too many summary requests. Please try again shortly."))
+            return redirect(url)
+        try:
+            summary = generate_summary(document, language)
+            with transaction.atomic():
+                current = Document.objects.select_for_update().get(pk=pk)
+                if current.updated_at != document.updated_at or current.status != Document.Status.READY:
+                    raise ValueError("Document changed while generating the summary.")
+                current.summaries[language] = summary
+                current.save(update_fields=["summaries"])
+        except Exception:
+            logger.exception("Summary failed for document %s", pk)
+            messages.error(request, _("Could not create the summary. Please try again."))
+        return redirect(url)
 
 
 class DocumentFileView(LoginRequiredMixin, View):

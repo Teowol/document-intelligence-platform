@@ -29,7 +29,8 @@ def process_document(self, document_id: int) -> str:
         return "missing"
 
     doc.status = Document.Status.PROCESSING
-    doc.save(update_fields=["status", "updated_at"])
+    doc.summaries = {}
+    doc.save(update_fields=["status", "summaries", "updated_at"])
 
     try:
         doc.file.open("rb")

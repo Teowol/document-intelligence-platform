@@ -38,7 +38,7 @@
             <div class="mt-3">
               <strong class="text-muted small">{% trans "Sources" %}:</strong>
               {% for src in result.sources %}
-                <span class="source-chip">📎 {{ src.file }}{% if src.page %} · p.{{ src.page }}{% endif %}</span>
+                <span class="source-chip">📎 {{ src.file }}{% if src.page %} · {% trans "Page" %} {{ src.page }}{% endif %}</span>
               {% endfor %}
             </div>
           {% endif %}

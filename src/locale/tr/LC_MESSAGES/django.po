@@ -202,6 +202,75 @@ msgstr "Bu sayfayı görüntüleme yetkin yok."
 msgid "Toggle theme"
 msgstr "Temayı değiştir"
 
+msgid "Light"
+msgstr "Açık"
+
+msgid "Dark"
+msgstr "Koyu"
+
+msgid "Admin"
+msgstr "Yönetici"
+
+msgid "Editor"
+msgstr "Düzenleyici"
+
+msgid "Viewer"
+msgstr "Görüntüleyici"
+
+msgid "Text"
+msgstr "Metin"
+
+msgid "Page"
+msgstr "Sayfa"
+
+msgid "Document title"
+msgstr "Belge başlığı"
+
+msgid "Public document"
+msgstr "Herkese açık belge"
+
+msgid "Switch to Turkish"
+msgstr "Türkçeye geç"
+
+msgid "Search documents by meaning (e.g. budget projections)"
+msgstr "Belgelerde anlama göre arayın (ör. bütçe tahminleri)"
+
+msgid "Document queued for re-processing."
+msgstr "Belge yeniden işlenmek üzere sıraya alındı."
+
+msgid "Document uploaded; processing started."
+msgstr "Belge yüklendi; işleme başladı."
+
+msgid "File information"
+msgstr "Dosya bilgileri"
+
+msgid "Summary"
+msgstr "Özet"
+
+msgid "Create summary"
+msgstr "Özet oluştur"
+
+msgid "Creating summary…"
+msgstr "Özet oluşturuluyor…"
+
+msgid "Create a summary in your selected language. It will be saved for future visits."
+msgstr "Seçtiğiniz dilde bir özet oluşturun. Özet sonraki ziyaretleriniz için saklanır."
+
+msgid "The summary will be available after processing finishes."
+msgstr "Belgenin işlenmesi tamamlandıktan sonra özet oluşturabilirsiniz."
+
+msgid "This summary is based on excerpts sampled throughout the document."
+msgstr "Bu özet, belgenin farklı bölümlerinden alınan metin örneklerine dayanır."
+
+msgid "No text chunks are available yet."
+msgstr "Henüz metin parçası bulunmuyor."
+
+msgid "Too many summary requests. Please try again shortly."
+msgstr "Özet isteği sınırına ulaşıldı. Kısa bir süre sonra tekrar deneyin."
+
+msgid "Could not create the summary. Please try again."
+msgstr "Özet oluşturulamadı. Lütfen tekrar deneyin."
+
 msgid "Switch to English"
 msgstr "İngilizceye geç"
 

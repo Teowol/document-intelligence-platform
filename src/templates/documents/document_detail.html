@@ -4,54 +4,15 @@
 {% block page_header %}<h1 class="h4 mb-0">{{ document.title }}</h1>{% endblock %}
 
 {% block content %}
-{% if document.status == 'uploaded' or document.status == 'processing' %}
-<div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3">
-  <p class="text-muted mb-0">{% trans "Processing continues in the background. You can preview the original file now." %}</p>
-  <a class="control-icon-btn" href="{% url 'documents:detail' document.pk %}">{% trans "Refresh status" %} ↻</a>
-</div>
-{% endif %}
-
-<div class="card mb-4">
+<details class="card document-section mb-4" id="preview-section" open>
+  <summary class="document-section-heading"><h2 class="h5 mb-0">{% trans "File preview" %}</h2></summary>
   <div class="card-body">
-    <div class="d-flex align-items-center gap-2 flex-wrap">
-      <span class="control-icon-btn py-1"><span class="status-dot {{ document.status }}"></span>{{ document.get_status_display }}
-        {% if document.status == 'uploaded' or document.status == 'processing' %}<span class="spinner-border spinner-border-sm ms-1"></span>{% endif %}
-      </span>
-      <span class="badge bg-secondary">{{ document.get_doc_type_display }}</span>
-      {% if document.is_public %}<span class="badge" style="background: var(--info);">{% trans "public" %}</span>{% endif %}
-    </div>
-    <hr>
-    <p class="mb-1"><strong>{% trans "File" %}:</strong> {{ document.original_filename }}</p>
-    <p class="mb-1"><strong>{% trans "Size" %}:</strong> {{ document.size_bytes|filesizeformat }}</p>
-    <p class="mb-1"><strong>{% trans "Owner" %}:</strong> {{ document.owner.email }}</p>
-    <p class="mb-1"><strong>{% trans "Uploaded" %}:</strong> {{ document.created_at|date:"Y-m-d H:i" }}</p>
-    {% if document.error_message %}<p style="color: var(--danger);">{{ document.error_message }}</p>{% endif %}
-
-    {% if document.owner_id == user.pk or user.is_superuser %}
-    <div class="d-flex gap-2 mt-3">
-      {% if document.status == 'error' %}
-      <form method="post" action="{% url 'documents:reprocess' document.pk %}">
-        {% csrf_token %}
-        <button class="btn btn-sm py-1" style="color: var(--warning); border-color: var(--warning);">🔄 {% trans "Re-process" %}</button>
-      </form>
-      {% endif %}
-      <a href="{% url 'documents:delete' document.pk %}" class="btn btn-sm py-1" style="color: var(--danger); border-color: var(--danger);">🗑️ {% trans "Delete" %}</a>
-    </div>
-    {% endif %}
-  </div>
-</div>
-
-<section class="card mb-4" aria-labelledby="preview-heading">
-  <div class="card-header d-flex justify-content-between align-items-center flex-wrap gap-2">
-    <h2 class="h5 mb-0" id="preview-heading">{% trans "File preview" %}</h2>
-    <div class="d-flex gap-2 flex-wrap">
+    <div class="d-flex gap-2 flex-wrap mb-3">
       {% if document.doc_type == 'pdf' %}
       <a class="control-icon-btn" href="{% url 'documents:file' document.pk %}" target="_blank" rel="noopener">{% trans "Open original" %} ↗</a>
       {% endif %}
       <a class="control-icon-btn" href="{% url 'documents:file' document.pk %}?download=1">{% trans "Download original" %} ↓</a>
     </div>
-  </div>
-  <div class="card-body">
     {% if preview.kind == 'pdf' %}
       <object class="document-pdf-preview" data="{% url 'documents:file' document.pk %}" type="application/pdf" aria-label="{{ document.original_filename }}">
         <p>{% trans "Your browser cannot display this PDF. Open or download the original file using the buttons above." %}</p>
@@ -89,29 +50,86 @@
       <p class="text-muted small mt-3 mb-0">{% trans "This preview shows only the beginning of the file (up to 100 rows and 30 columns for tables). Download the original to view all content." %}</p>
     {% endif %}
   </div>
-</section>
+</details>
 
-{% if document.status == 'ready' %}
-<div class="card">
+<details class="card document-section mb-4" id="summary-section" {% if summary or request.GET.summary %}open{% endif %}>
+  <summary class="document-section-heading"><h2 class="h5 mb-0">{% trans "Summary" %}</h2></summary>
   <div class="card-body">
-    <details>
-    <summary class="h5 mb-3">{% trans "Chunks" %} ({{ chunk_count }})</summary>
+    {% if summary %}
+      <div class="document-summary">{{ summary.text|linebreaksbr }}</div>
+      {% if summary.sampled %}<p class="text-muted small mt-3 mb-0">{% trans "This summary is based on excerpts sampled throughout the document." %}</p>{% endif %}
+    {% elif document.status == 'ready' and chunk_count %}
+      <p class="text-muted">{% trans "Create a summary in your selected language. It will be saved for future visits." %}</p>
+      <form method="post" action="{% url 'documents:summary' document.pk %}" data-summary-form>
+        {% csrf_token %}
+        <button class="btn btn-primary" type="submit" data-pending-label="{% trans 'Creating summary…' %}">{% trans "Create summary" %}</button>
+      </form>
+    {% else %}
+      <p class="text-muted mb-0">{% trans "The summary will be available after processing finishes." %}</p>
+    {% endif %}
+  </div>
+</details>
+
+<details class="card document-section mb-4" id="chunks-section">
+  <summary class="document-section-heading"><h2 class="h5 mb-0">{% trans "Chunks" %} ({{ chunk_count }})</h2></summary>
+  <div class="card-body">
     {% if chunks %}
     <ul class="list-group list-group-flush">
       {% for chunk in chunks %}
       <li class="list-group-item" style="background: var(--surface);">
         <small class="text-muted">
           {{ document.original_filename }}
-          {% if chunk.page_number %} · p.{{ chunk.page_number }}{% endif %}
+          {% if chunk.page_number %} · {% trans "Page" %} {{ chunk.page_number }}{% endif %}
           {% if chunk.metadata.section_heading %} · {{ chunk.metadata.section_heading }}{% endif %}
         </small>
         <p class="mb-0">{{ chunk.text|truncatechars:200 }}</p>
       </li>
       {% endfor %}
     </ul>
+    {% else %}
+      <p class="text-muted mb-0">{% trans "No text chunks are available yet." %}</p>
     {% endif %}
-    </details>
   </div>
+</details>
+
+{% if document.status == 'uploaded' or document.status == 'processing' %}
+<div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3">
+  <p class="text-muted mb-0">{% trans "Processing continues in the background. You can preview the original file now." %}</p>
+  <a class="control-icon-btn" href="{% url 'documents:detail' document.pk %}">{% trans "Refresh status" %} ↻</a>
 </div>
 {% endif %}
+
+<section class="card mb-4" id="file-info-section">
+  <div class="card-body">
+    <h2 class="h5 mb-3">{% trans "File information" %}</h2>
+    <div class="d-flex align-items-center gap-2 flex-wrap">
+      <span class="control-icon-btn py-1"><span class="status-dot {{ document.status }}"></span>{{ document.get_status_display }}
+        {% if document.status == 'uploaded' or document.status == 'processing' %}<span class="spinner-border spinner-border-sm ms-1"></span>{% endif %}
+      </span>
+      <span class="badge bg-secondary">{{ document.get_doc_type_display }}</span>
+      {% if document.is_public %}<span class="badge" style="background: var(--info);">{% trans "public" %}</span>{% endif %}
+    </div>
+    <hr>
+    <p class="mb-1"><strong>{% trans "File" %}:</strong> {{ document.original_filename }}</p>
+    <p class="mb-1"><strong>{% trans "Size" %}:</strong> {{ document.size_bytes|filesizeformat }}</p>
+    <p class="mb-1"><strong>{% trans "Owner" %}:</strong> {{ document.owner.email }}</p>
+    <p class="mb-1"><strong>{% trans "Uploaded" %}:</strong> {{ document.created_at|date:"Y-m-d H:i" }}</p>
+    {% if document.error_message %}<p style="color: var(--danger);">{{ document.error_message }}</p>{% endif %}
+
+    {% if document.owner_id == user.pk or user.is_superuser %}
+    <div class="d-flex gap-2 mt-3">
+      {% if document.status == 'error' %}
+      <form method="post" action="{% url 'documents:reprocess' document.pk %}">
+        {% csrf_token %}
+        <button class="btn btn-sm py-1" style="color: var(--warning); border-color: var(--warning);">🔄 {% trans "Re-process" %}</button>
+      </form>
+      {% endif %}
+      <a href="{% url 'documents:delete' document.pk %}" class="btn btn-sm py-1" style="color: var(--danger); border-color: var(--danger);">🗑️ {% trans "Delete" %}</a>
+    </div>
+    {% endif %}
+  </div>
+</section>
+
+{% load static %}
+<script src="{% static 'js/document.js' %}"></script>
 {% endblock %}

@@ -74,11 +74,15 @@ def test_task_reprocessing_replaces_old_chunks(user):
     process_document.delay(doc.pk).get()
     first_chunk_ids = list(doc.chunks.values_list("id", flat=True))
 
+    doc.summaries = {"en": {"text": "Previous summary", "sampled": False}}
+    doc.save(update_fields=["summaries"])
     doc.status = Document.Status.UPLOADED
     doc.save(update_fields=["status"])
     process_document.delay(doc.pk).get()
 
     second_chunk_ids = list(doc.chunks.values_list("id", flat=True))
+    doc.refresh_from_db()
+    assert doc.summaries == {}
     assert DocumentChunk.objects.filter(document=doc).count() == len(second_chunk_ids)
     assert set(first_chunk_ids).isdisjoint(second_chunk_ids)
 

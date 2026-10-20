@@ -1,5 +1,6 @@
 from django.contrib.auth.models import AbstractUser, Group
 from django.db import models
+from django.utils.translation import gettext_lazy as _
 
 
 class CustomUser(AbstractUser):
@@ -13,9 +14,9 @@ class CustomUser(AbstractUser):
     """
 
     class Roles(models.TextChoices):
-        ADMIN = "admin", "Admin"
-        EDITOR = "editor", "Editor"
-        VIEWER = "viewer", "Viewer"
+        ADMIN = "admin", _("Admin")
+        EDITOR = "editor", _("Editor")
+        VIEWER = "viewer", _("Viewer")
 
     email = models.EmailField(unique=True)
     role = models.CharField(

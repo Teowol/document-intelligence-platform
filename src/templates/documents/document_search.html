@@ -24,7 +24,7 @@
                   {{ chunk.document.original_filename }}
                 </a>
                 <span class="badge bg-secondary">{{ chunk.document.get_doc_type_display }}</span>
-                {% if chunk.page_number %}<span class="control-icon-btn py-0 px-2">p.{{ chunk.page_number }}</span>{% endif %}
+                {% if chunk.page_number %}<span class="control-icon-btn py-0 px-2">{% trans "Page" %} {{ chunk.page_number }}</span>{% endif %}
                 {% if chunk.document.is_public %}<span class="badge" style="background: var(--info);">{% trans "public" %}</span>{% endif %}
               </div>
               <p class="mt-2 mb-0">{{ chunk.text|truncatechars:300 }}</p>

@@ -1,4 +1,5 @@
 from django import forms
+from django.utils.translation import gettext_lazy as _
 
 from .models import Document
 
@@ -11,9 +12,10 @@ class DocumentUploadForm(forms.ModelForm):
     class Meta:
         model = Document
         fields = ["file", "title", "is_public"]
+        labels = {"file": _("File"), "title": _("Document title"), "is_public": _("Public document")}
         widgets = {
             "title": forms.TextInput(
-                attrs={"class": "form-control", "placeholder": "Document title"}
+                attrs={"class": "form-control", "placeholder": _("Document title")}
             ),
             "file": forms.FileInput(attrs={"class": "form-control"}),
             "is_public": forms.CheckboxInput(attrs={"class": "form-check-input"}),

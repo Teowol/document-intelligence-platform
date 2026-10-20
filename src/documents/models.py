@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.db import models
+from django.utils.translation import gettext_lazy as _
 from pgvector.django import VectorField
 
 EMBEDDING_DIMENSIONS = 1536  # text-embedding-3-small output size
@@ -15,16 +16,16 @@ class Document(models.Model):
     """
 
     class Status(models.TextChoices):
-        UPLOADED = "uploaded", "Uploaded"
-        PROCESSING = "processing", "Processing"
-        READY = "ready", "Ready"
-        ERROR = "error", "Error"
+        UPLOADED = "uploaded", _("Uploaded")
+        PROCESSING = "processing", _("Processing")
+        READY = "ready", _("Ready")
+        ERROR = "error", _("Error")
 
     class DocType(models.TextChoices):
         PDF = "pdf", "PDF"
         XLSX = "xlsx", "Excel"
         CSV = "csv", "CSV"
-        TXT = "txt", "Text"
+        TXT = "txt", _("Text")
         MD = "md", "Markdown"
 
     owner = models.ForeignKey(
@@ -47,6 +48,7 @@ class Document(models.Model):
         db_index=True,
     )
     error_message = models.TextField(blank=True, default="")
+    summaries = models.JSONField(default=dict, blank=True)
     is_public = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
