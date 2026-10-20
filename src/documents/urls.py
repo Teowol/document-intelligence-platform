@@ -11,6 +11,7 @@ urlpatterns = [
     path("search/", views.DocumentSearchView.as_view(), name="search"),
     path("ask/", views.DocumentQAView.as_view(), name="ask"),
     path("<int:pk>/", views.DocumentDetailView.as_view(), name="detail"),
+    path("<int:pk>/file/", views.DocumentFileView.as_view(), name="file"),
     path("<int:pk>/delete/", views.DocumentDeleteView.as_view(), name="delete"),
     path("<int:pk>/reprocess/", views.DocumentReprocessView.as_view(), name="reprocess"),
 ]

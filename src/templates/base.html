@@ -1,24 +1,24 @@
 {% load static i18n %}
 <!DOCTYPE html>
-<html lang="{{ LANGUAGE_CODE }}" data-theme="light">
+<html lang="{{ LANGUAGE_CODE }}" data-theme="light" data-bs-theme="light">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{% block title %}DIP{% endblock %}</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link href="{% static 'css/dip.css' %}" rel="stylesheet">
+  <link href="{% static 'css/dip.css' %}?v=2" rel="stylesheet">
   <!-- prevent flash of unstyled dark theme -->
   <script>
     (function () {
       var t = "light";
-      try { t = localStorage.getItem("dip-theme") || "light"; } catch (e) {}
+      try { t = localStorage.getItem("dip-theme") === "dark" ? "dark" : "light"; } catch (e) {}
       document.documentElement.setAttribute("data-theme", t);
+      document.documentElement.setAttribute("data-bs-theme", t);
       document.documentElement.style.colorScheme = t;
-      if (t === "dark") { document.documentElement.classList.add("is-dark"); }
     })();
   </script>
 </head>
-<body data-theme="light">
+<body>
 <div class="app-wrapper">
 
   {% if user.is_authenticated %}
@@ -57,7 +57,9 @@
       <div>{% block page_header %}{% endblock %}</div>
       <div class="topbar-actions">
         <!-- Theme toggle -->
-        <button type="button" id="theme-toggle" class="control-icon-btn" title="{% trans 'Toggle theme' %}">
+        <button type="button" id="theme-toggle" class="control-icon-btn" title="{% trans 'Toggle theme' %}"
+                aria-label="{% trans 'Toggle theme' %}" aria-pressed="false"
+                data-label-light="{% trans 'Light' %}" data-label-dark="{% trans 'Dark' %}">
           <span data-theme-icon>☀</span><span data-theme-label>{% trans 'Light' %}</span>
         </button>
         <!-- Language toggle button -->
@@ -90,6 +92,6 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-<script src="{% static 'js/theme.js' %}"></script>
+<script src="{% static 'js/theme.js' %}?v=2"></script>
 </body>
 </html>

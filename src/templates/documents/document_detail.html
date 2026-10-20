@@ -5,7 +5,10 @@
 
 {% block content %}
 {% if document.status == 'uploaded' or document.status == 'processing' %}
-<meta http-equiv="refresh" content="3">
+<div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3">
+  <p class="text-muted mb-0">{% trans "Processing continues in the background. You can preview the original file now." %}</p>
+  <a class="control-icon-btn" href="{% url 'documents:detail' document.pk %}">{% trans "Refresh status" %} ↻</a>
+</div>
 {% endif %}
 
 <div class="card mb-4">
@@ -38,10 +41,61 @@
   </div>
 </div>
 
+<section class="card mb-4" aria-labelledby="preview-heading">
+  <div class="card-header d-flex justify-content-between align-items-center flex-wrap gap-2">
+    <h2 class="h5 mb-0" id="preview-heading">{% trans "File preview" %}</h2>
+    <div class="d-flex gap-2 flex-wrap">
+      {% if document.doc_type == 'pdf' %}
+      <a class="control-icon-btn" href="{% url 'documents:file' document.pk %}" target="_blank" rel="noopener">{% trans "Open original" %} ↗</a>
+      {% endif %}
+      <a class="control-icon-btn" href="{% url 'documents:file' document.pk %}?download=1">{% trans "Download original" %} ↓</a>
+    </div>
+  </div>
+  <div class="card-body">
+    {% if preview.kind == 'pdf' %}
+      <object class="document-pdf-preview" data="{% url 'documents:file' document.pk %}" type="application/pdf" aria-label="{{ document.original_filename }}">
+        <p>{% trans "Your browser cannot display this PDF. Open or download the original file using the buttons above." %}</p>
+      </object>
+    {% elif preview.kind == 'text' %}
+      <pre class="document-text-preview" tabindex="0">{{ preview.text }}</pre>
+    {% elif preview.kind == 'table' %}
+      {% if preview.sheets %}
+      <form method="get" class="d-flex align-items-center gap-2 mb-3">
+        <label for="preview-sheet">{% trans "Sheet" %}</label>
+        <select class="form-select w-auto" id="preview-sheet" name="sheet">
+          {% for sheet in preview.sheets %}
+          <option value="{{ sheet }}" {% if sheet == preview.selected_sheet %}selected{% endif %}>{{ sheet }}</option>
+          {% endfor %}
+        </select>
+        <button class="control-icon-btn" type="submit">{% trans "View" %}</button>
+      </form>
+      {% endif %}
+      <div class="table-responsive document-table-preview" role="region" aria-label="{% trans 'File preview' %}" tabindex="0">
+        <table class="table table-striped table-hover mb-0">
+          <caption class="visually-hidden">{{ document.original_filename }}</caption>
+          <tbody>
+            {% for row in preview.rows %}
+            <tr>{% for cell in row %}<td>{{ cell }}</td>{% endfor %}</tr>
+            {% empty %}
+            <tr><td>{% trans "This file or sheet is empty." %}</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% else %}
+      <p class="text-muted mb-0">{% trans "Preview is unavailable. You can try downloading the original file." %}</p>
+    {% endif %}
+    {% if preview.truncated %}
+      <p class="text-muted small mt-3 mb-0">{% trans "This preview shows only the beginning of the file (up to 100 rows and 30 columns for tables). Download the original to view all content." %}</p>
+    {% endif %}
+  </div>
+</section>
+
 {% if document.status == 'ready' %}
 <div class="card">
   <div class="card-body">
-    <h2 class="h5 mb-3">{% trans "Chunks" %} ({{ chunk_count }})</h2>
+    <details>
+    <summary class="h5 mb-3">{% trans "Chunks" %} ({{ chunk_count }})</summary>
     {% if chunks %}
     <ul class="list-group list-group-flush">
       {% for chunk in chunks %}
@@ -56,6 +110,7 @@
       {% endfor %}
     </ul>
     {% endif %}
+    </details>
   </div>
 </div>
 {% endif %}

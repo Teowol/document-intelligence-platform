@@ -1,8 +1,11 @@
+import logging
+
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.cache import cache
 from django.core.exceptions import PermissionDenied, ValidationError
 from django.db.models import Q, Sum
+from django.http import FileResponse, Http404
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse_lazy
 from django.views.generic import DeleteView, DetailView, ListView, TemplateView, View
@@ -13,10 +16,20 @@ from accounts.models import CustomUser
 from .ai_engine import search_semantic
 from .forms import DocumentUploadForm
 from .models import Document, DocumentChunk
+from .preview import build_preview
 from .qa import answer_question
 from .ratelimit import require_rate_limit
 from .tasks import process_document
 from .validators import sanitize_filename, validate_upload
+
+logger = logging.getLogger(__name__)
+
+
+def _visible_document(user, pk):
+    doc = get_object_or_404(Document, pk=pk)
+    if doc.owner_id == user.pk or doc.is_public or _is_admin(user):
+        return doc
+    raise PermissionDenied("You do not have permission to view this document.")
 
 
 def _bust_dashboard_cache(user_pk: int) -> None:
@@ -182,17 +195,45 @@ class DocumentDetailView(LoginRequiredMixin, DetailView):
     template_name = "documents/document_detail.html"
 
     def get_object(self, queryset=None):
-        doc = get_object_or_404(Document, pk=self.kwargs["pk"])
-        user = self.request.user
-        if doc.owner_id == user.pk or doc.is_public or _is_admin(user):
-            return doc
-        raise PermissionDenied("Bu dokümanı görüntüleme yetkiniz yok.")
+        return _visible_document(self.request.user, self.kwargs["pk"])
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["chunks"] = self.object.chunks.order_by("chunk_index")[:5]
         context["chunk_count"] = self.object.chunks.count()
+        try:
+            context["preview"] = build_preview(self.object, self.request.GET.get("sheet"))
+        except Exception:
+            logger.exception("Preview failed for document %s", self.object.pk)
+            context["preview"] = {"kind": "unavailable"}
         return context
+
+
+class DocumentFileView(LoginRequiredMixin, View):
+    """Stream originals through the same permissions as the document page."""
+
+    def get(self, request, pk):
+        document = _visible_document(request.user, pk)
+        try:
+            source = document.file.open("rb")
+        except (OSError, ValueError) as exc:
+            raise Http404("File is unavailable.") from exc
+        content_types = {
+            "pdf": "application/pdf",
+            "xlsx": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            "csv": "text/csv",
+            "txt": "text/plain",
+            "md": "text/plain",
+        }
+        response = FileResponse(
+            source,
+            as_attachment=request.GET.get("download") == "1" or document.doc_type != "pdf",
+            filename=document.original_filename,
+            content_type=content_types.get(document.doc_type, "application/octet-stream"),
+        )
+        response["X-Frame-Options"] = "SAMEORIGIN"
+        response["Cache-Control"] = "private, no-store"
+        return response
 
 
 class DocumentDeleteView(LoginRequiredMixin, DeleteView):

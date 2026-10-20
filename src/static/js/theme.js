@@ -7,14 +7,13 @@
 
   function applyTheme(theme) {
     document.documentElement.setAttribute("data-theme", theme);
-    // Mirror onto <body> so any CSS that targets body still works.
-    document.body.setAttribute("data-theme", theme);
+    document.documentElement.setAttribute("data-bs-theme", theme);
+    document.documentElement.style.colorScheme = theme;
     try { localStorage.setItem(THEME_KEY, theme); } catch (e) { /* storage off */ }
   }
 
   function currentTheme() {
-    try { return localStorage.getItem(THEME_KEY) || "light"; }
-    catch (e) { return "light"; }
+    return document.documentElement.getAttribute("data-theme") === "dark" ? "dark" : "light";
   }
 
   function toggleTheme() {
@@ -40,7 +39,8 @@
     var label = btn.querySelector("[data-theme-label]");
     var dark = currentTheme() === "dark";
     if (icon) icon.textContent = dark ? "☾" : "☀"; // moon for dark, sun for light
-    if (label) label.textContent = dark ? "Dark" : "Light";
+    if (label) label.textContent = btn.getAttribute(dark ? "data-label-dark" : "data-label-light") || (dark ? "Dark" : "Light");
+    btn.setAttribute("aria-pressed", String(dark));
   }
 
   // Let base template call this after it swaps in the button too.

@@ -231,3 +231,36 @@ msgstr "için"
 
 msgid "check."
 msgstr "kontrolünü"
+
+msgid "File preview"
+msgstr "Dosya önizlemesi"
+
+msgid "Processing continues in the background. You can preview the original file now."
+msgstr "İşlem arka planda devam ediyor. Orijinal dosyayı şimdiden görüntüleyebilirsiniz."
+
+msgid "Refresh status"
+msgstr "Durumu yenile"
+
+msgid "Open original"
+msgstr "Orijinali aç"
+
+msgid "Download original"
+msgstr "Orijinali indir"
+
+msgid "Your browser cannot display this PDF. Open or download the original file using the buttons above."
+msgstr "Tarayıcınız bu PDF dosyasını gösteremiyor. Yukarıdaki düğmelerle orijinal dosyayı açabilir veya indirebilirsiniz."
+
+msgid "Sheet"
+msgstr "Çalışma sayfası"
+
+msgid "View"
+msgstr "Görüntüle"
+
+msgid "This file or sheet is empty."
+msgstr "Bu dosya veya çalışma sayfası boş."
+
+msgid "Preview is unavailable. You can try downloading the original file."
+msgstr "Önizleme kullanılamıyor. Orijinal dosyayı indirmeyi deneyebilirsiniz."
+
+msgid "This preview shows only the beginning of the file (up to 100 rows and 30 columns for tables). Download the original to view all content."
+msgstr "Önizlemede dosyanın yalnızca başlangıcı gösterilir (tablolarda en fazla 100 satır ve 30 sütun). Tüm içeriği görmek için orijinal dosyayı indirin."

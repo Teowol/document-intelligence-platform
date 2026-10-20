@@ -9,6 +9,8 @@
   --surface-2: #efe7cf;
   --border: #d9cfa8;
   --text: #3f3424;           /* warm brown-ish ink */
+  --text-rgb: 63, 52, 36;
+  --bg-rgb: 247, 242, 227;
   --text-muted: #7a6c52;
   --accent: #a77b2f;         /* aged gold */
   --accent-ink: #fff6e0;
@@ -29,6 +31,8 @@
   --surface-2: #3a2f58;
   --border: #4a3a6b;
   --text: #ece6fa;
+  --text-rgb: 236, 230, 250;
+  --bg-rgb: 33, 26, 48;
   --text-muted: #a79cc0;
   --accent: #8e7bd8;          /* soft violet accent */
   --accent-ink: #221a33;
@@ -39,6 +43,25 @@
   --warning: #e0b35a;
   --info: #7fa7d3;
   --shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
+}
+
+/* Bootstrap components must inherit the same palette as custom components.
+   Cards, form helpers and tables use these variables instead of body color. */
+:root, [data-bs-theme] {
+  --bs-body-color: var(--text);
+  --bs-body-color-rgb: var(--text-rgb);
+  --bs-body-bg: var(--bg);
+  --bs-body-bg-rgb: var(--bg-rgb);
+  --bs-emphasis-color: var(--text);
+  --bs-emphasis-color-rgb: var(--text-rgb);
+  --bs-secondary-color: var(--text-muted);
+  --bs-tertiary-color: var(--text-muted);
+  --bs-secondary-bg: var(--surface-2);
+  --bs-tertiary-bg: var(--bg-soft);
+  --bs-border-color: var(--border);
+  --bs-heading-color: var(--text);
+  --bs-link-color: var(--accent-contrast);
+  --bs-link-hover-color: var(--text);
 }
 
 body {
@@ -98,7 +121,7 @@ html {
 .control-icon-btn:hover { border-color: var(--accent); }
 
 /* ---------- cards / KPIs ---------- */
-.card, .kpi-card, .stat-card, .doc-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; box-shadow: var(--shadow); }
+.card, .kpi-card, .stat-card, .doc-card { background: var(--surface); color: var(--text); border: 1px solid var(--border); border-radius: 12px; box-shadow: var(--shadow); }
 .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; margin-bottom: 1.5rem; }
 .kpi-card { padding: 1rem 1.2rem; }
 .kpi-card .kpi-label { font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); }
@@ -111,7 +134,7 @@ html {
 .status-dot.uploaded { background: var(--info); }
 .status-dot.error { background: var(--danger); }
 
-.badge-role-admin, .badge-role-editor, .badge-role-viewer { color: #fff; }
+.badge-role-admin, .badge-role-editor, .badge-role-viewer { background: var(--surface-2); color: var(--text); border: 1px solid var(--border); }
 
 .doc-card { display: flex; flex-direction: column; padding: 1rem; }
 .doc-card .doc-title { font-weight: 600; color: var(--text); text-decoration: none; }
@@ -128,13 +151,18 @@ input[type="text"]:focus, input[type="email"]:focus, input[type="password"]:focu
 .form-control:focus, .form-select:focus {
   background: var(--surface); color: var(--text); border-color: var(--accent); box-shadow: 0 0 0 0.15rem rgba(167, 123, 47, 0.2);
 }
-input::placeholder, textarea::placeholder { color: var(--text-muted); }
+input::placeholder, textarea::placeholder, .form-control::placeholder { color: var(--text-muted); opacity: 1; }
 .form-control, .form-select { background: var(--surface); color: var(--text); border: 1px solid var(--border); }
 .table { --bs-table-bg: transparent; color: var(--text) !important; }
 .table-striped > tbody > tr:nth-of-type(odd) > * { background-color: var(--surface-2); color: var(--text); --bs-table-color-state: var(--text); }
 .table-hover > tbody > tr:hover > * { background-color: var(--surface-2); color: var(--text); }
 
 /* ---------- chat / QA ---------- */
+.document-pdf-preview { display: block; width: 100%; height: 72vh; min-height: 360px; border: 1px solid var(--border); border-radius: 8px; }
+.document-text-preview { max-height: 70vh; overflow: auto; white-space: pre-wrap; overflow-wrap: anywhere; padding: 1rem; background: var(--bg-soft); color: var(--text); border: 1px solid var(--border); border-radius: 8px; margin: 0; }
+.document-table-preview { max-height: 65vh; border: 1px solid var(--border); border-radius: 8px; }
+.document-table-preview td { min-width: 100px; max-width: 420px; overflow-wrap: anywhere; white-space: pre-wrap; }
+
 .chat-message { max-width: 82%; padding: 0.85rem 1rem; border-radius: 14px; margin-bottom: 1rem; }
 .chat-question { background: var(--surface-2); color: var(--text); margin-left: auto; text-align: right; }
 .chat-answer { background: var(--surface); border: 1px solid var(--border); color: var(--text); }
@@ -151,7 +179,7 @@ input::placeholder, textarea::placeholder { color: var(--text-muted); }
 .empty-state { text-align: center; padding: 3rem 1rem; color: var(--text-muted); }
 .empty-state .big-ico { font-size: 3rem; opacity: 0.5; }
 
-h1, h2, h3 { color: var(--text); }
+h1, h2, h3, h4, h5, h6 { color: var(--text); }
 a { color: var(--accent-contrast); }
 hr { border-color: var(--border); }
 .text-muted { color: var(--text-muted) !important; }
@@ -226,12 +254,9 @@ hr { border-color: var(--border); }
 }
 
 /* Buttons (outline / secondary) keep contrast from black text. */
-[data-theme="dark"] .btn-primary,
 [data-theme="dark"] .btn-secondary,
 [data-theme="dark"] .btn-success,
 [data-theme="dark"] .btn-danger,
-[data-theme="dark"] .btn-warning,
-[data-theme="dark"] .btn-info,
 [data-theme="dark"] .btn-dark {
   color: #fff !important;
 }
@@ -268,7 +293,19 @@ hr { border-color: var(--border); }
   background-color: var(--surface-2) !important;
 }
 [data-theme="dark"] .badge.bg-dark {
-  color: var(--accent-ink) !important;
+  color: var(--text) !important;
+}
+
+.btn-primary {
+  --bs-btn-color: var(--accent-ink);
+  --bs-btn-bg: var(--accent);
+  --bs-btn-border-color: var(--accent);
+  --bs-btn-hover-color: var(--accent-ink);
+  --bs-btn-hover-bg: var(--accent);
+  --bs-btn-hover-border-color: var(--accent-contrast);
+  --bs-btn-active-color: var(--accent-ink);
+  --bs-btn-active-bg: var(--accent);
+  --bs-btn-active-border-color: var(--accent-contrast);
 }
 
 @media (max-width: 768px) {
