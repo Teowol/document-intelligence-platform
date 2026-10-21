@@ -35,6 +35,13 @@
 .profile-photo-controls:focus-within .control-icon-btn { outline: 2px solid var(--accent); outline-offset: 3px; }
 .profile-photo-controls p { font-size: 0.68rem; color: var(--text-muted); margin: 0.5rem 0 0; }
 .profile-photo-controls .form-check { font-size: 0.72rem; margin-top: 0.6rem; color: var(--text-muted); }
+.profile-photo-controls { min-width: 0; }
+.profile-avatar-shell { position: relative; width: 68px; flex-shrink: 0; }
+.avatar-trash { position: absolute; top: -2px; right: -4px; display: grid; place-items: center; width: 29px; height: 29px; border: 1px solid var(--border); border-radius: 50%; background: var(--surface); color: #b42332; cursor: pointer; }
+.avatar-trash svg { width: 16px; height: 16px; }
+.avatar-trash:hover { background: var(--surface-2); color: #8f1c28; }
+.avatar-trash:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+.avatar-trash:disabled { opacity: 0.55; cursor: wait; }
 .profile-photo-note { color: var(--accent-contrast); font-size: 0.75rem; }
 .profile-fields { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.25rem; }
 .profile-field-full { grid-column: 1 / -1; }

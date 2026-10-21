@@ -2,7 +2,7 @@
 {% load i18n static %}
 {% block title %}{% trans "Profile" %} · DIP{% endblock %}
 {% block page_header %}<h1 class="h4 mb-0">{% trans "Profile" %}</h1>{% endblock %}
-{% block extra_head %}<link rel="stylesheet" href="{% static 'css/profile.css' %}">{% endblock %}
+{% block extra_head %}<link rel="stylesheet" href="{% static 'css/profile.css' %}?v=4">{% endblock %}
 {% block content %}
 <div class="profile-intro"><p class="profile-eyebrow">{% trans "Your personal workspace" %}</p><h2>{% trans "A little more you." %}</h2><p>{% trans "Manage how you appear and keep your account details up to date." %}</p></div>
 <div class="profile-layout">
@@ -25,11 +25,13 @@
       <div class="profile-panel-heading"><span class="profile-eyebrow">{% trans "Personal information" %}</span><h3 id="personal-heading">{% trans "Make it yours" %}</h3><p>{% trans "Your changes are applied when you save." %}</p></div>
       <form method="post" enctype="multipart/form-data" data-profile-form>
         {% csrf_token %}
+        <div hidden>{{ form.remove_avatar }}</div>
         <div class="profile-form-body">
           {{ form.non_field_errors }}
           <div class="profile-photo-editor">
-            <div class="profile-avatar"><img data-avatar-image {% if user.avatar %}src="{% url 'accounts:avatar' %}"{% else %}hidden{% endif %} alt="{% trans 'Profile photo preview' %}"><span data-avatar-initials {% if user.avatar %}hidden{% endif %}>{{ profile_initials }}</span></div>
-            <div class="profile-photo-controls"><label class="control-icon-btn" for="{{ form.avatar.id_for_label }}">↥ {% trans "Choose photo" %}</label><div class="visually-hidden">{{ form.avatar }}</div><p>{% trans "JPG, PNG or WebP. Up to 5 MB." %}</p>{% if user.avatar %}<div class="form-check">{{ form.remove_avatar }}<label class="form-check-label" for="{{ form.remove_avatar.id_for_label }}">{% trans "Remove profile photo" %}</label></div>{% endif %}</div>
+            <div class="profile-avatar-shell"><div class="profile-avatar"><img data-avatar-image {% if user.avatar %}src="{% url 'accounts:avatar' %}"{% else %}hidden{% endif %} alt="{% trans 'Profile photo preview' %}"><span data-avatar-initials {% if user.avatar %}hidden{% endif %}>{{ profile_initials }}</span></div><button class="avatar-trash" type="button" data-delete-avatar aria-label="{% trans 'Remove profile photo' %}" title="{% trans 'Remove profile photo' %}" {% if not user.avatar %}hidden{% endif %}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M3 6h18M9 6V4h6v2M6 6l1 14h10l1-14M10 10v6M14 10v6"/></svg></button></div>
+            <div class="profile-photo-controls"><label class="control-icon-btn" for="{{ form.avatar.id_for_label }}">↥ {% trans "Choose photo" %}</label><div class="visually-hidden">{{ form.avatar }}</div><p>{% trans "JPG, PNG or WebP. Up to 5 MB." %}</p>
+            </div>
           </div>
           {{ form.avatar.errors }}
           <p class="profile-photo-note" data-photo-note hidden>{% trans "Photo selected. Save changes to update your profile." %}</p>
@@ -50,5 +52,5 @@
     </section>
   </div>
 </div>
-<script src="{% static 'js/profile.js' %}"></script>
+<script src="{% static 'js/profile.js' %}?v=4"></script>
 {% endblock %}

@@ -51,6 +51,105 @@ msgstr "DIP"
 msgid "Dashboard"
 msgstr "Kontrol Paneli"
 
+msgid "Your workspace at a glance"
+msgstr "Çalışma alanınıza genel bakış"
+
+msgid "Welcome back,"
+msgstr "Tekrar hoş geldiniz,"
+
+msgid "Your documents, insights, and next steps. All in one place."
+msgstr "Belgeleriniz, keşifleriniz ve sonraki adımlarınız. Hepsi bir arada."
+
+msgid "Ask your documents"
+msgstr "Belgelerinize sorun"
+
+msgid "Search your library"
+msgstr "Kitaplığınızda arayın"
+
+msgid "Find an idea in your documents..."
+msgstr "Belgelerinizde bir fikir arayın..."
+
+msgid "Some documents need your attention"
+msgstr "Bazı belgelerinizin kontrol edilmesi gerekiyor"
+
+msgid "Review the failed uploads and retry processing from their document pages."
+msgstr "Hata veren belgeleri inceleyip belge sayfalarından yeniden işlemeyi deneyin."
+
+msgid "added in the last 7 days"
+msgstr "son 7 günde eklendi"
+
+msgid "Text passages"
+msgstr "Metin parçaları"
+
+msgid "Extracted from your accessible documents"
+msgstr "Erişebildiğiniz belgelerden çıkarıldı"
+
+msgid "Across your document library"
+msgstr "Belge kitaplığınızın toplam boyutu"
+
+msgid "Text processed"
+msgstr "Metni işlenen"
+
+msgid "documents parsed"
+msgstr "belgenin metni çıkarıldı"
+
+msgid "Document"
+msgstr "Belge"
+
+msgid "Status"
+msgstr "Durum"
+
+msgid "Added"
+msgstr "Eklenme"
+
+msgid "Your library starts here"
+msgstr "Kitaplığınız burada başlıyor"
+
+msgid "Upload a document to start exploring its ideas."
+msgstr "İçindeki bilgileri keşfetmek için ilk belgenizi yükleyin."
+
+msgid "Library health"
+msgstr "Kitaplığınızın durumu"
+
+msgid "Processing overview"
+msgstr "İşlem dağılımı"
+
+msgid "Waiting"
+msgstr "Sırada bekliyor"
+
+msgid "Needs attention"
+msgstr "Kontrol gerekiyor"
+
+msgid "The shape of your library"
+msgstr "Kitaplığınızın içeriği"
+
+msgid "File formats"
+msgstr "Dosya türleri"
+
+msgid "Your file format breakdown will appear after your first upload."
+msgstr "İlk yüklemenizden sonra dosya türü dağılımınız burada görünecek."
+
+msgid "Continue your research"
+msgstr "Araştırmanıza devam edin"
+
+msgid "Recent questions"
+msgstr "Son sorular"
+
+msgid "Open chat"
+msgstr "Sohbete git"
+
+msgid "A good question is a great start."
+msgstr "İyi bir soru, güzel bir başlangıçtır."
+
+msgid "Ask about your documents. Saved answers will appear here."
+msgstr "Belgelerinize sorular sorun. Kaydedilen yanıtlarınız burada görünecek."
+
+msgid "Ask your first question"
+msgstr "İlk sorunuzu sorun"
+
+msgid "Showing documents you own or can access. Your chat history is personal."
+msgstr "Sahibi olduğunuz veya erişebildiğiniz belgeler gösterilir. Sohbet geçmişiniz size özeldir."
+
 msgid "Delete document"
 msgstr "Dokümanı sil"
 
@@ -113,6 +212,21 @@ msgstr "Kendinizden ve araştırma alanlarınızdan kısaca bahsedin."
 
 msgid "Remove profile photo"
 msgstr "Profil fotoğrafını kaldır"
+
+msgid "Could not remove the photo. Please try again."
+msgstr "Fotoğraf kaldırılamadı. Lütfen tekrar deneyin."
+
+msgid "Are you sure?"
+msgstr "Emin misiniz?"
+
+msgid "Yes, remove"
+msgstr "Evet, kaldır"
+
+msgid "Your photo will be removed when you save."
+msgstr "Fotoğrafınız değişiklikleri kaydettiğinizde kaldırılacak."
+
+msgid "Undo"
+msgstr "Geri al"
 
 msgid "First name"
 msgstr "Ad"

@@ -110,6 +110,40 @@ def test_other_users_cannot_fetch_profile_photo(client, owner):
     assert client.get(reverse("accounts:avatar"), {"user": owner.pk}).status_code == 404
 
 
+def test_photo_deletion_requires_saving_profile(client, owner, django_capture_on_commit_callbacks):
+    client.post(reverse("accounts:profile"), {"username": owner.username, "avatar": photo()})
+    owner.refresh_from_db()
+    old_name, storage = owner.avatar.name, owner.avatar.storage
+    response = client.post(reverse("accounts:avatar"))
+    assert response.status_code == 405
+    owner.refresh_from_db()
+    assert owner.avatar.name == old_name and storage.exists(old_name)
+    with django_capture_on_commit_callbacks(execute=True):
+        response = client.post(reverse("accounts:profile"), {"username": owner.username, "remove_avatar": "on"})
+    assert response.status_code == 302
+    owner.refresh_from_db()
+    assert not owner.avatar and not owner.first_name
+    assert not storage.exists(old_name)
+
+
+def test_logout_returns_to_public_landing_page(client, owner):
+    response = client.post(reverse("account_logout"))
+    assert response.url == reverse("home")
+    response = client.get(response.url)
+    assert response.status_code == 200
+    assert b'landing-hero' in response.content
+
+
+def test_trash_requires_login_and_csrf(client, owner):
+    from django.test import Client
+
+    protected = Client(enforce_csrf_checks=True)
+    protected.force_login(owner)
+    assert protected.post(reverse("accounts:avatar")).status_code == 403
+    client.logout()
+    assert client.post(reverse("accounts:avatar")).status_code == 302
+
+
 def test_profile_is_localized_and_security_pages_render(client, owner):
     client.cookies["django_language"] = "tr"
     response = client.get(reverse("accounts:profile"))

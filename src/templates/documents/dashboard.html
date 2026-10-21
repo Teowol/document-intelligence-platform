@@ -1,66 +1,40 @@
 {% extends "base.html" %}
-{% load i18n %}
-{% block title %}{% trans "Dashboard" %} · DIP{% endblock %}
+{% load i18n static %}
+{% block title %}{% trans "Dashboard" %} &middot; DIP{% endblock %}
 {% block page_header %}<h1 class="h4 mb-0">{% trans "Overview" %}</h1>{% endblock %}
-
+{% block extra_head %}<link rel="stylesheet" href="{% static 'css/dashboard.css' %}">{% endblock %}
 {% block content %}
-<div class="kpi-grid">
-  <div class="kpi-card">
-    <div class="kpi-label">{% trans "Documents" %}</div>
-    <div class="kpi-value">{{ total_docs }}</div>
-    <div class="text-muted">📄 {% trans "total" %}</div>
+<div class="dashboard">
+  <section class="dashboard-welcome" aria-labelledby="welcome-heading">
+    <div><p class="dash-eyebrow">{% trans "Your workspace at a glance" %}</p><h2 id="welcome-heading">{% trans "Welcome back," %} <span>{{ user.first_name|default:user.username }}.</span></h2><p>{% trans "Your documents, insights, and next steps. All in one place." %}</p></div>
+    <div class="dashboard-hero-actions"><a class="control-icon-btn" href="{% url 'documents:ask' %}">{% trans "Ask your documents" %} &nearr;</a><a class="btn btn-primary" href="{% url 'documents:upload' %}">+ {% trans "Upload document" %}</a></div>
+  </section>
+  <div class="dashboard-toolbar"><form class="dashboard-search" method="get" action="{% url 'documents:search' %}"><label class="visually-hidden" for="dashboard-query">{% trans "Search your library" %}</label><span aria-hidden="true">&#9906;</span><input id="dashboard-query" name="q" type="search" required maxlength="4000" placeholder="{% trans 'Find an idea in your documents...' %}"><button type="submit" aria-label="{% trans 'Search' %}">&rarr;</button></form><span class="dashboard-date">{% now "DATE_FORMAT" %}</span></div>
+  {% if errored %}<a class="dashboard-attention" href="{% url 'documents:list' %}?status=error"><span aria-hidden="true">!</span><div><strong>{% trans "Some documents need your attention" %}</strong><small>{% trans "Review the failed uploads and retry processing from their document pages." %}</small></div><span class="attention-count">{{ errored }}</span><span aria-hidden="true">&rarr;</span></a>{% endif %}
+  <div class="dashboard-metrics">
+    <article class="dash-metric"><div class="dash-metric-heading"><span>{% trans "Documents" %}</span><span class="dash-metric-icon" aria-hidden="true">&#9636;</span></div><strong>{{ total_docs }}</strong><p><span class="metric-accent">+{{ new_this_week }}</span> {% trans "added in the last 7 days" %}</p></article>
+    <article class="dash-metric"><div class="dash-metric-heading"><span>{% trans "Text passages" %}</span><span class="dash-metric-icon" aria-hidden="true">&#8801;</span></div><strong>{{ visible_chunks }}</strong><p>{% trans "Extracted from your accessible documents" %}</p></article>
+    <article class="dash-metric"><div class="dash-metric-heading"><span>{% trans "Storage" %}</span><span class="dash-metric-icon" aria-hidden="true">&#9707;</span></div><strong class="metric-storage">{{ total_size|filesizeformat }}</strong><p>{% trans "Across your document library" %}</p></article>
+    <article class="dash-metric"><div class="dash-metric-heading"><span>{% trans "Text processed" %}</span><span class="dash-metric-icon" aria-hidden="true">&#10003;</span></div><strong>{{ ready_rate }}<small>%</small></strong><p>{{ processed }} / {{ total_docs }} {% trans "documents parsed" %}</p><progress class="metric-progress" max="100" value="{{ ready_rate }}" aria-label="{% trans 'Text processed' %}"></progress></article>
   </div>
-  <div class="kpi-card">
-    <div class="kpi-label">{% trans "Chunks" %}</div>
-    <div class="kpi-value">{{ visible_chunks }}</div>
-    <div class="text-muted">🔗 {% trans "searchable" %}</div>
+  <div class="dashboard-main-grid">
+    <section class="dash-panel" aria-labelledby="recent-heading"><div class="dash-panel-heading"><div><p class="dash-eyebrow">{% trans "Pick up where you left off" %}</p><h3 id="recent-heading">{% trans "Recent documents" %}</h3></div><a href="{% url 'documents:list' %}">{% trans "View all" %} &rarr;</a></div>
+      <div class="dash-document-table">
+        {% if recent_documents %}<div class="dash-document-columns" aria-hidden="true"><span>{% trans "Document" %}</span><span>{% trans "Status" %}</span><span>{% trans "Added" %}</span><span></span></div>{% endif %}
+        {% for doc in recent_documents %}
+        <a class="dash-document-row" href="{% url 'documents:detail' doc.pk %}"><span class="dash-document-identity"><span class="dash-file-icon file-{{ doc.doc_type }}">{{ doc.doc_type|upper }}</span><span><strong>{{ doc.title }}</strong><small>{{ doc.size_bytes|filesizeformat }} &middot; {{ doc.get_doc_type_display }}{% if doc.is_public %} &middot; {% trans "public" %}{% endif %}</small></span></span><span class="dash-status status-{{ doc.status }}"><span class="status-dot {{ doc.status }}"></span>{{ doc.get_status_display }}</span><time datetime="{{ doc.created_at|date:'c' }}">{{ doc.created_at|date:"SHORT_DATE_FORMAT" }}</time><span class="dash-document-arrow" aria-hidden="true">&nearr;</span></a>
+        {% empty %}<div class="dashboard-empty"><span aria-hidden="true">&#9636;</span><h4>{% trans "Your library starts here" %}</h4><p>{% trans "Upload a document to start exploring its ideas." %}</p><a class="control-icon-btn" href="{% url 'documents:upload' %}">+ {% trans "Upload document" %}</a></div>{% endfor %}
+      </div>
+    </section>
+    <section class="dash-panel" aria-labelledby="processing-heading"><div class="dash-panel-heading"><div><p class="dash-eyebrow">{% trans "Library health" %}</p><h3 id="processing-heading">{% trans "Processing overview" %}</h3></div></div>
+      <div class="dashboard-ring"><svg viewBox="0 0 120 120" aria-hidden="true"><circle class="ring-track" cx="60" cy="60" r="49"/>{% if processed %}<circle class="ring-fill" cx="60" cy="60" r="49" pathLength="100" stroke-dasharray="{{ ready_rate }} 100"/>{% endif %}</svg><div><strong>{{ ready_rate }}<small>%</small></strong><span>{% trans "Text processed" %}</span></div></div>
+      <div class="dashboard-status-list"><a href="{% url 'documents:list' %}?status=ready"><span><i class="status-dot ready"></i>{% trans "Ready" %}</span><strong>{{ processed }}</strong></a><a href="{% url 'documents:list' %}?status=processing"><span><i class="status-dot processing"></i>{% trans "Processing" %}</span><strong>{{ processing }}</strong></a><a href="{% url 'documents:list' %}?status=uploaded"><span><i class="status-dot uploaded"></i>{% trans "Waiting" %}</span><strong>{{ uploaded }}</strong></a><a href="{% url 'documents:list' %}?status=error"><span><i class="status-dot error"></i>{% trans "Needs attention" %}</span><strong>{{ errored }}</strong></a></div>
+    </section>
   </div>
-  <div class="kpi-card">
-    <div class="kpi-label">{% trans "Storage" %}</div>
-    <div class="kpi-value">{{ total_size|filesizeformat }}</div>
-    <div class="text-muted">💾 {% trans "total size" %}</div>
+  <div class="dashboard-bottom-grid">
+    <section class="dash-panel" aria-labelledby="formats-heading"><div class="dash-panel-heading"><div><p class="dash-eyebrow">{% trans "The shape of your library" %}</p><h3 id="formats-heading">{% trans "File formats" %}</h3></div><span class="dash-panel-meta">{{ total_docs }} {% trans "Documents" %}</span></div><div class="dashboard-formats">{% for format in type_breakdown %}<div class="format-row"><span>{{ format.label }}</span><progress max="100" value="{{ format.percent }}" aria-label="{{ format.label }}"></progress><strong>{{ format.count }}</strong></div>{% empty %}<p class="text-muted small mb-0">{% trans "Your file format breakdown will appear after your first upload." %}</p>{% endfor %}</div><div class="dash-panel-note">PDF &middot; Excel &middot; CSV &middot; TXT &middot; Markdown</div></section>
+    <section class="dash-panel" aria-labelledby="questions-heading"><div class="dash-panel-heading"><div><p class="dash-eyebrow">{% trans "Continue your research" %}</p><h3 id="questions-heading">{% trans "Recent questions" %}</h3></div><a href="{% url 'documents:ask' %}">{% trans "Open chat" %} &nearr;</a></div><div class="dashboard-questions">{% for chat in recent_chats %}<a href="{% url 'documents:ask' %}?chat={{ chat.pk }}"><span class="question-icon" aria-hidden="true">&#10022;</span><span><strong>{{ chat.question }}</strong><small>{{ chat.created_at|date:"SHORT_DATE_FORMAT" }}</small></span><span aria-hidden="true">&nearr;</span></a>{% empty %}<div class="dashboard-chat-empty"><strong>{% trans "A good question is a great start." %}</strong><p>{% trans "Ask about your documents. Saved answers will appear here." %}</p><a class="control-icon-btn" href="{% url 'documents:ask' %}">{% trans "Ask your first question" %} &rarr;</a></div>{% endfor %}</div></section>
   </div>
-  <div class="kpi-card">
-    <div class="kpi-label">{% trans "Ready rate" %}</div>
-    <div class="kpi-value">{{ ready_rate }}%</div>
-    <div class="text-muted">✅ {% trans "processed" %}</div>
-  </div>
-</div>
-
-<!-- status breakdown -->
-<div class="card p-3 mb-4">
-  <h2 class="h5 mb-3">{% trans "Processing status" %}</h2>
-  <div class="d-flex flex-wrap gap-3">
-    <span class="control-icon-btn"><span class="status-dot ready"></span>{% trans "Ready" %}: <strong>{{ processed }}</strong></span>
-    <span class="control-icon-btn"><span class="status-dot processing"></span>{% trans "Processing" %}: <strong>{{ processing }}</strong></span>
-    <span class="control-icon-btn"><span class="status-dot uploaded"></span>{% trans "Uploaded" %}: <strong>{{ uploaded }}</strong></span>
-    <span class="control-icon-btn"><span class="status-dot error"></span>{% trans "Error" %}: <strong>{{ errored }}</strong></span>
-  </div>
-</div>
-
-<!-- recent documents -->
-<div class="d-flex justify-content-between align-items-center mb-2">
-  <h2 class="h5 mb-0">{% trans "Recent documents" %}</h2>
-  <a href="{% url 'documents:list' %}" class="control-icon-btn">{% trans "View all" %} →</a>
-</div>
-
-<div class="recent-grid mb-4">
-  {% for doc in recent_documents %}
-  <div class="doc-card">
-    <a class="doc-title" href="{% url 'documents:detail' doc.pk %}">{{ doc.title }}</a>
-    <div class="d-flex flex-wrap gap-1 mt-2">
-      <span class="badge bg-secondary">{{ doc.get_doc_type_display }}</span>
-      <span class="control-icon-btn py-0 px-2"><span class="status-dot {{ doc.status }}"></span>{{ doc.get_status_display }}</span>
-      {% if doc.is_public %}<span class="badge" style="background: var(--info);">{% trans "public" %}</span>{% endif %}
-    </div>
-    <small class="text-muted mt-2">{{ doc.size_bytes|filesizeformat }} · {{ doc.created_at|date:"Y-m-d H:i" }}</small>
-  </div>
-  {% empty %}
-  <div class="empty-state" style="grid-column: 1 / -1;">
-    <div class="big-ico">📂</div>
-    <p>{% trans "No documents yet. Upload your first file to get started." %}</p>
-    <a href="{% url 'documents:upload' %}" class="btn btn-primary" style="background: var(--accent); border-color: var(--accent);">⬆️ {% trans "Upload" %}</a>
-  </div>
-  {% endfor %}
+  <p class="dashboard-footnote">{% trans "Showing documents you own or can access. Your chat history is personal." %}</p>
 </div>
 {% endblock %}

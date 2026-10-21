@@ -88,7 +88,7 @@ ACCOUNT_EMAIL_VERIFICATION = "optional"  # dev-friendly; tighten in Phase 9
 ACCOUNT_UNIQUE_EMAIL = True
 ACCOUNT_SIGNUP_FIELDS = ["email**", "username", "password1*", "password2*"]
 LOGIN_REDIRECT_URL = "accounts:profile"
-LOGOUT_REDIRECT_URL = "account_login"
+LOGOUT_REDIRECT_URL = "home"
 LOGIN_URL = "account_login"
 
 MIDDLEWARE = [

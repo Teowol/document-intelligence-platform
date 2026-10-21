@@ -1,4 +1,5 @@
 import logging
+from datetime import timedelta
 
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -9,6 +10,7 @@ from django.db.models import Count, Q, Sum
 from django.http import FileResponse, Http404, JsonResponse
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse, reverse_lazy
+from django.utils import timezone
 from django.utils.translation import get_language, gettext as _
 from django.views.generic import DeleteView, DetailView, ListView, TemplateView, View
 from django.views.generic.edit import CreateView
@@ -40,6 +42,14 @@ def _bust_dashboard_cache(user_pk: int) -> None:
     cache.delete(f"dashboard_kpi_{user_pk}")
 
 
+def _visible_history(user):
+    history = QAHistory.objects.filter(owner=user)
+    if not _is_admin(user):
+        inaccessible = Document.objects.exclude(Q(owner=user) | Q(is_public=True))
+        history = history.exclude(documents__in=inaccessible)
+    return history
+
+
 class DashboardView(LoginRequiredMixin, TemplateView):
     """Overview page: KPIs, status breakdown, recent documents."""
 
@@ -58,7 +68,7 @@ class DashboardView(LoginRequiredMixin, TemplateView):
         # dashboard visits don't re-scan the whole table every request.
         cache_key = f"dashboard_kpi_{user.pk}"
         kpi = cache.get(cache_key)
-        if kpi is None:
+        if kpi is None or "type_breakdown" not in kpi:
             kpi = self._compute_kpis(docs_qs, user)
             cache.set(cache_key, kpi, timeout=30)
 
@@ -72,6 +82,9 @@ class DashboardView(LoginRequiredMixin, TemplateView):
                 "uploaded": kpi["uploaded"],
                 "errored": kpi["errored"],
                 "ready_rate": kpi["ready_rate"],
+                "new_this_week": kpi["new_this_week"],
+                "type_breakdown": kpi["type_breakdown"],
+                "recent_chats": _visible_history(user)[:3],
                 "recent_documents": docs_qs.select_related(
                     "owner"
                 ).order_by("-created_at")[:6],
@@ -82,27 +95,37 @@ class DashboardView(LoginRequiredMixin, TemplateView):
     @staticmethod
     def _compute_kpis(docs_qs, user):
         """Aggregate-heavy numbers; kept off the hot path via cache."""
-        total_docs = docs_qs.count()
-        size_summary = docs_qs.aggregate(total=Sum("size_bytes"))
-        total_size = size_summary["total"] or 0
+        totals = docs_qs.aggregate(
+            total_docs=Count("pk"), total_size=Sum("size_bytes"),
+            processed=Count("pk", filter=Q(status=Document.Status.READY)),
+            processing=Count("pk", filter=Q(status=Document.Status.PROCESSING)),
+            uploaded=Count("pk", filter=Q(status=Document.Status.UPLOADED)),
+            errored=Count("pk", filter=Q(status=Document.Status.ERROR)),
+            new_this_week=Count("pk", filter=Q(created_at__gte=timezone.now() - timedelta(days=7))),
+        )
+        total_docs = totals["total_docs"]
         visible_chunks = (
             DocumentChunk.objects.filter(
                 document__in=docs_qs.values_list("id", flat=True)
             ).count()
         )
-        processed = docs_qs.filter(status=Document.Status.READY).count()
-        processing = docs_qs.filter(status=Document.Status.PROCESSING).count()
-        uploaded = docs_qs.filter(status=Document.Status.UPLOADED).count()
-        errored = docs_qs.filter(status=Document.Status.ERROR).count()
+        formats = dict(Document.DocType.choices)
+        type_breakdown = [
+            {"label": formats[item["doc_type"]], "count": item["count"],
+             "percent": round(item["count"] / total_docs * 100) if total_docs else 0}
+            for item in docs_qs.order_by().values("doc_type").annotate(count=Count("pk")).order_by("-count", "doc_type")
+        ]
         return {
             "visible_chunks": visible_chunks,
             "total_docs": total_docs,
-            "total_size": total_size,
-            "processed": processed,
-            "processing": processing,
-            "uploaded": uploaded,
-            "errored": errored,
-            "ready_rate": round(processed / total_docs * 100) if total_docs else 0,
+            "total_size": totals["total_size"] or 0,
+            "processed": totals["processed"],
+            "processing": totals["processing"],
+            "uploaded": totals["uploaded"],
+            "errored": totals["errored"],
+            "ready_rate": round(totals["processed"] / total_docs * 100) if total_docs else 0,
+            "new_this_week": totals["new_this_week"],
+            "type_breakdown": type_breakdown,
         }
 
 
@@ -377,12 +400,7 @@ class DocumentQAView(LoginRequiredMixin, TemplateView):
         return response
 
     def history_queryset(self):
-        user = self.request.user
-        history = QAHistory.objects.filter(owner=user)
-        if not _is_admin(user):
-            inaccessible = Document.objects.exclude(Q(owner=user) | Q(is_public=True))
-            history = history.exclude(documents__in=inaccessible)
-        return history
+        return _visible_history(self.request.user)
 
     def get(self, request, *args, **kwargs):
         if request.GET.get("history") == "1":
