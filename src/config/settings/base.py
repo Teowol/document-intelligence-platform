@@ -74,7 +74,8 @@ CELERY_TASK_ACKS_LATE = True
 CELERY_TASK_TIME_LIMIT = 60 * 10  # hard kill after 10 min
 CELERY_TASK_SOFT_TIME_LIMIT = 60 * 8
 CELERY_BROKER_CONNECTION_RETRY_ON_STARTUP = True
-CELERY_TASK_DEFAULT_QUEUE = "documents"
+# Local and container workers may share Redis but have different media storage.
+CELERY_TASK_DEFAULT_QUEUE = env("CELERY_TASK_DEFAULT_QUEUE", default="documents")
 
 AUTHENTICATION_BACKENDS = [
     "django.contrib.auth.backends.ModelBackend",

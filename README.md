@@ -95,6 +95,13 @@ cd src
 celery -A config worker --pool=solo --loglevel=info   # Windows: solo pool
 ```
 
+For local development, set `CELERY_TASK_DEFAULT_QUEUE=documents-local` in
+`.env` (as in `.env.example`). Start this local worker alongside Django;
+the development Compose file provides only PostgreSQL and Redis. Docker
+production workers use the separate `documents` queue because they cannot
+read files uploaded to the Windows checkout. Restart Django and the local
+worker after changing the queue setting.
+
 On Linux/macOS omit `--pool=solo`. Pipeline: upload → task `documents.tasks.process_document` (parse + chunk) → status `processing` → `ready`, then `documents.tasks.embed_document` computes embeddings via OpenAI so documents become semantically searchable. The detail page auto-refreshes and shows the chunk preview live.
 
 The app is then available at http://127.0.0.1:8000/ (redirects to login), with:

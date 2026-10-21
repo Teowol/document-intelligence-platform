@@ -15,6 +15,7 @@ x-django-env: &django-env
   ALLOWED_HOSTS: ${ALLOWED_HOSTS:-localhost,127.0.0.1}
   DATABASE_URL: postgresql://${POSTGRES_USER:-dip_user}:${POSTGRES_PASSWORD:-dip_password}@db:5432/${POSTGRES_DB:-document_intelligence}
   REDIS_URL: redis://redis:6379/0
+  CELERY_TASK_DEFAULT_QUEUE: documents
   OPENAI_API_KEY: ${OPENAI_API_KEY:-}
   OPENAI_MODEL: ${OPENAI_MODEL:-gpt-4o-mini}
   EMBEDDING_MODEL: ${EMBEDDING_MODEL:-text-embedding-3-small}
