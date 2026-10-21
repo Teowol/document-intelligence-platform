@@ -1,18 +1,43 @@
 (function () {
   "use strict";
-  var form = document.querySelector("[data-summary-form]");
-  if (form) form.addEventListener("submit", function () {
+  function bindSummaryForm() {
+    var form = document.querySelector("[data-summary-form]");
+    if (!form || form.dataset.bound) return;
+    form.dataset.bound = "true";
+    form.addEventListener("submit", function () {
     var button = form.querySelector("button[type=submit]");
     button.disabled = true;
     button.textContent = button.dataset.pendingLabel;
     form.setAttribute("aria-busy", "true");
-  });
+    });
+  }
+  bindSummaryForm();
 
   var processing = document.querySelector("[data-document-processing]");
   if (!processing) return;
   var timer;
   var pending = false;
   var stopped = false;
+  async function updateDocument(status) {
+    var response = await fetch(window.location.href, {credentials: "same-origin", cache: "no-store"});
+    if (!response.ok || response.redirected) throw new Error("Document refresh failed");
+    var page = new DOMParser().parseFromString(await response.text(), "text/html");
+    var ids = ["summary-section", "chunks-section", "file-info-section"];
+    if (!ids.every(function (id) { return page.getElementById(id); })) throw new Error("Incomplete document response");
+    ids.forEach(function (id) {
+      var current = document.getElementById(id);
+      var next = page.getElementById(id);
+      if (current.tagName === "DETAILS") next.open = current.open;
+      if (id === "file-info-section") next.querySelector("[data-document-processing]").replaceWith(processing);
+      current.replaceWith(next);
+    });
+    if (status === "ready" || status === "error") {
+      var notice = document.querySelector("[data-processing-notice]");
+      if (notice) notice.remove();
+    }
+    processing.dataset.initialStatus = status;
+    bindSummaryForm();
+  }
   async function refresh() {
     if (pending || stopped || document.hidden) return;
     window.clearTimeout(timer);
@@ -38,8 +63,8 @@
         if (index === data.stage) step.setAttribute("aria-current", "step");
         else step.removeAttribute("aria-current");
       });
-      if (data.text_ready && ["uploaded", "processing"].includes(processing.dataset.initialStatus)) {
-        processing.querySelector("[data-processing-refresh]").hidden = false;
+      if (data.document_status !== processing.dataset.initialStatus) {
+        await updateDocument(data.document_status);
       }
       stopped = data.finished;
     } catch (error) {

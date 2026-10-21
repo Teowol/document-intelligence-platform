@@ -273,6 +273,7 @@ class DocumentStatusView(LoginRequiredMixin, View):
             "error": _("Processing failed. You can retry from file information."),
         }
         response = JsonResponse({
+            "document_status": document.status,
             "state": state, "stage": stages[state], "label": labels[state],
             "finished": state in {"ready", "error"}, "text_ready": document.status == Document.Status.READY,
         })
