@@ -134,7 +134,15 @@ html {
   background: var(--accent);
   color: var(--accent-ink);
 }
-.main-col { flex: 1; padding: 1.5rem 2rem; }
+.main-col { flex: 1; min-width: 0; padding: 1.5rem 2rem; }
+.sidebar-avatar { width: 32px; height: 32px; border-radius: 50%; background: var(--surface-2); color: var(--accent-contrast); display: grid; place-items: center; flex-shrink: 0; overflow: hidden; font-size: 0.8rem; }
+.sidebar-avatar img { width: 100%; height: 100%; object-fit: cover; }
+.sidebar-profile-text { min-width: 0; }
+.sidebar-profile-text strong, .sidebar-profile-text small { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.sidebar-profile-text strong { font-size: 0.75rem; font-weight: 600; }
+.sidebar-profile-text small { font-size: 0.65rem; color: var(--text-muted); margin: 0.2rem 0; }
+.sidebar-profile-text .badge { font-size: 0.55rem; font-weight: 400; }
+.sidebar-profile.active .sidebar-profile-text small { color: inherit; }
 
 .topbar {
   display: flex; align-items: center; justify-content: space-between;
@@ -144,12 +152,24 @@ html {
 
 /* ---------- controls (theme + language) ---------- */
 .control-icon-btn {
+  text-decoration: none;
   display: inline-flex; align-items: center; gap: 0.4rem;
   border: 1px solid var(--border); background: var(--surface);
   color: var(--text); border-radius: 999px; padding: 0.4rem 0.9rem; cursor: pointer;
   font-size: 0.85rem;
 }
 .control-icon-btn:hover { border-color: var(--accent); }
+.control-icon-btn.active-filter {
+  background: #3f3424;
+  color: #fffdf5;
+  border-color: #3f3424;
+  font-weight: 600;
+}
+[data-theme="dark"] .control-icon-btn.active-filter {
+  background: var(--sidebar);
+  color: var(--text);
+  border-color: var(--accent);
+}
 
 /* ---------- cards / KPIs ---------- */
 .card, .kpi-card, .stat-card, .doc-card { background: var(--surface); color: var(--text); border: 1px solid var(--border); border-radius: 12px; box-shadow: var(--shadow); }

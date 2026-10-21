@@ -1,20 +1,54 @@
 {% extends "base.html" %}
-{% load i18n %}
+{% load i18n static %}
 {% block title %}{% trans "Profile" %} · DIP{% endblock %}
-{% block page_header %}<h1 class="h4 mb-0">👤 {% trans "Profile" %}</h1>{% endblock %}
+{% block page_header %}<h1 class="h4 mb-0">{% trans "Profile" %}</h1>{% endblock %}
+{% block extra_head %}<link rel="stylesheet" href="{% static 'css/profile.css' %}">{% endblock %}
 {% block content %}
-<div class="row justify-content-center">
-  <div class="col-md-6">
-    <div class="card">
-      <div class="card-body">
-        <p class="mb-1"><strong>{% trans "Email" %}:</strong> {{ user.email }}</p>
-        <p class="mb-1"><strong>{% trans "Username" %}:</strong> {{ user.username }}</p>
-        <p class="mb-1"><strong>{% trans "Role" %}:</strong>
-          <span class="badge badge-role-{{ user.role }}">{{ user_role }}</span>
-        </p>
-        <p class="mb-1"><strong>{% trans "Joined" %}:</strong> {{ user.date_joined|date:"Y-m-d" }}</p>
+<div class="profile-intro"><p class="profile-eyebrow">{% trans "Your personal workspace" %}</p><h2>{% trans "A little more you." %}</h2><p>{% trans "Manage how you appear and keep your account details up to date." %}</p></div>
+<div class="profile-layout">
+  <aside class="profile-overview card">
+    <div class="profile-cover" aria-hidden="true"><span>✦</span></div>
+    <div class="profile-overview-body">
+      <div class="profile-avatar profile-avatar-large">
+        <img data-avatar-image {% if user.avatar %}src="{% url 'accounts:avatar' %}"{% else %}hidden{% endif %} alt="{% trans 'Your profile photo' %}">
+        <span data-avatar-initials {% if user.avatar %}hidden{% endif %}>{{ profile_initials }}</span>
       </div>
+      <h3>{{ profile_name }}</h3><p class="profile-email">{{ user.email }}</p>
+      <span class="profile-role">{{ user_role }}</span>
+      {% if user.bio %}<p class="profile-bio">{{ user.bio }}</p>{% endif %}
+      <div class="profile-stats"><div><strong>{{ document_count }}</strong><span>{% trans "Documents" %}</span></div><div><strong>{{ chat_count }}</strong><span>{% trans "Saved chats" %}</span></div></div>
+      <dl class="profile-membership"><dt>{% trans "Member since" %}</dt><dd>{{ user.date_joined|date:"DATE_FORMAT" }}</dd><dt>{% trans "Email status" %}</dt><dd class="{% if email_verified %}profile-verified{% else %}text-muted{% endif %}">{% if email_verified %}✓ {% trans "Verified" %}{% else %}{% trans "Not verified" %}{% endif %}</dd></dl>
     </div>
+  </aside>
+  <div class="profile-editor">
+    <section class="card profile-panel" aria-labelledby="personal-heading">
+      <div class="profile-panel-heading"><span class="profile-eyebrow">{% trans "Personal information" %}</span><h3 id="personal-heading">{% trans "Make it yours" %}</h3><p>{% trans "Your changes are applied when you save." %}</p></div>
+      <form method="post" enctype="multipart/form-data" data-profile-form>
+        {% csrf_token %}
+        <div class="profile-form-body">
+          {{ form.non_field_errors }}
+          <div class="profile-photo-editor">
+            <div class="profile-avatar"><img data-avatar-image {% if user.avatar %}src="{% url 'accounts:avatar' %}"{% else %}hidden{% endif %} alt="{% trans 'Profile photo preview' %}"><span data-avatar-initials {% if user.avatar %}hidden{% endif %}>{{ profile_initials }}</span></div>
+            <div class="profile-photo-controls"><label class="control-icon-btn" for="{{ form.avatar.id_for_label }}">↥ {% trans "Choose photo" %}</label><div class="visually-hidden">{{ form.avatar }}</div><p>{% trans "JPG, PNG or WebP. Up to 5 MB." %}</p>{% if user.avatar %}<div class="form-check">{{ form.remove_avatar }}<label class="form-check-label" for="{{ form.remove_avatar.id_for_label }}">{% trans "Remove profile photo" %}</label></div>{% endif %}</div>
+          </div>
+          {{ form.avatar.errors }}
+          <p class="profile-photo-note" data-photo-note hidden>{% trans "Photo selected. Save changes to update your profile." %}</p>
+          <div class="profile-fields">
+            {% include "accounts/_profile_field.html" with field=form.first_name %}
+            {% include "accounts/_profile_field.html" with field=form.last_name %}
+            <div class="profile-field-full">{% include "accounts/_profile_field.html" with field=form.username %}</div>
+            <div class="profile-field-full">{% include "accounts/_profile_field.html" with field=form.bio %}<div class="profile-bio-count"><span data-bio-count>{{ form.bio.value|default:''|length }}</span>/500</div></div>
+          </div>
+        </div>
+        <div class="profile-savebar"><span class="text-muted small" data-unsaved hidden>{% trans "You have unsaved changes." %}</span><div><button type="reset" class="control-icon-btn">{% trans "Reset changes" %}</button><button type="submit" class="btn btn-primary" data-saving-label="{% trans 'Saving…' %}">{% trans "Save changes" %} ↗</button></div></div>
+      </form>
+    </section>
+    <section class="card profile-panel profile-security" aria-labelledby="security-heading">
+      <div class="profile-panel-heading"><span class="profile-eyebrow">{% trans "Account settings" %}</span><h3 id="security-heading">{% trans "Email and security" %}</h3></div>
+      <div class="profile-security-row"><div><strong>{% trans "Login email" %}</strong><p>{{ user.email }}</p></div><a class="control-icon-btn" href="{% url 'account_email' %}">{% trans "Manage email" %} ↗</a></div>
+      <div class="profile-security-row"><div><strong>{% trans "Password" %}</strong><p>{% trans "Update your password to keep your account protected." %}</p></div><a class="control-icon-btn" href="{% url 'account_change_password' %}">{% trans "Change password" %} ↗</a></div>
+    </section>
   </div>
 </div>
+<script src="{% static 'js/profile.js' %}"></script>
 {% endblock %}

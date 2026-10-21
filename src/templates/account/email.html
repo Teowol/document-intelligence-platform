@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% load i18n static %}
+{% block title %}{% trans "Manage email" %} · DIP{% endblock %}
+{% block page_header %}<h1 class="h4 mb-0">{% trans "Account settings" %}</h1>{% endblock %}
+{% block extra_head %}<link rel="stylesheet" href="{% static 'css/profile.css' %}">{% endblock %}
+{% block content %}
+<section class="profile-security-page card profile-panel"><div class="profile-panel-heading"><a class="profile-back" href="{% url 'accounts:profile' %}">← {% trans "Back to profile" %}</a><h2 class="h4 mt-3">{% trans "Manage email" %}</h2><p>{% trans "Add a new address and select your primary login email." %}</p></div><div class="profile-form-body">
+{% if emailaddresses %}<form method="post" action="{% url 'account_email' %}">{% csrf_token %}
+{% for radio in emailaddress_radios %}<label class="profile-email-option" for="{{ radio.id }}"><input type="radio" name="email" value="{{ radio.emailaddress.email }}" id="{{ radio.id }}" {% if radio.checked %}checked{% endif %}><span>{{ radio.emailaddress.email }}<small>{% if radio.emailaddress.primary %}{% trans "Primary" %} · {% endif %}{% if radio.emailaddress.verified %}{% trans "Verified" %}{% else %}{% trans "Not verified" %}{% endif %}</small></span></label>{% endfor %}
+<div class="d-flex flex-wrap gap-2 mt-3"><button class="control-icon-btn" name="action_primary" type="submit">{% trans "Make primary" %}</button><button class="control-icon-btn" name="action_send" type="submit">{% trans "Send verification" %}</button><button class="control-icon-btn" name="action_remove" type="submit">{% trans "Remove" %}</button></div></form>{% endif %}
+{% if can_add_email %}<form method="post" action="{% url 'account_email' %}" class="mt-4">{% csrf_token %}{{ form.as_p }}<button class="btn btn-primary" name="action_add" type="submit">{% trans "Add email address" %}</button></form>{% endif %}
+</div></section>
+{% endblock %}

@@ -1,0 +1,8 @@
+{% extends "base.html" %}
+{% load i18n static %}
+{% block title %}{% trans "Account settings" %} · DIP{% endblock %}
+{% block page_header %}<h1 class="h4 mb-0">{% trans "Account settings" %}</h1>{% endblock %}
+{% block extra_head %}<link rel="stylesheet" href="{% static 'css/profile.css' %}">{% endblock %}
+{% block content %}
+<div class="profile-security-page card profile-panel"><div class="profile-panel-heading"><a class="profile-back" href="{% url 'accounts:profile' %}">← {% trans "Back to profile" %}</a><h2 class="h4 mt-3">{% block security_heading %}{% trans "Change password" %}{% endblock %}</h2></div><form method="post" class="profile-form-body">{% csrf_token %}{{ form.as_p }}<button class="btn btn-primary" type="submit">{% trans "Save changes" %}</button></form></div>
+{% endblock %}

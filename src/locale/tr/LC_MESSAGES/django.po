@@ -102,6 +102,147 @@ msgstr "Giriş yap"
 msgid "Show my password"
 msgstr "Şifremi göster"
 
+msgid "Profile photo"
+msgstr "Profil fotoğrafı"
+
+msgid "About you"
+msgstr "Hakkınızda"
+
+msgid "A few words about yourself and your research interests."
+msgstr "Kendinizden ve araştırma alanlarınızdan kısaca bahsedin."
+
+msgid "Remove profile photo"
+msgstr "Profil fotoğrafını kaldır"
+
+msgid "First name"
+msgstr "Ad"
+
+msgid "Last name"
+msgstr "Soyad"
+
+msgid "Choose a photo smaller than 5 MB."
+msgstr "5 MB'den küçük bir fotoğraf seçin."
+
+msgid "Use a JPG, PNG, or WebP photo."
+msgstr "JPG, PNG veya WebP biçiminde bir fotoğraf kullanın."
+
+msgid "Choose a photo with at most 16 million pixels."
+msgstr "En fazla 16 milyon piksel içeren bir fotoğraf seçin."
+
+msgid "This photo could not be read. Please choose another image."
+msgstr "Bu fotoğraf okunamadı. Lütfen başka bir görsel seçin."
+
+msgid "Choose a new photo or remove the existing one, not both."
+msgstr "Yeni bir fotoğraf seçin veya mevcut fotoğrafı kaldırın. İkisini aynı anda yapmayın."
+
+msgid "Your profile has been updated."
+msgstr "Profiliniz güncellendi."
+
+msgid "Your personal workspace"
+msgstr "Kişisel çalışma alanınız"
+
+msgid "A little more you."
+msgstr "Sizi yansıtan bir profil."
+
+msgid "Manage how you appear and keep your account details up to date."
+msgstr "Profilinizi kişiselleştirin ve hesap bilgilerinizi güncel tutun."
+
+msgid "Your profile photo"
+msgstr "Profil fotoğrafınız"
+
+msgid "Saved chats"
+msgstr "Kaydedilen sohbetler"
+
+msgid "Member since"
+msgstr "Üyelik tarihi"
+
+msgid "Email status"
+msgstr "E-posta durumu"
+
+msgid "Verified"
+msgstr "Doğrulandı"
+
+msgid "Not verified"
+msgstr "Doğrulanmadı"
+
+msgid "Personal information"
+msgstr "Kişisel bilgiler"
+
+msgid "Make it yours"
+msgstr "Profilinizi kişiselleştirin"
+
+msgid "Your changes are applied when you save."
+msgstr "Değişiklikleriniz kaydettiğinizde uygulanır."
+
+msgid "Profile photo preview"
+msgstr "Profil fotoğrafı önizlemesi"
+
+msgid "Choose photo"
+msgstr "Fotoğraf seç"
+
+msgid "JPG, PNG or WebP. Up to 5 MB."
+msgstr "JPG, PNG veya WebP. En fazla 5 MB."
+
+msgid "Photo selected. Save changes to update your profile."
+msgstr "Fotoğraf seçildi. Profilinizi güncellemek için değişiklikleri kaydedin."
+
+msgid "You have unsaved changes."
+msgstr "Kaydedilmemiş değişiklikleriniz var."
+
+msgid "Reset changes"
+msgstr "Değişiklikleri geri al"
+
+msgid "Saving…"
+msgstr "Kaydediliyor…"
+
+msgid "Save changes"
+msgstr "Değişiklikleri kaydet"
+
+msgid "Account settings"
+msgstr "Hesap ayarları"
+
+msgid "Email and security"
+msgstr "E-posta ve güvenlik"
+
+msgid "Login email"
+msgstr "Giriş e-postası"
+
+msgid "Manage email"
+msgstr "E-postayı yönet"
+
+msgid "Password"
+msgstr "Şifre"
+
+msgid "Update your password to keep your account protected."
+msgstr "Hesabınızı korumak için şifrenizi güncelleyin."
+
+msgid "Change password"
+msgstr "Şifreyi değiştir"
+
+msgid "Set password"
+msgstr "Şifre belirle"
+
+msgid "Back to profile"
+msgstr "Profile dön"
+
+msgid "Add a new address and select your primary login email."
+msgstr "Yeni bir adres ekleyin ve ana giriş e-postanızı seçin."
+
+msgid "Primary"
+msgstr "Birincil"
+
+msgid "Make primary"
+msgstr "Birincil yap"
+
+msgid "Send verification"
+msgstr "Doğrulama gönder"
+
+msgid "Remove"
+msgstr "Kaldır"
+
+msgid "Add email address"
+msgstr "E-posta adresi ekle"
+
 msgid "Log out"
 msgstr "Çıkış yap"
 
