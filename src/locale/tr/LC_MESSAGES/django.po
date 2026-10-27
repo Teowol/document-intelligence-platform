@@ -1070,3 +1070,12 @@ msgid ""
 msgstr ""
 "Anlamsal arama ve kaynaklara dayalı yanıtlarla belgeleriniz arasındaki "
 "bağlantıları keşfedin."
+
+msgid "Searching…"
+msgstr "Aranıyor…"
+
+msgid "Search failed. Please try again."
+msgstr "Arama başarısız. Lütfen tekrar deneyin."
+
+msgid "Too many searches. Please try again shortly."
+msgstr "Arama sınırına ulaşıldı. Kısa bir süre sonra tekrar deneyin."

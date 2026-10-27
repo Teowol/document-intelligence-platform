@@ -1,17 +1,21 @@
 {% extends "base.html" %}
-{% load i18n %}
-{% block title %}{% trans "Semantic Search" %} · DIP{% endblock %}
-{% block page_header %}<h1 class="h4 mb-0">{% trans "Semantic Search" %}</h1>{% endblock %}
+{% load i18n static %}
+{% block title %}{% trans "Search in your documents" %} · DIP{% endblock %}
+{% block page_header %}<h1 class="h4 mb-0">{% trans "Search in your documents" %}</h1>{% endblock %}
 
 {% block content %}
 <div class="row justify-content-center">
   <div class="col-md-9">
-    <form method="get" action="{% url 'documents:search' %}" class="d-flex gap-2 mb-4">
-      <input type="text" name="q" value="{{ query }}" class="form-control"
+    <form method="get" action="{% url 'documents:search' %}" class="d-flex gap-2 mb-3" data-live-search
+          data-loading="{% trans 'Searching…' %}" data-error="{% trans 'Search failed. Please try again.' %}">
+      <label for="semantic-query" class="visually-hidden">{% trans "Search" %}</label>
+      <input id="semantic-query" type="search" name="q" value="{{ query }}" class="form-control form-control-sm" autocomplete="off" maxlength="4000" aria-controls="search-results"
              placeholder="{% trans 'Search documents by meaning (e.g. budget projections)' %}">
-      <button type="submit" class="btn" style="background: var(--accent); color: var(--accent-ink);">🔍 {% trans "Search" %}</button>
+      <button type="submit" class="btn btn-sm px-3 text-nowrap" style="background: var(--accent); color: var(--accent-ink);">{% trans "Search" %}</button>
     </form>
-
+    <p class="small text-muted" data-search-feedback role="status" hidden></p>
+    <div id="search-results" aria-live="polite" aria-busy="false">
+    {% if search_error %}<p role="alert">{{ search_error }}</p>{% else %}
     {% if query %}
       <h5 class="mb-3">{{ results|length }} {% trans "result(s)" %} {% trans "for" %} &ldquo;{{ query }}&rdquo;</h5>
       {% if results %}
@@ -35,9 +39,10 @@
       {% else %}
         <p class="text-muted">{% trans "No semantic matches (make sure a document is embedded first)." %}</p>
       {% endif %}
-    {% else %}
-      <p class="text-muted">{% trans "Enter a query to search your documents semantically." %}</p>
     {% endif %}
+    {% endif %}
+    </div>
   </div>
 </div>
+<script src="{% static 'js/search.js' %}" defer></script>
 {% endblock %}

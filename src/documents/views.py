@@ -396,20 +396,10 @@ class DocumentSearchView(LoginRequiredMixin, TemplateView):
                     self.request.user, query, top_k=8
                 )
             except PermissionDenied:
-                from django.contrib import messages as dj_messages
-                from django.http import HttpResponse
-
-                dj_messages.error(
-                    self.request,
-                    "Arama sınırına ulaşıldı. Kısa bir süre sonra tekrar deneyin.",
-                )
-                return HttpResponse("Rate-limited", status=429)
-            except Exception as exc:  # noqa: BLE001 - surface API errors in UI
-                from django.contrib import messages as dj_messages
-
-                dj_messages.error(
-                    self.request, f"Semantic search failed: {exc}"
-                )
+                context["search_error"] = _("Too many searches. Please try again shortly.")
+            except Exception:
+                logger.exception("Semantic search failed for user %s", self.request.user.pk)
+                context["search_error"] = _("Search failed. Please try again.")
         return context
 
 
