@@ -54,7 +54,7 @@
   {% endif %}
 
   <!-- ================= MAIN (both guest & auth) ================= -->
-  <div class="main-col{% if is_landing %} landing-main{% endif %}" {% if not user.is_authenticated and not is_landing %}style="margin:0 auto; max-width: 720px;"{% endif %}>
+  <div class="main-col{% if is_landing %} landing-main{% endif %}{% block main_class %}{% endblock %}" {% block main_style %}{% if not user.is_authenticated and not is_landing %}style="margin:0 auto; max-width: 720px;"{% endif %}{% endblock %}>
     <header class="topbar{% if is_landing %} landing-header{% endif %}">
       {% if is_landing %}
       <a class="landing-brand" href="{% url 'home' %}" aria-label="{% trans 'DIP home' %}">

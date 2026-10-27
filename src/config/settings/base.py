@@ -87,7 +87,7 @@ ACCOUNT_LOGIN_METHODS = {"email"}
 ACCOUNT_EMAIL_VERIFICATION = "optional"  # dev-friendly; tighten in Phase 9
 ACCOUNT_UNIQUE_EMAIL = True
 ACCOUNT_SIGNUP_FIELDS = ["email**", "username", "password1*", "password2*"]
-LOGIN_REDIRECT_URL = "accounts:profile"
+LOGIN_REDIRECT_URL = "documents:dashboard"
 LOGOUT_REDIRECT_URL = "home"
 LOGIN_URL = "account_login"
 

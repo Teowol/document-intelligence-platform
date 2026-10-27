@@ -1079,3 +1079,55 @@ msgstr "Arama başarısız. Lütfen tekrar deneyin."
 
 msgid "Too many searches. Please try again shortly."
 msgstr "Arama sınırına ulaşıldı. Kısa bir süre sonra tekrar deneyin."
+
+msgid "A CLEARER WAY TO WORK WITH KNOWLEDGE"
+msgstr "BİLGİYLE ÇALIŞMANIN DAHA NET BİR YOLU"
+
+msgid "New perspectives."
+msgstr "Yeni bakış açıları."
+
+msgid ""
+"Bring your files together, find what matters, and turn your questions into "
+"grounded answers."
+msgstr ""
+"Dosyalarınızı bir araya getirin, önemli bilgileri keşfedin ve sorularınıza "
+"kaynaklara dayalı yanıtlar bulun."
+
+msgid "Collect"
+msgstr "Biriktirin"
+
+msgid "Your files, in one place"
+msgstr "Tüm dosyalarınız tek bir yerde"
+
+msgid "Explore"
+msgstr "Keşfedin"
+
+msgid "Search beyond keywords"
+msgstr "Anahtar kelimelerin ötesinde arayın"
+
+msgid "Understand"
+msgstr "Anlamlandırın"
+
+msgid "Answers with sources"
+msgstr "Kaynaklarıyla birlikte yanıtlar"
+
+msgid "Your workspace. Your knowledge."
+msgstr "Sizin çalışma alanınız. Sizin bilginiz."
+
+msgid "Back to home"
+msgstr "Ana sayfaya dön"
+
+msgid "YOUR WORKSPACE AWAITS"
+msgstr "ÇALIŞMA ALANINIZ SİZİ BEKLİYOR"
+
+msgid "Welcome back"
+msgstr "Tekrar hoş geldiniz"
+
+msgid "Log in to pick up where your ideas left off."
+msgstr "Fikirlerinize kaldığınız yerden devam etmek için giriş yapın."
+
+msgid "MAKE ROOM FOR YOUR NEXT IDEA"
+msgstr "YENİ FİKİRLERİNİZE YER AÇIN"
+
+msgid "Start building your personal knowledge library."
+msgstr "Kişisel bilgi kütüphanenizi oluşturmaya başlayın."

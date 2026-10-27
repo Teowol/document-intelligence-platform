@@ -1,0 +1,15 @@
+﻿{% load i18n %}
+{% if form.non_field_errors %}<div class="auth-errors" role="alert">{{ form.non_field_errors }}</div>{% endif %}
+{% for field in form %}
+  {% if field.is_hidden %}{{ field }}
+  {% elif field.name == 'remember' %}<div class="auth-remember">{{ field }}<label for="{{ field.id_for_label }}">{{ field.label }}</label>{{ field.errors }}</div>
+  {% else %}
+  <div class="auth-field{% if field.errors %} has-errors{% endif %}">
+    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+    <div class="auth-input-wrap">{{ field }}{% if field.field.widget.input_type == 'password' %}<button type="button" class="auth-password-toggle" data-password-toggle aria-controls="{{ field.id_for_label }}" aria-pressed="false" aria-label="{% trans 'Show my password' %}" title="{% trans 'Show my password' %}" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/></svg></button>{% endif %}</div>
+    {% if field.errors %}<div class="auth-field-errors" role="alert" id="{{ field.id_for_label }}_error">{{ field.errors }}</div>{% endif %}
+    {% if field.help_text %}<div class="auth-help" id="{{ field.id_for_label }}_helptext">{{ field.help_text|safe }}</div>{% endif %}
+  </div>
+  {% endif %}
+{% endfor %}
+{% if redirect_field_value %}<input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}">{% endif %}
