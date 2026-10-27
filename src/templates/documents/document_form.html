@@ -1,32 +1,37 @@
-{% extends "base.html" %}
+﻿{% extends "base.html" %}
 {% load i18n static %}
 {% block title %}{% trans "Upload document" %} · DIP{% endblock %}
-{% block page_header %}<h1 class="h4 mb-0">⬆️ {% trans "Upload document" %}</h1>{% endblock %}
-
+{% block page_header %}<div class="upload-breadcrumb"><a href="{% url 'documents:list' %}">{% trans "Documents" %}</a><span>/</span><span>{% trans "Upload" %}</span></div>{% endblock %}
+{% block extra_head %}<link rel="stylesheet" href="{% static 'css/upload.css' %}">{% endblock %}
 {% block content %}
-<div class="row justify-content-center">
-  <div class="col-md-6">
-    <div class="card">
-      <div class="card-body">
-        <p class="text-muted small">{% trans "Allowed: PDF, Excel (xlsx), CSV, TXT, Markdown — max 25 MB. File type is verified by content, not by extension." %}</p>
-        <form method="post" enctype="multipart/form-data" data-upload-form
-              data-uploading="{% trans 'Uploading file' %}" data-validating="{% trans 'Upload complete. Checking the file…' %}"
-              data-failure="{% trans 'Could not confirm the upload. Check your documents before trying again.' %}">
-          {% csrf_token %}
-          {{ form.as_p }}
-          <div class="upload-feedback mb-3" data-upload-feedback hidden>
-            <div class="d-flex justify-content-between gap-2 mb-2" aria-live="polite">
-              <span data-upload-label>{% trans "Uploading file" %}</span><span data-upload-percent>0%</span>
-            </div>
-            <progress class="dip-progress" data-upload-progress max="100" value="0" aria-label="{% trans 'File upload progress' %}"></progress>
-          </div>
-          <div class="upload-errors mb-3" data-upload-errors role="alert" hidden></div>
-          <button type="submit" class="btn w-100" style="background: var(--accent); color: var(--accent-ink);">{% trans "Upload" %}</button>
-          <a href="{% url 'documents:list' %}" class="btn btn-link w-100 mt-1" style="color: var(--text-muted);">{% trans "Cancel" %}</a>
-        </form>
-      </div>
-    </div>
+<div class="upload-workspace">
+  <header class="upload-heading"><p class="upload-eyebrow">{% trans "GROW YOUR KNOWLEDGE LIBRARY" %}</p><h1>{% trans "Make room for new insights." %}</h1><p>{% trans "Add a document and turn its content into searchable knowledge." %}</p></header>
+  <div class="upload-layout">
+    <section class="upload-panel" aria-labelledby="upload-heading">
+      <div class="upload-panel-heading"><span class="upload-step">01</span><div><h2 id="upload-heading">{% trans "Upload document" %}</h2><p>{% trans "Choose a file, give it a name, and set who can access it." %}</p></div></div>
+      <form method="post" enctype="multipart/form-data" data-upload-form
+            data-uploading="{% trans 'Uploading file' %}" data-validating="{% trans 'Upload complete. Checking the file…' %}"
+            data-failure="{% trans 'Could not confirm the upload. Check your documents before trying again.' %}">
+        {% csrf_token %}
+        {% if form.non_field_errors %}<div class="upload-errors" role="alert">{{ form.non_field_errors }}</div>{% endif %}
+        <label class="upload-label" for="{{ form.file.id_for_label }}">{% trans "Document file" %}<span>{% trans "Required" %}</span></label>
+        <div class="upload-dropzone" data-upload-dropzone>
+          {{ form.file }}
+          <span class="upload-cloud" aria-hidden="true"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 23H7a5 5 0 0 1-1-10 10 10 0 0 1 19-1 6 6 0 0 1 0 12h-2M16 28V13m-6 6 6-6 6 6"/></svg></span>
+          <strong>{% trans "Drop your file here" %}</strong><span>{% trans "or click to browse your device" %}</span>
+          <small>PDF, XLSX, CSV, TXT, MD · {% trans "Up to 25 MB per file" %}</small>
+        </div>
+        {% if form.file.errors %}<div class="upload-errors" role="alert">{{ form.file.errors }}</div>{% endif %}
+        <div class="upload-selected" data-upload-selected hidden aria-live="polite"><span class="upload-file-mark" aria-hidden="true">▤</span><div><strong data-upload-filename></strong><small data-upload-filesize></small></div><button type="button" data-upload-remove aria-label="{% trans 'Remove selected file' %}">×</button></div>
+        <div class="upload-field"><label class="upload-label" for="{{ form.title.id_for_label }}">{{ form.title.label }}<span>{% trans "Required" %}</span></label>{{ form.title }}{% if form.title.errors %}<div class="upload-errors" role="alert">{{ form.title.errors }}</div>{% endif %}<p class="upload-help">{% trans "Use a clear title so you can find this document later." %}</p></div>
+        <div class="upload-visibility"><div><h3>{% trans "Document visibility" %}</h3><p>{% trans "Keep this unchecked to restrict access to you and administrators." %}</p></div><label class="upload-public" for="{{ form.is_public.id_for_label }}">{{ form.is_public }}<span>{% trans "Public document" %}</span></label>{% if form.is_public.errors %}<div class="upload-errors" role="alert">{{ form.is_public.errors }}</div>{% endif %}<small>{% trans "Public documents are accessible to other users of this workspace." %}</small></div>
+        <div class="upload-feedback" data-upload-feedback hidden><div class="upload-progress-label" aria-live="polite"><span data-upload-label>{% trans "Uploading file" %}</span><span data-upload-percent>0%</span></div><progress class="dip-progress" data-upload-progress max="100" value="0" aria-label="{% trans 'File upload progress' %}"></progress></div>
+        <div class="upload-errors" data-upload-errors role="alert" hidden></div>
+        <footer class="upload-actions"><a href="{% url 'documents:list' %}">{% trans "Cancel" %}</a><button type="submit">{% trans "Upload document" %} <span aria-hidden="true">↑</span></button></footer>
+      </form>
+    </section>
+    <aside class="upload-guide" aria-labelledby="upload-guide-heading"><p class="upload-eyebrow">{% trans "FROM FILES TO ANSWERS" %}</p><h2 id="upload-guide-heading">{% trans "What happens next?" %}</h2><ol><li><span>1</span><div><h3>{% trans "Add your document" %}</h3><p>{% trans "Choose a PDF, spreadsheet, or text file from your device." %}</p></div></li><li><span>2</span><div><h3>{% trans "We prepare the content" %}</h3><p>{% trans "Text is extracted and prepared for search in the background." %}</p></div></li><li><span>3</span><div><h3>{% trans "Explore your knowledge" %}</h3><p>{% trans "Preview the file, search its contents, and ask questions with sources." %}</p></div></li></ol><div class="upload-tip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M9 18h6M9 21h6M8 14a7 7 0 1 1 8 0l-1 2H9z"/></svg><h3>{% trans "A little preparation helps" %}</h3><p>{% trans "For the best results, use documents with selectable text and clearly structured content." %}</p></div><a class="upload-library-link" href="{% url 'documents:list' %}">{% trans "Back to your library" %} <span aria-hidden="true">↗</span></a></aside>
   </div>
 </div>
-<script src="{% static 'js/upload.js' %}"></script>
+<script src="{% static 'js/upload.js' %}?v=2"></script>
 {% endblock %}

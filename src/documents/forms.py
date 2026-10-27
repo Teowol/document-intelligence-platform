@@ -17,7 +17,7 @@ class DocumentUploadForm(forms.ModelForm):
             "title": forms.TextInput(
                 attrs={"class": "form-control", "placeholder": _("Document title")}
             ),
-            "file": forms.FileInput(attrs={"class": "form-control"}),
+            "file": forms.FileInput(attrs={"class": "form-control", "accept": ".pdf,.xlsx,.csv,.txt,.md"}),
             "is_public": forms.CheckboxInput(attrs={"class": "form-check-input"}),
         }
 

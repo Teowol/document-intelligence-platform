@@ -1,5 +1,12 @@
 ﻿.auth-main { width: 100%; max-width: 1240px; margin: 0 auto; padding: 28px 40px; }
 .auth-main .topbar { margin-bottom: 30px; }
+.auth-forgot { text-align: right; font-size: .75rem; }
+.auth-forgot a { color: var(--accent-contrast); text-underline-offset: 4px; }
+.auth-recovery-icon { display: grid; place-items: center; width: 54px; height: 54px; border: 1px solid var(--border); border-radius: 14px; background: var(--bg-soft); color: var(--accent-contrast); margin-bottom: 24px; }
+.auth-recovery-icon svg { width: 26px; height: 26px; }
+.auth-recovery-note { border: 1px solid var(--border); border-radius: 8px; background: var(--bg-soft); padding: 16px; color: var(--text-muted); font-size: .78rem; line-height: 1.7; }
+.auth-submit-link { text-decoration: none; }
+.auth-submit-link:hover { color: var(--accent-ink); }
 .auth-main .topbar-actions { align-items: center; }
 .auth-main .topbar-actions > form { display: flex !important; align-items: center; margin: 0; }
 .auth-main .topbar-actions .control-icon-btn { height: 36px; box-sizing: border-box; justify-content: center; line-height: 1; vertical-align: middle; }

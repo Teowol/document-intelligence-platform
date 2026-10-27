@@ -5,6 +5,6 @@
 <p class="auth-eyebrow">{% trans "YOUR WORKSPACE AWAITS" %}</p>
 <h1 id="auth-heading">{% trans "Welcome back" %}</h1>
 <p class="auth-description">{% trans "Log in to pick up where your ideas left off." %}</p>
-<form method="post" class="auth-form">{% csrf_token %}{% include "account/_auth_fields.html" %}<button type="submit" class="auth-submit">{% trans "Log in" %}<span aria-hidden="true">→</span></button></form>
+<form method="post" class="auth-form">{% csrf_token %}{% include "account/_auth_fields.html" %}<div class="auth-forgot"><a href="{% url 'account_reset_password' %}">{% trans "Forgot password?" %}</a></div><button type="submit" class="auth-submit">{% trans "Log in" %}<span aria-hidden="true">→</span></button></form>
 <p class="auth-switch">{% trans "No account yet?" %} <a href="{% url 'account_signup' %}{% if redirect_field_value %}?{{ redirect_field_name }}={{ redirect_field_value|urlencode }}{% endif %}">{% trans "Create account" %}</a></p>
 {% endblock %}

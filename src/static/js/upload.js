@@ -9,11 +9,42 @@
   var label = form.querySelector("[data-upload-label]");
   var percent = form.querySelector("[data-upload-percent]");
   var errors = form.querySelector("[data-upload-errors]");
+  var fileInput = form.elements.namedItem("file");
+  var selected = form.querySelector("[data-upload-selected]");
+  var remove = form.querySelector("[data-upload-remove]");
+  var dropzone = form.querySelector("[data-upload-dropzone]");
+  var editable = Array.from(form.querySelectorAll("input:not([type=hidden]), [data-upload-remove]"));
+
+  function showFile() {
+    if (!selected) return;
+    var file = fileInput.files[0];
+    selected.hidden = !file;
+    if (!file) return;
+    selected.querySelector("[data-upload-filename]").textContent = file.name;
+    var megabytes = file.size / (1024 * 1024);
+    selected.querySelector("[data-upload-filesize]").textContent = megabytes >= 1
+      ? megabytes.toLocaleString(document.documentElement.lang, {maximumFractionDigits: 2}) + " MB"
+      : Math.ceil(file.size / 1024).toLocaleString(document.documentElement.lang) + " KB";
+  }
+  fileInput.addEventListener("change", showFile);
+  if (remove) remove.addEventListener("click", function () {
+    fileInput.value = "";
+    showFile();
+    fileInput.focus();
+  });
+  if (dropzone) {
+    dropzone.addEventListener("dragenter", function () { dropzone.classList.add("is-dragging"); });
+    ["dragleave", "drop"].forEach(function (name) {
+      dropzone.addEventListener(name, function () { dropzone.classList.remove("is-dragging"); });
+    });
+  }
+  showFile();
 
   form.addEventListener("submit", function (event) {
     event.preventDefault();
     if (button.disabled) return;
     var body = new FormData(form);
+    editable.forEach(function (field) { field.disabled = true; });
     button.disabled = true;
     button.textContent = form.dataset.uploading;
     form.setAttribute("aria-busy", "true");
@@ -29,6 +60,7 @@
     errors.replaceChildren();
 
     function fail(messages) {
+      editable.forEach(function (field) { field.disabled = false; });
       button.disabled = false;
       button.textContent = originalLabel;
       form.removeAttribute("aria-busy");

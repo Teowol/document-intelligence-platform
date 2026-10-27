@@ -1131,3 +1131,130 @@ msgstr "YENİ FİKİRLERİNİZE YER AÇIN"
 
 msgid "Start building your personal knowledge library."
 msgstr "Kişisel bilgi kütüphanenizi oluşturmaya başlayın."
+
+msgid "Forgot password?"
+msgstr "Şifrenizi mi unuttunuz?"
+
+msgid "BACK TO YOUR WORKSPACE"
+msgstr "ÇALIŞMA ALANINIZA GERİ DÖNÜN"
+
+msgid ""
+"Enter the email address you use for your account. We'll send you a link to "
+"reset your password."
+msgstr ""
+"Hesabınızda kullandığınız e-posta adresini girin. Şifrenizi sıfırlamanız "
+"için size bir bağlantı göndereceğiz."
+
+msgid "Send reset link"
+msgstr "Sıfırlama bağlantısı gönder"
+
+msgid "Back to login"
+msgstr "Giriş ekranına dön"
+
+msgid "Check your inbox"
+msgstr "Gelen kutunuzu kontrol edin"
+
+msgid "ONE STEP CLOSER"
+msgstr "BİR ADIM DAHA YAKLAŞTINIZ"
+
+msgid ""
+"If an account is associated with that email address, you'll receive a "
+"password reset link shortly."
+msgstr ""
+"Bu e-posta adresine bağlı bir hesap varsa kısa süre içinde şifre sıfırlama "
+"bağlantısı alacaksınız."
+
+msgid ""
+"Can't find the email? Check your spam folder and allow a few minutes for "
+"delivery."
+msgstr ""
+"E-postayı bulamadınız mı? Spam klasörünüzü kontrol edin ve iletilmesi için "
+"birkaç dakika bekleyin."
+
+msgid "Try another email address"
+msgstr "Başka bir e-posta adresi deneyin"
+
+msgid "GROW YOUR KNOWLEDGE LIBRARY"
+msgstr "BİLGİ KÜTÜPHANENİZİ BÜYÜTÜN"
+
+msgid "Make room for new insights."
+msgstr "Yeni keşiflere yer açın."
+
+msgid "Add a document and turn its content into searchable knowledge."
+msgstr "Bir belge ekleyin, içeriğini aranabilir bilgiye dönüştürün."
+
+msgid "Choose a file, give it a name, and set who can access it."
+msgstr "Bir dosya seçin, adlandırın ve kimlerin erişebileceğini belirleyin."
+
+msgid "Document file"
+msgstr "Belge dosyası"
+
+msgid "Required"
+msgstr "Zorunlu"
+
+msgid "Drop your file here"
+msgstr "Dosyanızı buraya bırakın"
+
+msgid "or click to browse your device"
+msgstr "veya cihazınızdan seçmek için tıklayın"
+
+msgid "Up to 25 MB per file"
+msgstr "Dosya başına en fazla 25 MB"
+
+msgid "Remove selected file"
+msgstr "Seçilen dosyayı kaldır"
+
+msgid "Use a clear title so you can find this document later."
+msgstr ""
+"Belgenizi daha sonra kolayca bulmak için açıklayıcı bir başlık kullanın."
+
+msgid "Document visibility"
+msgstr "Belge görünürlüğü"
+
+msgid "Keep this unchecked to restrict access to you and administrators."
+msgstr ""
+"Erişimi yalnızca kendiniz ve yöneticilerle sınırlamak için işaretlemeyin."
+
+msgid "Public documents are accessible to other users of this workspace."
+msgstr ""
+"Herkese açık belgelere bu çalışma alanındaki diğer kullanıcılar da "
+"erişebilir."
+
+msgid "FROM FILES TO ANSWERS"
+msgstr "DOSYALARDAN YANITLARA"
+
+msgid "What happens next?"
+msgstr "Sonrasında ne olacak?"
+
+msgid "Add your document"
+msgstr "Belgenizi ekleyin"
+
+msgid "Choose a PDF, spreadsheet, or text file from your device."
+msgstr "Cihazınızdan bir PDF, hesap tablosu veya metin dosyası seçin."
+
+msgid "We prepare the content"
+msgstr "İçeriği hazırlayalım"
+
+msgid "Text is extracted and prepared for search in the background."
+msgstr "Metin arka planda çıkarılır ve aramaya hazır hale getirilir."
+
+msgid "Explore your knowledge"
+msgstr "Bilgilerinizi keşfedin"
+
+msgid "Preview the file, search its contents, and ask questions with sources."
+msgstr ""
+"Dosyayı önizleyin, içeriğinde arayın ve kaynaklı yanıtlar için sorular "
+"sorun."
+
+msgid "A little preparation helps"
+msgstr "Küçük bir hazırlık fark yaratır"
+
+msgid ""
+"For the best results, use documents with selectable text and clearly "
+"structured content."
+msgstr ""
+"En iyi sonuçlar için seçilebilir metin ve düzenli içerik barındıran belgeler"
+" kullanın."
+
+msgid "Back to your library"
+msgstr "Kütüphanenize dönün"
