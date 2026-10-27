@@ -1,64 +1,46 @@
-{% extends "base.html" %}
-{% load i18n %}
+﻿{% extends "base.html" %}
+{% load i18n static %}
 {% block title %}{% trans "Documents" %} · DIP{% endblock %}
-{% block page_header %}<h1 class="h4 mb-0">{% trans "Documents" %}</h1>{% endblock %}
-
+{% block page_header %}<span class="library-breadcrumb">{% trans "Workspace" %} <span aria-hidden="true">/</span> <strong>{% trans "Documents" %}</strong></span>{% endblock %}
+{% block extra_head %}<link rel="stylesheet" href="{% static 'css/library.css' %}">{% endblock %}
 {% block content %}
-<div class="d-flex justify-content-between align-items-center mb-3">
-  <div>
-    <a href="{% url 'documents:list' %}" class="control-icon-btn {% if not filter_status %}active-filter{% endif %}">{% trans "All" %}</a>
-    <a href="?status=ready" class="control-icon-btn {% if filter_status == 'ready' %}active-filter{% endif %}">✅ {% trans "Ready" %}</a>
-    <a href="?status=processing" class="control-icon-btn {% if filter_status == 'processing' %}active-filter{% endif %}">🔄 {% trans "Processing" %}</a>
-    <a href="?status=error" class="control-icon-btn {% if filter_status == 'error' %}active-filter{% endif %}">⚠️ {% trans "Error" %}</a>
-  </div>
-  <a href="{% url 'documents:upload' %}" class="btn" style="background: var(--accent); color: var(--accent-ink);">⬆️ {% trans "Upload" %}</a>
-</div>
-
-<div class="recent-grid">
-  {% for doc in object_list %}
-  <div class="doc-card">
-    <a class="doc-title" href="{% url 'documents:detail' doc.pk %}">{{ doc.title }}</a>
-    <div class="d-flex flex-wrap gap-1 mt-2">
-      <span class="badge bg-secondary">{{ doc.get_doc_type_display }}</span>
-      <span class="control-icon-btn py-0 px-2"><span class="status-dot {{ doc.status }}"></span>{{ doc.get_status_display }}</span>
-      {% if doc.is_public %}<span class="badge" style="background: var(--info);">{% trans "public" %}</span>{% endif %}
+<div class="library">
+  <section class="library-hero" aria-labelledby="library-title">
+    <div><p class="library-eyebrow">{% trans "YOUR KNOWLEDGE, ORGANIZED" %}</p><h1 id="library-title">{% trans "Document library" %}<span>.</span></h1><p class="library-intro">{% trans "A home for your files. A starting point for your next insight." %}</p></div>
+    <a class="library-button primary" href="{% url 'documents:upload' %}"><span aria-hidden="true">+</span> {% trans "Upload document" %}</a>
+  </section>
+  <section class="library-stats" aria-label="{% trans 'Library overview' %}">
+    <div><span>{% trans "Total documents" %}</span><strong>{{ library.total }}<small>{% trans "in your library" %}</small></strong></div>
+    <div><span><i class="status-dot ready"></i> {% trans "Ready" %}</span><strong>{{ library.ready }}<small>{% trans "text processed" %}</small></strong></div>
+    <div><span><i class="status-dot processing"></i> {% trans "In progress" %}</span><strong>{{ library.pending }}<small>{% trans "queued or processing" %}</small></strong></div>
+    <div><span>{% trans "Storage" %}</span><strong class="library-storage">{{ library.size|default:0|filesizeformat }}<small>{% trans "across accessible files" %}</small></strong></div>
+  </section>
+  <section class="library-collection" aria-labelledby="collection-title">
+    <div class="library-section-heading"><h2 id="collection-title">{% trans "Your collection" %} <span>{{ paginator.count }}</span></h2><a href="{% url 'documents:search' %}">{% trans "Search inside documents" %} <span aria-hidden="true">↗</span></a></div>
+    <form method="get" class="library-filters" role="search" aria-label="{% trans 'Filter documents' %}">
+      <div class="library-search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 5 5"/></svg><label for="library-query" class="visually-hidden">{% trans "Search by file name" %}</label><input id="library-query" type="search" name="q" value="{{ query }}" maxlength="255" placeholder="{% trans 'Search by file name…' %}"></div>
+      <div class="library-select"><label for="library-status">{% trans "Status" %}</label><select name="status" id="library-status"><option value="">{% trans "All statuses" %}</option>{% for value,label in document_statuses %}<option value="{{ value }}" {% if filter_status == value %}selected{% endif %}>{{ label }}</option>{% endfor %}</select></div>
+      <div class="library-select"><label for="library-type">{% trans "File type" %}</label><select name="type" id="library-type"><option value="">{% trans "All formats" %}</option>{% for value,label in document_types %}<option value="{{ value }}" {% if filter_type == value %}selected{% endif %}>{{ label }}</option>{% endfor %}</select></div>
+      <div class="library-select"><label for="library-sort">{% trans "Sort by" %}</label><select name="sort" id="library-sort"><option value="newest" {% if sort == 'newest' %}selected{% endif %}>{% trans "Newest first" %}</option><option value="oldest" {% if sort == 'oldest' %}selected{% endif %}>{% trans "Oldest first" %}</option><option value="name" {% if sort == 'name' %}selected{% endif %}>{% trans "Name A–Z" %}</option><option value="size" {% if sort == 'size' %}selected{% endif %}>{% trans "Largest first" %}</option></select></div>
+      <button type="submit" class="library-button">{% trans "Apply" %}</button>
+    </form>
+    <div class="library-result-line"><p>{% blocktrans with start=page_obj.start_index end=page_obj.end_index total=paginator.count %}Showing {{ start }}–{{ end }} of {{ total }} documents{% endblocktrans %}</p>{% if query or filter_status or filter_type %}<a href="{% url 'documents:list' %}">{% trans "Clear filters" %} <span aria-hidden="true">×</span></a>{% else %}<span>PDF · Excel · CSV · TXT · Markdown</span>{% endif %}</div>
+    <div class="library-grid">
+      {% for doc in object_list %}
+      <article class="library-card">
+        <div class="library-card-top"><span class="library-file file-{{ doc.doc_type }}" aria-label="{{ doc.get_doc_type_display }}"><svg viewBox="0 0 32 36" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><path d="M7 2h12l7 7v24H7z"/><path d="M19 2v8h7M11 17h11M11 22h11M11 27h7"/></svg><b>{{ doc.doc_type|upper }}</b></span><span class="library-status status-{{ doc.status }}"><i class="status-dot {{ doc.status }}"></i>{{ doc.get_status_display }}</span></div>
+        <h3><a href="{% url 'documents:detail' doc.pk %}">{{ doc.title }}</a></h3>
+        <p class="library-filename" title="{{ doc.original_filename }}">{{ doc.original_filename }}</p>
+        <div class="library-file-meta"><span>{{ doc.size_bytes|filesizeformat }}</span><span class="library-access">{% if doc.is_public %}{% trans "Public" %}{% else %}{% trans "Private" %}{% endif %}</span></div>
+        <div class="library-card-owner"><span class="library-avatar" aria-hidden="true">{{ doc.owner.email|first|upper }}</span><span class="library-owner-name" title="{{ doc.owner.email }}">{% if doc.owner_id == user.pk %}{% trans "You" %}{% else %}{{ doc.owner.email }}{% endif %}</span><time datetime="{{ doc.created_at|date:'c' }}">{{ doc.created_at|date:"SHORT_DATE_FORMAT" }}</time></div>
+        <footer class="library-card-footer"><a href="{% url 'documents:detail' doc.pk %}">{% trans "Open document" %} <span aria-hidden="true">↗</span></a><div>{% if doc.status == 'error' %}{% if doc.owner_id == user.pk or user.is_superuser or user.role == 'admin' %}<form method="post" action="{% url 'documents:reprocess' doc.pk %}">{% csrf_token %}<button class="library-retry" type="submit" aria-label="{% trans 'Re-process' %}: {{ doc.title }}" title="{% trans 'Re-process' %}">↻</button></form>{% endif %}{% endif %}{% if doc.owner_id == user.pk or user.is_superuser %}<a class="library-delete" href="{% url 'documents:delete' doc.pk %}" aria-label="{% trans 'Delete' %}: {{ doc.title }}" title="{% trans 'Delete' %}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M4 6h16M9 6V3h6v3M6 6l1 15h10l1-15M10 10v7M14 10v7"/></svg></a>{% endif %}</div></footer>
+      </article>
+      {% empty %}
+      <div class="library-empty"><span class="library-empty-icon" aria-hidden="true">▤</span>{% if query or filter_status or filter_type %}<h3>{% trans "No matching documents" %}</h3><p>{% trans "Try another name or adjust your filters to find what you need." %}</p><a class="library-button" href="{% url 'documents:list' %}">{% trans "Clear filters" %}</a>{% else %}<h3>{% trans "Your library starts here" %}</h3><p>{% trans "Upload your first document. Keep your knowledge in one place and turn it into answers." %}</p><a class="library-button primary" href="{% url 'documents:upload' %}">+ {% trans "Upload document" %}</a>{% endif %}</div>
+      {% endfor %}
     </div>
-    <small class="text-muted mt-2">{{ doc.size_bytes|filesizeformat }} · {{ doc.owner.email }}</small>
-    <small class="text-muted">{{ doc.created_at|date:"Y-m-d H:i" }}</small>
-    {% if doc.owner_id == user.pk or user.is_superuser %}
-    <form method="post" action="{% url 'documents:delete' doc.pk %}" class="mt-2 d-inline"
-          onsubmit="return confirm('{% trans "Delete this document?" %}');">
-      {% csrf_token %}
-      <button class="btn btn-sm py-0" style="color: var(--danger); border-color: var(--danger);">🗑️ {% trans "Delete" %}</button>
-    </form>
-    {% endif %}
-    {% if doc.status == 'error' %}
-    <form method="post" action="{% url 'documents:reprocess' doc.pk %}" class="mt-2 d-inline">
-      {% csrf_token %}
-      <button class="btn btn-sm py-0" style="color: var(--warning); border-color: var(--warning);">🔄 {% trans "Re-process" %}</button>
-    </form>
-    {% endif %}
-  </div>
-  {% empty %}
-  <div class="empty-state" style="grid-column: 1 / -1;">
-    <div class="big-ico">📂</div>
-    <p>{% trans "No documents found." %}</p>
-    <a href="{% url 'documents:upload' %}" class="btn" style="background: var(--accent); color: var(--accent-ink);">⬆️ {% trans "Upload" %}</a>
-  </div>
-  {% endfor %}
+    {% if is_paginated %}<nav class="library-pagination" aria-label="{% trans 'Document pages' %}">{% if page_obj.has_previous %}<a class="library-button" href="?{{ filter_params }}&page={{ page_obj.previous_page_number }}">← {% trans "Previous" %}</a>{% endif %}<span>{% blocktrans with current=page_obj.number total=page_obj.paginator.num_pages %}Page {{ current }} of {{ total }}{% endblocktrans %}</span>{% if page_obj.has_next %}<a class="library-button" href="?{{ filter_params }}&page={{ page_obj.next_page_number }}">{% trans "Next" %} →</a>{% endif %}</nav>{% endif %}
+  </section>
+  <aside class="library-insight"><span class="library-insight-mark" aria-hidden="true">✧</span><div><strong>{% trans "Go beyond the file name" %}</strong><p>{% trans "Find connections across your documents with semantic search and grounded answers." %}</p></div><a href="{% url 'documents:ask' %}">{% trans "Ask your documents" %} <span aria-hidden="true">↗</span></a></aside>
 </div>
-
-{% if is_paginated %}
-<nav class="mt-4">
-  <ul class="pagination">
-    {% if page_obj.has_previous %}
-      <li class="page-item"><a class="page-link" style="background: var(--surface); color: var(--text); border-color: var(--border);" href="?page={{ page_obj.previous_page_number }}&status={{ filter_status }}">‹</a></li>
-    {% endif %}
-    <li class="page-item disabled"><span class="page-link" style="background: var(--surface); color: var(--text-muted); border-color: var(--border);">{{ page_obj.number }}/{{ page_obj.paginator.num_pages }}</span></li>
-    {% if page_obj.has_next %}
-      <li class="page-item"><a class="page-link" style="background: var(--surface); color: var(--text); border-color: var(--border);" href="?page={{ page_obj.next_page_number }}&status={{ filter_status }}">›</a></li>
-    {% endif %}
-  </ul>
-</nav>
-{% endif %}
 {% endblock %}

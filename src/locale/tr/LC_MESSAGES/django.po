@@ -945,3 +945,128 @@ msgstr "Önizleme kullanılamıyor. Orijinal dosyayı indirmeyi deneyebilirsiniz
 
 msgid "This preview shows only the beginning of the file (up to 100 rows and 30 columns for tables). Download the original to view all content."
 msgstr "Önizlemede dosyanın yalnızca başlangıcı gösterilir (tablolarda en fazla 100 satır ve 30 sütun). Tüm içeriği görmek için orijinal dosyayı indirin."
+
+msgid "YOUR KNOWLEDGE, ORGANIZED"
+msgstr "BİLGİNİZ, DÜZEN İÇİNDE"
+
+msgid "Document library"
+msgstr "Belge kütüphanesi"
+
+msgid "A home for your files. A starting point for your next insight."
+msgstr "Dosyalarınızı düzenleyin. Yeni keşiflere buradan başlayın."
+
+msgid "Library overview"
+msgstr "Kütüphaneye genel bakış"
+
+msgid "Total documents"
+msgstr "Toplam belge"
+
+msgid "in your library"
+msgstr "kütüphanenizde"
+
+msgid "text processed"
+msgstr "metni işlendi"
+
+msgid "In progress"
+msgstr "Devam eden"
+
+msgid "queued or processing"
+msgstr "sırada veya işleniyor"
+
+msgid "across accessible files"
+msgstr "erişilebilir dosyalarda"
+
+msgid "Your collection"
+msgstr "Belge koleksiyonunuz"
+
+msgid "Search inside documents"
+msgstr "Belge içeriklerinde ara"
+
+msgid "Filter documents"
+msgstr "Belgeleri filtrele"
+
+msgid "Search by file name"
+msgstr "Dosya adına göre ara"
+
+msgid "Search by file name…"
+msgstr "Dosya adına göre arayın…"
+
+msgid "All statuses"
+msgstr "Tüm durumlar"
+
+msgid "File type"
+msgstr "Dosya türü"
+
+msgid "All formats"
+msgstr "Tüm biçimler"
+
+msgid "Sort by"
+msgstr "Sıralama"
+
+msgid "Newest first"
+msgstr "Önce en yeni"
+
+msgid "Oldest first"
+msgstr "Önce en eski"
+
+msgid "Name A–Z"
+msgstr "Ad A–Z"
+
+msgid "Largest first"
+msgstr "Önce en büyük"
+
+msgid "Apply"
+msgstr "Uygula"
+
+msgid "Showing %(start)s–%(end)s of %(total)s documents"
+msgstr "%(total)s belgeden %(start)s–%(end)s arası gösteriliyor"
+
+msgid "Clear filters"
+msgstr "Filtreleri temizle"
+
+msgid "Public"
+msgstr "Herkese açık"
+
+msgid "Private"
+msgstr "Özel"
+
+msgid "You"
+msgstr "Siz"
+
+msgid "Open document"
+msgstr "Belgeyi aç"
+
+msgid "No matching documents"
+msgstr "Eşleşen belge bulunamadı"
+
+msgid "Try another name or adjust your filters to find what you need."
+msgstr "Farklı bir ad arayın veya filtrelerinizi değiştirin."
+
+msgid ""
+"Upload your first document. Keep your knowledge in one place and turn it "
+"into answers."
+msgstr ""
+"İlk belgenizi yükleyin. Bilgilerinizi bir araya getirin, sorularınıza yanıt "
+"bulun."
+
+msgid "Document pages"
+msgstr "Belge sayfaları"
+
+msgid "Previous"
+msgstr "Önceki"
+
+msgid "Next"
+msgstr "Sonraki"
+
+msgid "Page %(current)s of %(total)s"
+msgstr "Sayfa %(current)s / %(total)s"
+
+msgid "Go beyond the file name"
+msgstr "Dosya adının ötesine geçin"
+
+msgid ""
+"Find connections across your documents with semantic search and grounded "
+"answers."
+msgstr ""
+"Anlamsal arama ve kaynaklara dayalı yanıtlarla belgeleriniz arasındaki "
+"bağlantıları keşfedin."

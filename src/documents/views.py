@@ -147,21 +147,43 @@ class DocumentListView(LoginRequiredMixin, ListView):
     template_name = "documents/document_list.html"
     paginate_by = 12
 
-    def get_queryset(self):
+    def visible_documents(self):
         user = self.request.user
         if _is_admin(user):
-            queryset = Document.objects.select_related("owner")
-        else:
-            queryset = Document.objects.filter(Q(owner=user) | Q(is_public=True)).select_related("owner")
-        # optional status filter from ?status=
+            return Document.objects.all()
+        return Document.objects.filter(Q(owner=user) | Q(is_public=True))
+
+    def get_queryset(self):
+        queryset = self.visible_documents().select_related("owner")
         status = self.request.GET.get("status")
         if status in {s for s, _ in Document.Status.choices}:
             queryset = queryset.filter(status=status)
-        return queryset
+        query = self.request.GET.get("q", "").strip()[:255]
+        if query:
+            queryset = queryset.filter(Q(title__icontains=query) | Q(original_filename__icontains=query))
+        doc_type = self.request.GET.get("type")
+        if doc_type in dict(Document.DocType.choices):
+            queryset = queryset.filter(doc_type=doc_type)
+        ordering = {"newest": "-created_at", "oldest": "created_at", "name": "title", "size": "-size_bytes"}
+        return queryset.order_by(ordering.get(self.request.GET.get("sort"), "-created_at"), "-pk")
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["filter_status"] = self.request.GET.get("status", "")
+        context["query"] = self.request.GET.get("q", "").strip()[:255]
+        context["filter_type"] = self.request.GET.get("type", "")
+        context["sort"] = self.request.GET.get("sort", "newest")
+        context["document_types"] = Document.DocType.choices
+        context["document_statuses"] = Document.Status.choices
+        context["library"] = self.visible_documents().aggregate(
+            total=Count("pk"), size=Sum("size_bytes"),
+            ready=Count("pk", filter=Q(status=Document.Status.READY)),
+            pending=Count("pk", filter=Q(status__in=[Document.Status.UPLOADED, Document.Status.PROCESSING])),
+            errors=Count("pk", filter=Q(status=Document.Status.ERROR)),
+        )
+        params = self.request.GET.copy()
+        params.pop("page", None)
+        context["filter_params"] = params.urlencode()
         return context
 
 
