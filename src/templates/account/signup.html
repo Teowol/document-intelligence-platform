@@ -1,10 +1,10 @@
-﻿{% extends "account/auth_base.html" %}
+{% extends "account/auth_base.html" %}
 {% load i18n %}
 {% block title %}{% trans "Sign up" %} · DIP{% endblock %}
 {% block auth_content %}
 <p class="auth-eyebrow">{% trans "MAKE ROOM FOR YOUR NEXT IDEA" %}</p>
 <h1 id="auth-heading">{% trans "Create account" %}</h1>
 <p class="auth-description">{% trans "Start building your personal knowledge library." %}</p>
-<form method="post" class="auth-form">{% csrf_token %}{% include "account/_auth_fields.html" %}<button type="submit" class="auth-submit">{% trans "Create account" %}<span aria-hidden="true">→</span></button></form>
+<form method="post" class="auth-form">{% csrf_token %}{% include "account/_auth_fields.html" with hide_password_toggle=True %}<button type="submit" class="auth-submit">{% trans "Create account" %}<span aria-hidden="true">→</span></button></form>
 <p class="auth-switch">{% trans "Already have an account?" %} <a href="{% url 'account_login' %}{% if redirect_field_value %}?{{ redirect_field_name }}={{ redirect_field_value|urlencode }}{% endif %}">{% trans "Log in" %}</a></p>
 {% endblock %}
